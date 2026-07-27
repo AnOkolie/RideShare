@@ -1,0 +1,9 @@
+export const WELCOME_TEXT = "Welcome back to Ride Share";
+export const DRIVER_LOGIN_BTN = "Driver";
+export const RIDER_LOGIN_BTN = "Rider";
+export const GOOGLE_LOGIN_TEXT = "Sign in with Google";
+export const SIGN_UP_AS_A_RIDER = "Sign up as a rider";
+export const SIGN_UP_AS_A_DRIVER = "Sign up as a driver";
+export const SIGNUP_TEXT = "Signup";
+export const LOGIN_TEXT = "Login";
+export const GET_A_RIDE_TEXT = "Get a ride";

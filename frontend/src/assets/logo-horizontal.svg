@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 620 160">
+  <g>
+    <rect x="0" y="0" width="160" height="160" rx="35" fill="#2D2A6E"/>
+    <circle cx="48" cy="120" r="7" fill="none" stroke="#FAF8F4" stroke-width="4"/>
+    <path d="M48,120 C80,120 64,76 112,87" fill="none" stroke="#FAF8F4" stroke-width="5.6" stroke-linecap="round" stroke-dasharray="1.6 12"/>
+    <path d="M118,88 C106,72 98,61 98,48 C98,35.6 106.6,26 118,26 C129.4,26 138,35.6 138,48 C138,61 130,72 118,88 Z" fill="#FF6B5B"/>
+    <circle cx="118" cy="48" r="9" fill="#2D2A6E"/>
+  </g>
+  <text x="192" y="103" font-family="Poppins, 'Segoe UI', Arial, sans-serif" font-size="72" font-weight="700" fill="#2D2A6E">Ride<tspan fill="#FF6B5B">Share</tspan></text>
+</svg>
