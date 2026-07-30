@@ -1,5 +1,3 @@
-import { createUserWithEmailAndPassword } from "firebase/auth";
-import { auth } from "../../utils/Firebase/firebase";
 import { AuthLayout } from "../AuthLayout/AuthLayout";
 import {
   Button,
@@ -41,6 +39,7 @@ import {
   matchingPasswords,
   passwordLength,
 } from "~/utils/verification/password";
+import { handleSignUp } from "~/utils/aws/signup";
 export const Signup = () => {
   return (
     <AuthLayout>
@@ -64,7 +63,7 @@ const SignupBody = () => {
       if (!email || !password) {
         return;
       }
-      await createUserWithEmailAndPassword(auth, email, password);
+      await handleSignUp(email, password);
     } finally {
       setLoading(false);
     }
@@ -168,7 +167,7 @@ const SignupBody = () => {
         <GoogleLogin />
         <Text>
           {LOGIN_QUESTION}
-          <Anchor href="/signup">{LOGIN_CTA}</Anchor>
+          <Anchor href="/login">{LOGIN_CTA}</Anchor>
         </Text>
       </Stack>
     </>

@@ -1,5 +1,3 @@
-import { signInWithEmailAndPassword } from "firebase/auth";
-import { auth } from "../../utils/Firebase/firebase";
 import { AuthLayout } from "../AuthLayout/AuthLayout";
 import {
   Button,
@@ -15,7 +13,7 @@ import {
   Divider,
   PasswordInput,
 } from "@mantine/core";
-import { Form } from "react-router-dom";
+import { Form, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import appLogo from "../../assets/logo-horizontal.svg";
 import { GoogleLogin } from "../Oauth/Google";
@@ -28,6 +26,8 @@ import {
   SIGNUP_CTA,
   SIGNUP_QUESTION,
 } from "~/utils/string";
+import { handleLogin } from "~/utils/aws/login";
+import { displayNotifications } from "~/utils/notifications/displayNotification";
 export const Login = () => {
   return (
     <AuthLayout>
@@ -40,6 +40,7 @@ const LoginBody = () => {
   const [loading, setLoading] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const navigate = useNavigate();
 
   const handleSubmit = async (e: React.SubmitEvent<HTMLFormElement>) => {
     try {
@@ -47,7 +48,12 @@ const LoginBody = () => {
       if (!email || !password) {
         return;
       }
-      await signInWithEmailAndPassword(auth, email, password);
+      const loginResult = await handleLogin(email, password);
+      if (loginResult?.success) {
+        navigate("/");
+      } else {
+        displayNotifications("Failed Login", "User failed to login", "red");
+      }
     } finally {
       setLoading(false);
     }

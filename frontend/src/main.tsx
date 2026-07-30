@@ -5,6 +5,7 @@ import { MantineProvider } from "@mantine/core";
 import "@mantine/core/styles.css";
 import "@mantine/notifications/styles.css";
 import "./index.css";
+import "./config/awsConfig.ts";
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <MantineProvider>
