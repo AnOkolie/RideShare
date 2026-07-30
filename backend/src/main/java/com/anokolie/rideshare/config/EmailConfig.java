@@ -4,7 +4,7 @@ import org.springframework.context.annotation.Bean;
 import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.ses.SesClient;
 
-public class EmailSendingConfig {
+public class EmailConfig {
     @Bean
     public SesClient sesClient() {
         return SesClient.builder()

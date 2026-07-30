@@ -1,10 +1,18 @@
-import { AppLayout } from "../AppLayout/AppLayout";
-import { Login } from "../Login/Login";
+import { Container, Stack } from "@mantine/core";
+import { HeroSection } from "./HeroSection";
+import { Mission } from "./Mission";
+import { DriverApplication } from "./DriverApplication";
 
 export const LandingPage = () => {
   return (
-    <AppLayout>
-      <Login />
-    </AppLayout>
+    <Container size="xl" py="xl">
+      <Stack gap="5rem">
+        <HeroSection />
+
+        <Mission />
+
+        <DriverApplication />
+      </Stack>
+    </Container>
   );
 };
