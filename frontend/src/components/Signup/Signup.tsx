@@ -179,7 +179,6 @@ type checklistProps = {
   pass1: string;
 };
 const PasswordChecklist = ({ pass1 }: checklistProps) => {
-  const [multiplier, setMultiplier] = useState(0);
   const [lenReq, setLenReq] = useState(false);
   const [caseReq, setCaseReq] = useState(false);
   const [numReq, setNumReq] = useState(false);

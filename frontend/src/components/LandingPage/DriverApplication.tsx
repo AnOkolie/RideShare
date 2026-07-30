@@ -1,4 +1,4 @@
-import { Button, Stack, Title, Text, Paper, Group } from "@mantine/core";
+import { Button, Stack, Title, Text, Paper } from "@mantine/core";
 import {
   APPLY_NOW_BTN,
   DRIVER_HEADER,
