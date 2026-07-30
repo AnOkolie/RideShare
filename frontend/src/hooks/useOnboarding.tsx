@@ -97,7 +97,6 @@ export const useOnboarding = () => {
     }
     return false;
   };
-  const log = () => {};
   return {
     form,
     updateAddress,
