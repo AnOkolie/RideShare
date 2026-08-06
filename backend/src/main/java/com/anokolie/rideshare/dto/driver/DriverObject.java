@@ -12,4 +12,6 @@ public class DriverObject {
     private double lng;
     @Getter @Setter
     private status status;
+    @Getter @Setter
+    private Boolean driverOnboarding;
 }

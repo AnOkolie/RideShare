@@ -1,6 +1,6 @@
 import { Card, Group, TextInput } from "@mantine/core";
-import type { EmergencyProps } from "~/types/Onboarding";
-import { PhoneInput } from "./PhoneInput";
+import type { EmergencyProps } from "~/types/Onboarding/Rider";
+import { PhoneInput } from "../Utilities/PhoneInput";
 export const EmergencyContact = ({
   form,
   updateEmergencyContact,

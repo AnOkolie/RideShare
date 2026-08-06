@@ -16,7 +16,6 @@ import {
 } from "@mantine/core";
 import { Form } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { GoogleLogin } from "../Oauth/Google";
 import appLogo from "../../assets/logo-horizontal.svg";
 import {
   OAUTH_SUBTEXT,
@@ -63,7 +62,7 @@ const SignupBody = () => {
       if (!email || !password) {
         return;
       }
-      await handleSignUp(email, password);
+      await handleSignUp(email, password, fName, lName);
     } finally {
       setLoading(false);
     }
@@ -164,7 +163,6 @@ const SignupBody = () => {
           </Button>
         </Form>
         <Divider label={OAUTH_SUBTEXT} labelPosition="center" />
-        <GoogleLogin />
         <Text>
           {LOGIN_QUESTION}
           <Anchor href="/login">{LOGIN_CTA}</Anchor>

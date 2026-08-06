@@ -5,7 +5,10 @@ import "@firebase-oss/ui-styles/dist.min.css";
 import "./App.css";
 import { AppLayout } from "./components/AppLayout/AppLayout";
 import { Signup } from "./components/Signup/Signup";
-import { OnBoarding } from "./components/Onboarding/OnBoarding";
+import { RiderOnBoarding } from "./components/Onboarding/RiderOnboarding";
+import { ProtectRoute } from "./components/AuthLayout/ProtectRoute";
+import { RoleChoice } from "./components/Onboarding/RoleChoice";
+import { DriverOnboarding } from "./components/Onboarding/DriverOnboarding";
 function App() {
   const router = createBrowserRouter([
     {
@@ -26,8 +29,21 @@ function App() {
       element: <Signup />,
     },
     {
-      path: "/onboarding",
-      element: <OnBoarding />,
+      element: <ProtectRoute />,
+      children: [
+        {
+          element: <RoleChoice />,
+          path: "/onboarding",
+        },
+      ],
+    },
+    {
+      element: <RiderOnBoarding />,
+      path: "/rider",
+    },
+    {
+      element: <DriverOnboarding />,
+      path: "/driver",
     },
   ]);
   return <RouterProvider router={router} />;

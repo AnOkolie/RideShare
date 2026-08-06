@@ -12,9 +12,10 @@ type User = {
 
 type UserStore = {
   user: User | null;
+  token: string;
 
   setUser: (user: User) => void;
-
+  setToken: (token: string) => void;
   updateUser: (updates: Partial<User>) => void;
 
   clearUser: () => void;
@@ -24,8 +25,10 @@ export const useUserStore = create<UserStore>()(
   persist(
     (set) => ({
       user: null,
+      token: "",
 
       setUser: (user) => set({ user }),
+      setToken: (newToken) => set({ token: newToken }),
 
       updateUser: (updates) =>
         set((state) => ({

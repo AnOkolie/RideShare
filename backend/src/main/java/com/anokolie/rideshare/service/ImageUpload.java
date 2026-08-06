@@ -2,6 +2,7 @@ package com.anokolie.rideshare.service;
 
 import com.anokolie.rideshare.config.S3Config;
 import org.springframework.context.annotation.Bean;
+import org.springframework.stereotype.Service;
 import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 import software.amazon.awssdk.services.s3.presigner.S3Presigner;
@@ -9,8 +10,11 @@ import software.amazon.awssdk.services.s3.presigner.model.PutObjectPresignReques
 import com.anokolie.rideshare.config.S3Config.*;
 import java.time.Duration;
 
+@Service
 public class ImageUpload {
+
     private final S3Config imageConfig;
+
     public ImageUpload(S3Config imageConfig){
         this.imageConfig = imageConfig;
     }

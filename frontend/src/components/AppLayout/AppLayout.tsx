@@ -1,15 +1,4 @@
-import {
-  Stack,
-  Text,
-  Group,
-  Button,
-  AppShell,
-  Pill,
-  HoverCard,
-  Divider,
-  Image,
-  Flex,
-} from "@mantine/core";
+import { Group, Button, AppShell, Pill, Image, Flex } from "@mantine/core";
 import {
   DRIVER_LOGIN_TEXT,
   GET_A_RIDE_TEXT,
@@ -17,8 +6,6 @@ import {
   LOGIN_TEXT,
   RIDER_LOGIN_TEXT,
   SAFETY_TEXT,
-  SIGN_UP_AS_A_DRIVER,
-  SIGN_UP_AS_A_RIDER,
   SIGNUP_TEXT,
 } from "~/utils/string";
 import { useHover } from "@mantine/hooks";
@@ -32,8 +19,6 @@ export const AppLayout = () => {
   const { hovered: helpHover, ref: helpRef } = useHover();
   const { hovered: riderHover, ref: riderRef } = useHover();
   const { hovered: driverHover, ref: driverRef } = useHover();
-  const { hovered: driverTextHover, ref: driverTextRef } = useHover();
-  const { hovered: riderTextHover, ref: riderTextRef } = useHover();
   const navigate = useNavigate();
   return (
     <AppShell padding={{ base: 10, sm: 15, lg: "xl" }} withBorder>
@@ -79,41 +64,18 @@ export const AppLayout = () => {
                 variant="transparent"
                 ref={loginRef}
                 c={loginHover ? "cyan" : "black"}
+                onClick={() => navigate("/login")}
               >
                 {LOGIN_TEXT}
               </Button>
-              <HoverCard>
-                <HoverCard.Target>
-                  <Button
-                    variant="transparent"
-                    ref={signupRef}
-                    c={signupHover ? "cyan" : "black"}
-                  >
-                    {SIGNUP_TEXT}
-                  </Button>
-                </HoverCard.Target>
-                <HoverCard.Dropdown>
-                  <Stack>
-                    <Text
-                      onClick={() => navigate("/login")}
-                      ref={driverTextRef}
-                      style={{ cursor: "pointer" }}
-                      c={driverTextHover ? "cyan" : "black"}
-                    >
-                      {SIGN_UP_AS_A_DRIVER}
-                    </Text>
-                    <Divider />
-                    <Text
-                      ref={riderTextRef}
-                      onClick={() => navigate("/login")}
-                      style={{ cursor: "pointer" }}
-                      c={riderTextHover ? "cyan" : "black"}
-                    >
-                      {SIGN_UP_AS_A_RIDER}
-                    </Text>
-                  </Stack>
-                </HoverCard.Dropdown>
-              </HoverCard>
+              <Button
+                variant="transparent"
+                ref={signupRef}
+                c={signupHover ? "cyan" : "black"}
+                onClick={() => navigate("/login")}
+              >
+                {SIGNUP_TEXT}
+              </Button>
             </Flex>
           </Group>
         </Group>

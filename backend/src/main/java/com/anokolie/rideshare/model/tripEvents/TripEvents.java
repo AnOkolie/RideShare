@@ -8,7 +8,7 @@ import jakarta.persistence.Id;
 import org.hibernate.annotations.CreationTimestamp;
 import java.time.LocalDateTime;
 
-@Entity
+
 @Table(name = "trip_events")
 public class TripEvents {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)

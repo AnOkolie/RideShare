@@ -1,5 +1,5 @@
 export type onboardingValues = {
-  user: {
+  rider: {
     publicName: string;
 
     phone: string;
@@ -64,7 +64,7 @@ export type UserProps = {
 };
 
 export const defaultOnboarding = {
-  user: {
+  rider: {
     publicName: "",
 
     phone: "",
@@ -90,8 +90,8 @@ export const defaultOnboarding = {
 
 export type pagesStructure = {
   element: React.ReactNode;
-  title: string;
-  subtitle: string;
+  title?: string;
+  subtitle?: string;
   optional: boolean;
   key: keyof onboardingValues;
   verificationFunction: (

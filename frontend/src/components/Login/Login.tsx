@@ -16,7 +16,6 @@ import {
 import { Form, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import appLogo from "../../assets/logo-horizontal.svg";
-import { GoogleLogin } from "../Oauth/Google";
 import {
   FORGOT_PASSWORD_TEXT,
   KEEP_SIGNED_IN_TEXT,
@@ -49,8 +48,9 @@ const LoginBody = () => {
         return;
       }
       const loginResult = await handleLogin(email, password);
+      console.log(loginResult);
       if (loginResult?.success) {
-        navigate("/");
+        navigate("/onboarding");
       } else {
         displayNotifications("Failed Login", "User failed to login", "red");
       }
@@ -98,7 +98,6 @@ const LoginBody = () => {
           </Button>
         </Form>
         <Divider label={OAUTH_SUBTEXT} labelPosition="center" />
-        <GoogleLogin />
         <Text>
           {SIGNUP_QUESTION}
           <Anchor href="/signup">{SIGNUP_CTA}</Anchor>

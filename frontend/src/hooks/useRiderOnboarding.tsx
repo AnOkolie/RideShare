@@ -1,8 +1,8 @@
 import { useState } from "react";
-import type { onboardingValues } from "~/types/Onboarding";
-import { defaultOnboarding } from "~/types/Onboarding";
+import type { onboardingValues } from "~/types/Onboarding/Rider";
+import { defaultOnboarding } from "~/types/Onboarding/Rider";
 
-export const useOnboarding = () => {
+export const useRiderOnboarding = () => {
   const [form, setForm] = useState<onboardingValues>(defaultOnboarding);
   const updatePayment = (
     key: keyof onboardingValues["payment"],
@@ -42,14 +42,14 @@ export const useOnboarding = () => {
   };
 
   type updateAvatarType = "profilePicture";
-  const updateUser = <K extends keyof onboardingValues["user"]>(
+  const updateUser = <K extends keyof onboardingValues["rider"]>(
     key: K,
     value: string,
   ) => {
     setForm((prev) => ({
       ...prev,
       user: {
-        ...prev.user,
+        ...prev.rider,
         [key]: value,
       },
     }));
@@ -59,7 +59,7 @@ export const useOnboarding = () => {
     setForm((prev) => ({
       ...prev,
       user: {
-        ...prev.user,
+        ...prev.rider,
         [key]: value,
       },
     }));

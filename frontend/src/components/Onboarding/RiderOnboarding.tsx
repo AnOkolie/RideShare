@@ -19,16 +19,19 @@ import {
   PROFILE_HEADER,
   PROFILE_SUBTITLE,
 } from "~/utils/string";
-import { UserInfo } from "./UserInfo";
-import { EmergencyContact } from "./EmergencyContact";
-import { HomeAddress } from "./HomeAddress";
-import { PaymentInfo } from "./PaymentInfo";
+import { UserInfo } from "./RiderOnboarding/UserInfo";
+import { EmergencyContact } from "./RiderOnboarding/EmergencyContact";
+import { HomeAddress } from "./RiderOnboarding/HomeAddress";
+import { PaymentInfo } from "./RiderOnboarding/PaymentInfo";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useOnboarding } from "~/hooks/useOnboarding";
-import type { onboardingValues, pagesStructure } from "~/types/Onboarding";
+import { useRiderOnboarding } from "~/hooks/useRiderOnboarding";
+import type {
+  onboardingValues,
+  pagesStructure,
+} from "~/types/Onboarding/Rider";
 
-export const OnBoarding = () => {
+export const RiderOnBoarding = () => {
   const [pageNumber, setPageNumber] = useState(0);
   const {
     form,
@@ -38,7 +41,7 @@ export const OnBoarding = () => {
     updatePayment,
     updateAvatar,
     isCurrentPageValid,
-  } = useOnboarding();
+  } = useRiderOnboarding();
   const pages: pagesStructure[] = [
     {
       element: (
@@ -51,7 +54,7 @@ export const OnBoarding = () => {
       title: PROFILE_HEADER,
       subtitle: PROFILE_SUBTITLE,
       optional: false,
-      key: "user",
+      key: "rider",
       verificationFunction: (
         key: keyof onboardingValues,
         skip: boolean,
