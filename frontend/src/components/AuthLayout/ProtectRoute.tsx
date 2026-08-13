@@ -1,18 +1,16 @@
-import { Loader, Box } from "@mantine/core";
+import { Loader } from "@mantine/core";
 import { useAuth } from "~/hooks/useAuth";
 import { Outlet, Navigate } from "react-router-dom";
+import { useEffect } from "react";
 export const ProtectRoute = () => {
-  const { loading, isAuthenticated } = useAuth();
+  const { loading, isAuthenticated, checkAuth } = useAuth();
+  useEffect(() => {
+    checkAuth();
+  }, []);
   return (
-    <Box
-      style={{
-        alignContent: "center",
-        justifyItems: "center",
-      }}
-    >
+    <>
       {loading && <Loader />}
-      {!isAuthenticated && <Navigate to={"/login"} />}
-      <Outlet />
-    </Box>
+      {isAuthenticated ? <Outlet /> : <Navigate to={"/login"} />}
+    </>
   );
 };

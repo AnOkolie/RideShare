@@ -1,4 +1,14 @@
-import { Paper, Box, Button, Group } from "@mantine/core";
+import {
+  Paper,
+  Box,
+  Button,
+  Group,
+  Stepper,
+  Divider,
+  Transition,
+  Text,
+  Stack,
+} from "@mantine/core";
 import { BackgroundCheck } from "./DriverOnboarding/BackgroundCheck";
 import { DriverLicense } from "./DriverOnboarding/DriverLicense";
 import { HomeAddress } from "./DriverOnboarding/HomeAddress";
@@ -10,9 +20,14 @@ import { WelcomePage } from "./DriverOnboarding/WelcomePage";
 import { useState } from "react";
 import type { onboardingValues } from "~/types/Onboarding/Driver";
 import { useDriverOnboarding } from "~/hooks/useDriverOnboarding";
+import type { pagesStructure } from "~/types/Onboarding/Driver";
+import { useEffect } from "react";
+import { useSubmit } from "react-router-dom";
 export const DriverOnboarding = () => {
   const {
     form,
+    disableBtn,
+    setDisabelBtn,
     updateAddress,
     updateDriver,
     updateProfilePhoto,
@@ -23,14 +38,11 @@ export const DriverOnboarding = () => {
     isCurrentPageValid,
   } = useDriverOnboarding();
 
-  const pages = [
-    {
-      elemnt: <WelcomePage />,
-    },
+  const pages: pagesStructure[] = [
     {
       element: <PersonalInfo form={form} updateDriver={updateDriver} />,
       optional: false,
-      key: "rider",
+      key: "driver",
       verificationFunction: (
         key: keyof onboardingValues,
         skip: boolean,
@@ -43,7 +55,7 @@ export const DriverOnboarding = () => {
     {
       element: <HomeAddress form={form} updateAddress={updateAddress} />,
       optional: true,
-      key: "emergencyContact",
+      key: "address",
       optionalFields: [],
       verificationFunction: (
         key: keyof onboardingValues,
@@ -56,7 +68,7 @@ export const DriverOnboarding = () => {
     {
       element: <DriverLicense form={form} updateLicense={updateLicense} />,
       optional: false,
-      key: "home",
+      key: "license",
       optionalFields: [],
       verificationFunction: (
         key: keyof onboardingValues,
@@ -69,7 +81,7 @@ export const DriverOnboarding = () => {
     {
       element: <VehicleInfo form={form} updateVehicle={updateVehicle} />,
       optional: true,
-      key: "payment",
+      key: "vehicle",
       optionalFields: [],
       verificationFunction: (
         key: keyof onboardingValues,
@@ -84,7 +96,7 @@ export const DriverOnboarding = () => {
         <VehicleInsurance form={form} updateInsurance={updateInsurance} />
       ),
       optional: true,
-      key: "payment",
+      key: "insurance",
       optionalFields: [],
       verificationFunction: (
         key: keyof onboardingValues,
@@ -99,7 +111,7 @@ export const DriverOnboarding = () => {
         <ProfilePhoto form={form} updateProfilePhoto={updateProfilePhoto} />
       ),
       optional: true,
-      key: "payment",
+      key: "profile",
       optionalFields: [],
       verificationFunction: (
         key: keyof onboardingValues,
@@ -114,7 +126,7 @@ export const DriverOnboarding = () => {
         <BackgroundCheck form={form} updateBackground={updateBackground} />
       ),
       optional: true,
-      key: "payment",
+      key: "background",
       optionalFields: [],
       verificationFunction: (
         key: keyof onboardingValues,
@@ -125,15 +137,24 @@ export const DriverOnboarding = () => {
       },
     },
   ];
+  const submit = useSubmit();
   const handlePrev = () => {
-    setPageNum(pageNum - 1);
+    setPageNumber(pageNumber - 1);
   };
   const handleNext = () => {
-    if (pageNum < pages.length) {
-      setPageNum(pageNum + 1);
+    if (pageNumber < pages.length) {
+      setPageNumber(pageNumber + 1);
     }
   };
-  const [pageNum, setPageNum] = useState(0);
+  const [pageNumber, setPageNumber] = useState(-1);
+  useEffect(() => {
+    if (pageNumber === pages.length) {
+      const form = new FormData();
+      form.append("status", "true");
+      form.append("onboarding-type", "driver");
+      submit(form, { method: "PATCH" });
+    }
+  }, [pageNumber]);
   return (
     <Box
       style={{
@@ -143,13 +164,59 @@ export const DriverOnboarding = () => {
         justifyContent: "center",
       }}
     >
-      <Paper>{pages[pageNum].element}</Paper>
-      <Group justify="space-between">
-        <Button onClick={handlePrev}>Back</Button>
-        <Button onClick={handleNext}>
-          {pageNum < pages.length - 1 ? "Next" : "Finish"}
-        </Button>
-      </Group>
+      <Paper withBorder radius="lg" shadow="sm" p="xl" maw={700} w="100%">
+        <Group>
+          <Stack>
+            <Text>Driver Application</Text>
+            <Stepper
+              active={pageNumber}
+              size="sm"
+              iconSize={36}
+              p={"md"}
+              orientation="vertical"
+              styles={{
+                step: { padding: "8px 4px" }, // Compact step padding
+                stepIcon: { width: 32, height: 32 }, // Smaller icons
+              }}
+            >
+              <Stepper.Step description="Welcome" />
+              <Stepper.Step description="Personal Info" />
+              <Stepper.Step description="Home Address" />
+              <Stepper.Step description="Driver License" />
+              <Stepper.Step description="Vehicle Information" />
+              <Stepper.Step description="Vehicle Insurance" />
+              <Stepper.Step description="Profile picture" />
+              <Stepper.Step description="Background" />
+            </Stepper>
+          </Stack>
+          <Divider orientation="vertical" />
+          <Transition mounted transition="fade-left" duration={250} keepMounted>
+            {(styles) => (
+              <Box key={pageNumber} style={styles} p={"md"}>
+                {pageNumber < 0 ? <WelcomePage /> : pages[pageNumber].element}
+              </Box>
+            )}
+          </Transition>
+          <Group justify="space-between">
+            <Button onClick={handlePrev}>Back</Button>
+            <Button
+              onClick={handleNext}
+              disabled={
+                disableBtn ||
+                (pageNumber > 0
+                  ? pages[pageNumber].verificationFunction(
+                      pages[pageNumber].key,
+                      pages[pageNumber].optional,
+                      pages[pageNumber].optionalFields,
+                    )
+                  : false)
+              }
+            >
+              {pageNumber < pages.length - 1 ? "Next" : "Finish"}
+            </Button>
+          </Group>
+        </Group>
+      </Paper>
     </Box>
   );
 };

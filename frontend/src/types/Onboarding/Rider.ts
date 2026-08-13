@@ -108,3 +108,12 @@ export const optionalFields = {
   payment: [],
   emergencyContact: [],
 };
+
+export type riderProfile = {
+  riderOnboarding: boolean;
+  totalTrips: number;
+  rating: number;
+  id: String;
+  firstName: string;
+  lastName: string;
+};

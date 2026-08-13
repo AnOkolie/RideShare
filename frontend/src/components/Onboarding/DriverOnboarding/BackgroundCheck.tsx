@@ -17,7 +17,7 @@ export const BackgroundCheck = ({
       <Text>{BACKGROUND_CONSENT_TEXT}</Text>
       <Checkbox
         defaultChecked={form.background.consent}
-        onChange={(e) => updateBackground("consent", e.target.value)}
+        onChange={(e) => updateBackground("consent", e.target.checked)}
       />
     </Stack>
   );

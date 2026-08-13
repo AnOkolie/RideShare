@@ -22,6 +22,7 @@ public class DriverProfile {
     private Long id;
     @OneToOne
     @JoinColumn(name="user_id")
+    @MapsId
     private User user;
     @Enumerated(EnumType.STRING)
     private ApprovalStatus approvalStatus;

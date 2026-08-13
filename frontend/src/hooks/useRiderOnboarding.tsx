@@ -16,6 +16,7 @@ export const useRiderOnboarding = () => {
       },
     }));
   };
+
   const updateEmergencyContact = (
     key: keyof onboardingValues["emergencyContact"],
     value: string,
@@ -48,7 +49,7 @@ export const useRiderOnboarding = () => {
   ) => {
     setForm((prev) => ({
       ...prev,
-      user: {
+      rider: {
         ...prev.rider,
         [key]: value,
       },

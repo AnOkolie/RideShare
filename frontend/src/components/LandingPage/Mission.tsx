@@ -35,7 +35,7 @@ export const Mission = () => {
       <Title>{MISSION_TXT}</Title>
       <SimpleGrid cols={3}>
         {arrayMissions.map((entry) => (
-          <Card withBorder radius="md" h="100%">
+          <Card withBorder radius="md" h="100%" key={entry.text1}>
             <Stack>
               <Group>
                 <Text>{entry.title}</Text>

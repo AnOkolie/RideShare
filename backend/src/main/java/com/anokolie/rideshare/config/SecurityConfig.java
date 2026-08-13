@@ -13,12 +13,12 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain security(HttpSecurity http) throws Exception {
-        http.csrf(csrf -> csrf.disable())
+        http.cors(Customizer.withDefaults()).csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/public/**").permitAll()
                         .anyRequest().authenticated()
                 )
-                .oauth2ResourceServer(oauth ->
+                .oauth2ResourceServer(  oauth ->
                         oauth.jwt(Customizer.withDefaults())
                 );
         return http.build();

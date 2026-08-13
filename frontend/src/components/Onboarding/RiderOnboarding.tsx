@@ -8,6 +8,7 @@ import {
   Stepper,
   Transition,
   Divider,
+  Stack,
 } from "@mantine/core";
 import {
   ADDRESS_HEADER,
@@ -23,8 +24,8 @@ import { UserInfo } from "./RiderOnboarding/UserInfo";
 import { EmergencyContact } from "./RiderOnboarding/EmergencyContact";
 import { HomeAddress } from "./RiderOnboarding/HomeAddress";
 import { PaymentInfo } from "./RiderOnboarding/PaymentInfo";
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { useNavigate, useSubmit } from "react-router-dom";
 import { useRiderOnboarding } from "~/hooks/useRiderOnboarding";
 import type {
   onboardingValues,
@@ -33,6 +34,7 @@ import type {
 
 export const RiderOnBoarding = () => {
   const [pageNumber, setPageNumber] = useState(0);
+  const [finish, setFinish] = useState(false);
   const {
     form,
     updateEmergencyContact,
@@ -115,18 +117,31 @@ export const RiderOnBoarding = () => {
       },
     },
   ];
+  const submit = useSubmit();
   const PAGES_LENGTH = pages.length - 1;
   const navigate = useNavigate();
   const handleNext = () => {
     if (pageNumber === PAGES_LENGTH) {
-      navigate("/");
+      setFinish(true);
       return;
     }
+    if (pageNumber > PAGES_LENGTH) return;
     setPageNumber(pageNumber + 1);
   };
   const handlePrev = () => {
     setPageNumber(pageNumber - 1);
   };
+  useEffect(() => {
+    if (finish) {
+      const form = new FormData();
+      form.append("status", "true");
+      form.append("onboarding-type", "rider");
+      submit(form, { method: "PATCH" });
+      //if successful navigate
+      navigate("/rider");
+      return;
+    }
+  }, [pageNumber, finish]);
   return (
     <Box
       style={{
@@ -137,46 +152,64 @@ export const RiderOnBoarding = () => {
       }}
     >
       <Paper withBorder radius="lg" shadow="sm" p="xl" maw={700} w="100%">
-        <Title order={2}>{pages[pageNumber].title}</Title>
-
-        <Text c="dimmed">{pages[pageNumber].subtitle}</Text>
-        <Stepper active={pageNumber} size="md" iconSize={36} p={"md"}>
-          <Stepper.Step label="Profile" />
-
-          <Stepper.Step label="Emergency" />
-
-          <Stepper.Step label="Address" />
-
-          <Stepper.Step label="Payment" />
-        </Stepper>
-        <Divider p={"md"} />
-        <Transition mounted transition="fade-left" duration={250} keepMounted>
-          {(styles) => (
-            <Box key={pageNumber} style={styles} p={"md"}>
-              {pages[pageNumber].element}
-            </Box>
-          )}
-        </Transition>
-        <Divider p={"md"} />
-        <Group justify="space-between" mt="xl">
-          <Button
-            variant="subtle"
-            disabled={pageNumber === 0}
-            onClick={handlePrev}
+        <Group wrap="nowrap">
+          <Stepper
+            active={pageNumber}
+            size="md"
+            iconSize={36}
+            p={"md"}
+            orientation="vertical"
           >
-            Back
-          </Button>
+            <Stepper.Step label="Profile" />
 
-          <Button
-            onClick={handleNext}
-            disabled={pages[pageNumber].verificationFunction(
-              pages[pageNumber].key,
-              pages[pageNumber].optional,
-              pages[pageNumber].optionalFields,
-            )}
-          >
-            {pageNumber === PAGES_LENGTH ? "Finish" : "Continue"}
-          </Button>
+            <Stepper.Step label="Emergency" />
+
+            <Stepper.Step label="Address" />
+
+            <Stepper.Step label="Payment" />
+          </Stepper>
+          <Group>
+            <Divider size={"md"} orientation="vertical" />
+            <Stack>
+              <Title order={2}>{pages[pageNumber].title}</Title>
+
+              <Text c="dimmed">{pages[pageNumber].subtitle}</Text>
+              <Divider />
+              <Transition
+                mounted
+                transition="fade-left"
+                duration={250}
+                keepMounted
+              >
+                {(styles) => (
+                  <Box key={pageNumber} style={styles} p={"md"}>
+                    {pages[pageNumber].element}
+                  </Box>
+                )}
+              </Transition>
+
+              <Group justify="space-between" mt="xl">
+                <Button
+                  variant="subtle"
+                  disabled={pageNumber === 0}
+                  onClick={handlePrev}
+                >
+                  Back
+                </Button>
+
+                <Button
+                  onClick={handleNext}
+                  disabled={pages[pageNumber].verificationFunction(
+                    pages[pageNumber].key,
+                    pages[pageNumber].optional,
+                    pages[pageNumber].optionalFields,
+                  )}
+                >
+                  {pageNumber === PAGES_LENGTH ? "Finish" : "Continue"}
+                </Button>
+              </Group>
+            </Stack>
+          </Group>
         </Group>
       </Paper>
     </Box>

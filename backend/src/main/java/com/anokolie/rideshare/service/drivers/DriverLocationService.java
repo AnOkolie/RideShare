@@ -1,5 +1,6 @@
 package com.anokolie.rideshare.service.drivers;
 
+import com.anokolie.rideshare.entity.DriverProfile;
 import com.anokolie.rideshare.model.drivers.Driver;
 import com.anokolie.rideshare.repository.DriverRepository;
 import com.anokolie.rideshare.util.GeometryUtil;
@@ -23,7 +24,7 @@ public class DriverLocationService {
             double longitude
     ) {
 
-        Driver driver = driverRepository
+        DriverProfile driver = driverRepository
                 .findById(driverId)
                 .orElseThrow(
                         () -> new RuntimeException("Driver not found")
@@ -36,7 +37,7 @@ public class DriverLocationService {
         );
 
 
-        driver.setLocation(point);
+        driver.setCurrentLocation(point);
 
         driverRepository.save(driver);
     }

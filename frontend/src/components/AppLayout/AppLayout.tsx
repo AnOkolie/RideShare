@@ -1,4 +1,4 @@
-import { Group, Button, AppShell, Pill, Image, Flex } from "@mantine/core";
+import { Group, Button, AppShell, Pill, Flex, Text } from "@mantine/core";
 import {
   DRIVER_LOGIN_TEXT,
   GET_A_RIDE_TEXT,
@@ -10,7 +10,7 @@ import {
 } from "~/utils/string";
 import { useHover } from "@mantine/hooks";
 import { Outlet, useNavigate } from "react-router-dom";
-import appIcon from "../../assets/logo-icon.svg";
+import { AppLogo } from "../Images/AppLogo";
 
 export const AppLayout = () => {
   const { hovered: loginHover, ref: loginRef } = useHover();
@@ -24,7 +24,7 @@ export const AppLayout = () => {
     <AppShell padding={{ base: 10, sm: 15, lg: "xl" }} withBorder>
       <AppShell.Header>
         <Group justify="space-between" align="center" h="100%" px="md">
-          <Image src={appIcon} style={{ width: "70px", height: "70px" }} />
+          <Text c="rideshare">RideShare</Text>
           <Group gap={"md"}>
             <Pill size="md" c={"cyan"}>
               {GET_A_RIDE_TEXT}

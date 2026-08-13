@@ -44,7 +44,6 @@ export const VehicleInfo = ({ form, updateVehicle }: VehicleProps) => {
         />
         <NumberInput
           label="# of Seats"
-          description="Number of seats"
           value={form.vehicle.seats}
           onChange={(e) => updateVehicle("seats", e)}
         />

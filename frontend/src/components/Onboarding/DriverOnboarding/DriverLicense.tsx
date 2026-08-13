@@ -31,7 +31,7 @@ export const DriverLicense = ({ updateLicense }: LicenseProps) => {
   };
 
   const handleNext = () => {
-    if (pageNum < pageNum) {
+    if (pageNum < pages.length) {
       setPageNum(pageNum + 1);
     }
   };
@@ -44,7 +44,7 @@ export const DriverLicense = ({ updateLicense }: LicenseProps) => {
           Back
         </Button>
         <Button onClick={handleNext}>
-          {pageNum < pages.length ? "Next" : "Finish"}
+          {pageNum < pages.length - 1 ? "Next" : "Finish"}
         </Button>
       </Group>
     </Stack>
@@ -76,7 +76,7 @@ const FrontUpload = ({ updateLicense, ...props }: UploadProps) => {
 const BackUpload = ({ updateLicense, ...props }: UploadProps) => {
   return (
     <Stack>
-      <Title>{LICENSE_FRONT_TEXT}</Title>
+      <Title>Behind</Title>
       <Dropzone
         onDrop={(files) => updateLicense("front", files[0])}
         onReject={(files) => console.log("rejected files", files)}

@@ -1,4 +1,5 @@
 import { signUp, confirmSignUp } from "aws-amplify/auth";
+import { getUser } from "~/api/syncUser";
 
 export async function handleSignUp(
   email: string,
@@ -15,6 +16,8 @@ export async function handleSignUp(
       },
     });
     console.log(output);
+    // useUserStore.getState().setToken(token);
+    getUser();
     // Cognito sends a verification code by email — prompt the user for it next
   } catch (err) {
     console.error("Sign up error:", err);

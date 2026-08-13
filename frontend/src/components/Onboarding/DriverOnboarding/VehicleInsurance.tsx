@@ -1,5 +1,5 @@
 import { Title, Stack } from "@mantine/core";
-import { DatePicker } from "@mantine/dates";
+import { DatePickerInput } from "@mantine/dates";
 import { Dropzone, IMAGE_MIME_TYPE } from "@mantine/dropzone";
 import type { InsuranceProps } from "~/types/Onboarding/Driver";
 import { INSURANCE_HEADER_TEXT } from "~/utils/string";
@@ -15,7 +15,7 @@ export const VehicleInsurance = ({ form, updateInsurance }: InsuranceProps) => {
         accept={IMAGE_MIME_TYPE}
         multiple={false}
       />
-      <DatePicker
+      <DatePickerInput
         value={form.insurance.expiration}
         onChange={(e) => updateInsurance("expiration", e)}
       />

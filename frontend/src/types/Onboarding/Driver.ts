@@ -2,7 +2,7 @@ export type onboardingValues = {
   driver: {
     name: string;
     phone: string;
-    DoB: string;
+    DoB: string | null;
   };
   address: {
     address: string;
@@ -10,7 +10,7 @@ export type onboardingValues = {
   license: {
     front: File | null;
     back: File | null;
-    expiry: string;
+    expiry: string | null;
     number: string;
   };
   vehicle: {
@@ -23,7 +23,7 @@ export type onboardingValues = {
   };
   insurance: {
     insurance: string;
-    expiration: string;
+    expiration: string | null;
   };
   profile: {
     profilePicture: File | null;
@@ -37,7 +37,7 @@ export const defaultOnboarding = {
   driver: {
     name: "",
     phone: "",
-    DoB: "",
+    DoB: null,
   },
   address: {
     address: "",
@@ -45,7 +45,7 @@ export const defaultOnboarding = {
   license: {
     front: null,
     back: null,
-    expiry: "",
+    expiry: null,
     number: "",
   },
   vehicle: {
@@ -58,7 +58,7 @@ export const defaultOnboarding = {
   },
   insurance: {
     insurance: "",
-    expiration: "",
+    expiration: null,
   },
   profile: {
     profilePicture: null,
@@ -75,7 +75,7 @@ export type ProfilePhotoProps = {
 
 export type BackgroundCheckProps = {
   form: onboardingValues;
-  updateBackground: (key: "consent", value: string) => void;
+  updateBackground: (key: "consent", value: boolean) => void;
 };
 
 export type DriverProps = {
@@ -111,4 +111,26 @@ export type LicenseProps = {
     key: "front" | "back" | "expiry" | "number",
     value: string | File | null,
   ) => void;
+};
+
+export type pagesStructure = {
+  element: React.ReactNode;
+  title?: string;
+  subtitle?: string;
+  optional: boolean;
+  key: keyof onboardingValues;
+  verificationFunction: (
+    key: keyof onboardingValues,
+    skip: boolean,
+    optionalFields: string[],
+  ) => boolean;
+  optionalFields: string[];
+};
+
+export type driverProfile = {
+  fullName: string;
+  lat: number;
+  lng: number;
+  status: "accepted" | "declined";
+  driverOnboarding: boolean;
 };

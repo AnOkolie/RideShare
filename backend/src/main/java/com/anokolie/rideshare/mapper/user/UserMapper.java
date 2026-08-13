@@ -13,7 +13,6 @@ public class UserMapper {
         newResponse.setId(user.getId());
         newResponse.setFirstName(user.getFirstName());
         newResponse.setLastName(user.getLastName());
-        newResponse.setRole(user.getRole());
         return newResponse;
     }
 }

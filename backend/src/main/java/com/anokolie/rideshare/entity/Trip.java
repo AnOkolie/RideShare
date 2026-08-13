@@ -18,7 +18,7 @@ public class Trip extends BaseEntity {
     @GeneratedValue(strategy=GenerationType.IDENTITY)
     private Long id;
     @ManyToOne
-    @JoinColumn(name="rider_id",referencedColumnName="userId")
+    @JoinColumn(name="rider_id",referencedColumnName="id")
     private RiderProfile rider;
     @ManyToOne
     @JoinColumn(name="driver_id",referencedColumnName="user_id")

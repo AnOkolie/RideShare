@@ -1,16 +1,32 @@
 import { signIn } from "aws-amplify/auth";
 import { getAccessToken } from "./token";
+import { getUser } from "~/api/syncUser";
+import { useUserStore } from "~/zustand/userStore";
+import { displayNotifications } from "~/utils/notifications/displayNotification";
 
 export async function handleLogin(email: string, password: string) {
   try {
     const output = await signIn({ username: email, password });
-    console.log(output);
     if (output.isSignedIn) {
       const token = await getAccessToken();
       if (token) {
         localStorage.setItem("accessToken", token);
+        useUserStore.getState().setToken(token);
       }
-      console.log("is signed in");
+      const user = await getUser();
+      const setUser = useUserStore.getState().setUser;
+      console.log("user:", user);
+      if (user.error) {
+        displayNotifications(
+          "Login Failure",
+          "Failed to login, verify your credentials",
+          "Red",
+        );
+        return;
+      }
+      if (user.data) {
+        setUser(user.data ?? null);
+      }
       // proceed to authenticated app state
       return { success: true };
     }

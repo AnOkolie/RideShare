@@ -4,6 +4,7 @@ import { defaultOnboarding } from "~/types/Onboarding/Driver";
 
 export const useDriverOnboarding = () => {
   const [form, setForm] = useState<onboardingValues>(defaultOnboarding);
+  const [disableBtn, setDisabelBtn] = useState(false);
   const updateLicense = (
     key: keyof onboardingValues["license"],
     value: string | File | null,
@@ -22,7 +23,7 @@ export const useDriverOnboarding = () => {
   ) => {
     setForm((prev) => ({
       ...prev,
-      payment: {
+      insurance: {
         ...prev.insurance,
         [key]: value,
       },
@@ -30,12 +31,11 @@ export const useDriverOnboarding = () => {
   };
   const updateBackground = (
     key: keyof onboardingValues["background"],
-    value: string,
+    value: boolean,
   ) => {
     setForm((prev) => ({
       ...prev,
-      payment: {
-        ...prev.background,
+      background: {
         [key]: value,
       },
     }));
@@ -46,8 +46,8 @@ export const useDriverOnboarding = () => {
   ) => {
     setForm((prev) => ({
       ...prev,
-      payment: {
-        ...prev.insurance,
+      profile: {
+        ...prev.profile,
         [key]: value,
       },
     }));
@@ -58,7 +58,7 @@ export const useDriverOnboarding = () => {
   ) => {
     setForm((prev) => ({
       ...prev,
-      emergencyContact: {
+      vehicle: {
         ...prev.vehicle,
         [key]: value,
       },
@@ -83,7 +83,7 @@ export const useDriverOnboarding = () => {
   ) => {
     setForm((prev) => ({
       ...prev,
-      user: {
+      driver: {
         ...prev.driver,
         [key]: value,
       },
@@ -100,7 +100,6 @@ export const useDriverOnboarding = () => {
     for (const term of keys) {
       const value = form[key][term];
 
-      if (term in ["profilePicture"]) console.log("equal");
       if (
         !skip &&
         (value === null || value === "") &&
@@ -124,6 +123,8 @@ export const useDriverOnboarding = () => {
   };
   return {
     form,
+    disableBtn,
+    setDisabelBtn,
     updateAddress,
     updateDriver,
     updateProfilePhoto,
