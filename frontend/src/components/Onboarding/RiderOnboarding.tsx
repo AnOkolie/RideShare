@@ -1,6 +1,7 @@
 import {
   Text,
   Box,
+  Card,
   Group,
   Button,
   Title,
@@ -151,65 +152,75 @@ export const RiderOnBoarding = () => {
         justifyContent: "center",
       }}
     >
-      <Paper withBorder radius="lg" shadow="sm" p="xl" maw={700} w="100%">
+      <Paper
+        withBorder
+        radius="lg"
+        shadow="sm"
+        p="xl"
+        maw={700}
+        w="100%"
+        bg="#e8f5e8"
+      >
         <Group wrap="nowrap">
-          <Stepper
-            active={pageNumber}
-            size="md"
-            iconSize={36}
-            p={"md"}
-            orientation="vertical"
-          >
-            <Stepper.Step label="Profile" />
-
-            <Stepper.Step label="Emergency" />
-
-            <Stepper.Step label="Address" />
-
-            <Stepper.Step label="Payment" />
-          </Stepper>
-          <Group>
-            <Divider size={"md"} orientation="vertical" />
+          <Card withBorder radius={"md"} bg="rideshare.1">
             <Stack>
-              <Title order={2}>{pages[pageNumber].title}</Title>
-
-              <Text c="dimmed">{pages[pageNumber].subtitle}</Text>
-              <Divider />
-              <Transition
-                mounted
-                transition="fade-left"
-                duration={250}
-                keepMounted
+              <Text>Rider Application</Text>
+              <Stepper
+                active={pageNumber}
+                size="sm"
+                iconSize={36}
+                orientation="vertical"
               >
-                {(styles) => (
-                  <Box key={pageNumber} style={styles} p={"md"}>
-                    {pages[pageNumber].element}
-                  </Box>
-                )}
-              </Transition>
+                <Stepper.Step description="Profile" />
 
-              <Group justify="space-between" mt="xl">
-                <Button
-                  variant="subtle"
-                  disabled={pageNumber === 0}
-                  onClick={handlePrev}
-                >
-                  Back
-                </Button>
+                <Stepper.Step description="Emergency" />
 
-                <Button
-                  onClick={handleNext}
-                  disabled={pages[pageNumber].verificationFunction(
-                    pages[pageNumber].key,
-                    pages[pageNumber].optional,
-                    pages[pageNumber].optionalFields,
-                  )}
-                >
-                  {pageNumber === PAGES_LENGTH ? "Finish" : "Continue"}
-                </Button>
-              </Group>
+                <Stepper.Step description="Address" />
+
+                <Stepper.Step description="Payment" />
+              </Stepper>
             </Stack>
-          </Group>
+          </Card>
+          <Divider size={"md"} orientation="vertical" />
+          <Stack>
+            <Title order={2}>{pages[pageNumber].title}</Title>
+
+            <Text c="dimmed">{pages[pageNumber].subtitle}</Text>
+            <Divider />
+            <Transition
+              mounted
+              transition="fade-left"
+              duration={250}
+              keepMounted
+            >
+              {(styles) => (
+                <Box key={pageNumber} style={styles} p={"md"}>
+                  {pages[pageNumber].element}
+                </Box>
+              )}
+            </Transition>
+
+            <Group justify="space-between">
+              <Button
+                variant="subtle"
+                disabled={pageNumber === 0}
+                onClick={handlePrev}
+              >
+                Back
+              </Button>
+
+              <Button
+                onClick={handleNext}
+                disabled={pages[pageNumber].verificationFunction(
+                  pages[pageNumber].key,
+                  pages[pageNumber].optional,
+                  pages[pageNumber].optionalFields,
+                )}
+              >
+                {pageNumber === PAGES_LENGTH ? "Finish" : "Continue"}
+              </Button>
+            </Group>
+          </Stack>
         </Group>
       </Paper>
     </Box>

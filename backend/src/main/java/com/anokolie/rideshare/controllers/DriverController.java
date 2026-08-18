@@ -1,6 +1,6 @@
 package com.anokolie.rideshare.controllers;
 
-import com.anokolie.rideshare.dto.driver.DriverObject;
+import com.anokolie.rideshare.dto.driver.DriverResponse;
 import com.anokolie.rideshare.dto.rider.RiderObject;
 import com.anokolie.rideshare.entity.DriverProfile;
 import com.anokolie.rideshare.entity.RiderProfile;
@@ -41,10 +41,10 @@ public class DriverController {
         }
 }
     @GetMapping("/driver/state/{id}")
-    public ResponseEntity<DriverObject> completedRiderOnboarding (@PathVariable("id") Long id){
+    public ResponseEntity<DriverResponse> completedRiderOnboarding (@PathVariable("id") Long id){
         Optional <DriverProfile> riderOptional= driverRepository.findById(id);
         if(riderOptional.isPresent()){
-            DriverObject rider = driverMapper.toResponse(riderOptional.get());
+            DriverResponse rider = driverMapper.toResponse(riderOptional.get());
             return ResponseEntity.ok().body(rider);
         }
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);

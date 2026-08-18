@@ -1,8 +1,7 @@
 import { getTripOptions } from "~/api/trips";
 import type { ActionFunctionArgs } from "react-router";
 
-export const riderAction = async ({ request }: ActionFunctionArgs) => {
-  console.log("form action");
+export const addressAction = async ({ request }: ActionFunctionArgs) => {
   const formData = await request.formData();
   if (!formData) return;
   const pickupLat = formData.get("pickup-latitiude")?.toString();

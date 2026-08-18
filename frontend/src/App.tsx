@@ -57,16 +57,16 @@ function App() {
           action: onboardingAction,
         },
         {
-          element: <Driver />,
-          path: "/driver",
-        },
-        {
           element: <VerifiedLayout />,
           children: [
             {
               element: <Rider />,
               path: "/rider",
               action: riderAction,
+            },
+            {
+              element: <Driver />,
+              path: "/driver",
             },
           ],
         },

@@ -1,83 +1,47 @@
-import { Group, Button, AppShell, Pill, Flex, Text } from "@mantine/core";
+import { Group, Button, AppShell, Pill, Flex } from "@mantine/core";
 import {
   DRIVER_LOGIN_TEXT,
-  GET_A_RIDE_TEXT,
-  HELP_TEXT,
-  LOGIN_TEXT,
   RIDER_LOGIN_TEXT,
   SAFETY_TEXT,
-  SIGNUP_TEXT,
+  LOGIN_TEXT,
 } from "~/utils/string";
 import { useHover } from "@mantine/hooks";
 import { Outlet, useNavigate } from "react-router-dom";
-import { AppLogo } from "../Images/AppLogo";
 
 export const AppLayout = () => {
   const { hovered: loginHover, ref: loginRef } = useHover();
-  const { hovered: signupHover, ref: signupRef } = useHover();
-  const { hovered: safetyHover, ref: safetyRef } = useHover();
-  const { hovered: helpHover, ref: helpRef } = useHover();
   const { hovered: riderHover, ref: riderRef } = useHover();
-  const { hovered: driverHover, ref: driverRef } = useHover();
   const navigate = useNavigate();
   return (
     <AppShell padding={{ base: 10, sm: 15, lg: "xl" }} withBorder>
       <AppShell.Header>
         <Group justify="space-between" align="center" h="100%" px="md">
-          <Text c="rideshare">RideShare</Text>
-          <Group gap={"md"}>
-            <Pill size="md" c={"cyan"}>
-              {GET_A_RIDE_TEXT}
-            </Pill>
+          <Group gap={"sm"}>
+            <h4 style={{ color: "#066931", fontWeight: "900" }}>RIDESHARE</h4>
             <Flex justify="flex-start">
               <Button
                 variant="transparent"
                 ref={riderRef}
-                c={riderHover ? "cyan" : "black"}
+                c={riderHover ? "black" : "rideshare.9"}
               >
                 {RIDER_LOGIN_TEXT}
               </Button>
-              <Button
-                variant="transparent"
-                ref={driverRef}
-                c={driverHover ? "cyan" : "black"}
-              >
+              <Button variant="transparent" c="black">
                 {DRIVER_LOGIN_TEXT}
               </Button>
-              <Button
-                variant="transparent"
-                ref={safetyRef}
-                c={safetyHover ? "cyan" : "black"}
-              >
+              <Button variant="transparent" c="black">
                 {SAFETY_TEXT}
-              </Button>
-              <Button
-                variant="transparent"
-                ref={helpRef}
-                c={helpHover ? "cyan" : "black"}
-              >
-                {HELP_TEXT}
-              </Button>
-            </Flex>
-            <Flex justify={"flex-end"}>
-              <Button
-                variant="transparent"
-                ref={loginRef}
-                c={loginHover ? "cyan" : "black"}
-                onClick={() => navigate("/login")}
-              >
-                {LOGIN_TEXT}
-              </Button>
-              <Button
-                variant="transparent"
-                ref={signupRef}
-                c={signupHover ? "cyan" : "black"}
-                onClick={() => navigate("/login")}
-              >
-                {SIGNUP_TEXT}
               </Button>
             </Flex>
           </Group>
+          <Button
+            variant="transparent"
+            ref={loginRef}
+            c={loginHover ? "rideshare.5" : "black"}
+            onClick={() => navigate("/login")}
+          >
+            {LOGIN_TEXT}
+          </Button>
         </Group>
       </AppShell.Header>
       <AppShell.Main style={{ flex: 1 }}>

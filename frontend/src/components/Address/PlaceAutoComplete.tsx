@@ -1,10 +1,11 @@
 /// <reference types="google.maps" />
-import { TextInput } from "@mantine/core";
-import { useEffect, useRef, useState } from "react";
+
+import { Box } from "@mantine/core";
+import { useEffect, useRef } from "react";
 import { useMapsLibrary } from "@vis.gl/react-google-maps";
 import type { PlaceSelection } from "~/types/address/address";
 
-type props = {
+type Props = {
   placeholderKey: "pickup" | "destination";
   onPlaceSelected: (place: PlaceSelection) => void;
 };
@@ -12,79 +13,47 @@ type props = {
 export const PlaceAutocompleteInput = ({
   placeholderKey,
   onPlaceSelected,
-}: props) => {
+}: Props) => {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const places = useMapsLibrary("places");
+
   const placeholderTextMap = {
     pickup: "Enter your pickup location",
     destination: "Enter your destination",
   };
-  const [autocomplete, setAutocomplete] =
-    useState<google.maps.places.Autocomplete | null>(null);
-
-  const inputRef = useRef<HTMLInputElement>(null);
-
-  const places = useMapsLibrary("places");
 
   useEffect(() => {
-    if (!places || !inputRef.current) return;
+    if (!places || !containerRef.current) return;
 
-    const options: google.maps.places.AutocompleteOptions = {
-      fields: ["geometry", "name", "formatted_address"],
-    };
+    const autocomplete = new google.maps.places.PlaceAutocompleteElement();
 
-    const instance = new places.Autocomplete(inputRef.current, options);
+    autocomplete.placeholder = placeholderTextMap[placeholderKey];
 
-    setAutocomplete(instance);
+    autocomplete.addEventListener("gmp-select", async (event) => {
+      const { placePrediction } = event as any;
 
-    return () => {
-      google.maps.event.clearInstanceListeners(instance);
-    };
-  }, [places]);
+      const place = placePrediction.toPlace();
 
-  useEffect(() => {
-    if (!autocomplete) return;
+      await place.fetchFields({
+        fields: ["displayName", "formattedAddress", "location"],
+      });
 
-    const listener = autocomplete.addListener("place_changed", () => {
-      const place = autocomplete.getPlace();
+      if (!place.location) return;
 
-      console.log("Selected Place Data:", place);
-
-      if (place.geometry?.location) {
-        onPlaceSelected({
-          name: place.name ?? "",
-
-          address: place.formatted_address ?? "",
-
-          latitude: place.geometry.location.lat(),
-
-          longitude: place.geometry.location.lng(),
-        });
-      }
-
-      // if (place.geometry?.location) {
-      //   const lat = place.geometry.location.lat();
-      //   const lng = place.geometry.location.lng();
-
-      //   console.log("Latitude:", lat);
-      //   console.log("Longitude:", lng);
-
-      //   alert(
-      //     `Selected: ${place.name}\n` +
-      //       `Address: ${place.formatted_address}\n` +
-      //       `Lat: ${lat}\n` +
-      //       `Lng: ${lng}`,
-      //   );
-      // }
+      onPlaceSelected({
+        name: place.displayName ?? "",
+        address: place.formattedAddress ?? "",
+        latitude: place.location.lat(),
+        longitude: place.location.lng(),
+      });
     });
 
-    return () => {
-      listener.remove();
-    };
-  }, [autocomplete]);
+    containerRef.current.appendChild(autocomplete);
 
-  return (
-    <TextInput
-      ref={inputRef}
-      placeholder={placeholderTextMap[placeholderKey]}
-    />
-  );
+    return () => {
+      autocomplete.remove();
+    };
+  }, [places, placeholderKey, onPlaceSelected]);
+
+  return <Box ref={containerRef} />;
 };

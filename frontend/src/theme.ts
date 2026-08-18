@@ -20,6 +20,7 @@ const rideshareGreen: MantineColorsTuple = [
   "#27994f",
   "#1b8845",
   "#087537",
+  "#044f2b",
 ];
 
 export const theme = createTheme({

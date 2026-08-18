@@ -48,7 +48,7 @@ export const Rider = () => {
       path: "/profile",
     },
   ];
-  const role = useUserStore((s) => s.user?.role);
+  const role = useUserStore((s) => s.role);
   type MapStruct = {
     role: UserRole;
     icon: ForwardRefExoticComponent<IconProps & RefAttributes<SVGSVGElement>>;
@@ -64,8 +64,12 @@ export const Rider = () => {
     },
   ];
   const [value, setValue] = useState<UserRole>();
-  const handleSubmit = (e: React.SubmitEvent<HTMLInputElement>) => {
+  const handleSubmit = (e: React.SubmitEvent<HTMLFormElement>) => {
     e.preventDefault();
+    console.log("submitting");
+    console.log("Handle submitting");
+    console.log("pickup", pickup);
+    console.log("destination", pickup);
     const form = new FormData();
     if (!pickup || !destination) return;
     form.append("pickup-latitude", String(pickup?.latitude));
@@ -74,7 +78,7 @@ export const Rider = () => {
     form.append("pickup-longitude", String(destination?.longitude));
     submit(form, {
       method: "POST",
-      action: "api/trips",
+      action: "/rider",
     });
   };
 
@@ -90,7 +94,9 @@ export const Rider = () => {
               style={{ cursor: "pointer" }}
             >
               <Icon IconType={opt.icon} />
-              <Text>{opt.text}</Text>
+              <Text c="rideshare.9" style={{ fontFamily: "sans-serif" }}>
+                {opt.text}
+              </Text>
             </Group>
           ))}
         </Stack>
@@ -126,7 +132,7 @@ export const Rider = () => {
       </Stack>
 
       <Divider orientation="vertical" />
-      <Form onSubmit={(e) => handleSubmit}>
+      <Form onSubmit={handleSubmit}>
         <AddressField setPickup={setPickup} setDestination={setDestination} />
       </Form>
     </Box>

@@ -4,13 +4,17 @@ import {
   Box,
   Group,
   TextInput,
-  Text,
+  Button,
 } from "@mantine/core";
 import { Outlet } from "react-router-dom";
 import { AppLogo } from "../Images/AppLogo";
 import { IconBell, IconSearch } from "@tabler/icons-react";
+import { logout } from "~/utils/aws/logout";
 
 export const VerifiedLayout = () => {
+  const handleLogout = () => {
+    logout();
+  };
   return (
     <AppShell
       header={{ height: 60 }}
@@ -26,9 +30,12 @@ export const VerifiedLayout = () => {
         <Group justify="space-between" align="center" h="100%" px="md">
           <AppLogo />
           <TextInput leftSection={<IconSearch />} />
-          <ActionIcon variant="outline">
-            <IconBell />
-          </ActionIcon>
+          <Group flex={"space-around"}>
+            <ActionIcon variant="outline">
+              <IconBell />
+            </ActionIcon>
+            <Button onClick={handleLogout}>Logout</Button>
+          </Group>
         </Group>
       </AppShell.Header>
       <AppShell.Main>

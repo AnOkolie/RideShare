@@ -11,7 +11,7 @@ import { Form, useNavigate } from "react-router-dom";
 import { useUserStore } from "~/zustand/userStore";
 import type { ForwardRefExoticComponent, RefAttributes } from "react";
 import type { UserRole } from "~/types/user";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 export const Driver = () => {
   const navigate = useNavigate();
   const [value, setValue] = useState<UserRole>();
@@ -42,7 +42,13 @@ export const Driver = () => {
       path: "/driver/profile",
     },
   ];
-  const role = useUserStore((s) => s.user?.role);
+  useEffect(() => {
+    const role = useUserStore.getState().role;
+    if (!role) return;
+    setValue(role);
+    console.log("user role is: ", role);
+  }, [useUserStore]);
+  const role = useUserStore((s) => s.role);
   type MapStruct = {
     role: UserRole;
     icon: ForwardRefExoticComponent<IconProps & RefAttributes<SVGSVGElement>>;
@@ -69,7 +75,9 @@ export const Driver = () => {
               style={{ cursor: "pointer" }}
             >
               <Icon IconType={opt.icon} />
-              <Text>{opt.text}</Text>
+              <Text c="rideshare.9" style={{ fontFamily: "sans-serif" }}>
+                {opt.text}
+              </Text>
             </Group>
           ))}
         </Stack>
