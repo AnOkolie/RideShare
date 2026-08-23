@@ -3,6 +3,7 @@ import { PERSONAL_INFO_TITLE } from "~/utils/string";
 import { PhoneInput } from "../Utilities/PhoneInput";
 import { DatePickerInput } from "@mantine/dates";
 import type { DriverProps } from "~/types/Onboarding/Driver";
+import { todaysDate } from "~/utils/date";
 
 export const PersonalInfo = ({ form, updateDriver }: DriverProps) => {
   return (
@@ -22,8 +23,9 @@ export const PersonalInfo = ({ form, updateDriver }: DriverProps) => {
       />
 
       <DatePickerInput
-        label="Pick date"
-        placeholder="Pick date"
+        label="Date of Birth"
+        placeholder={todaysDate()}
+        defaultValue={new Date(Date.now())}
         value={form.driver.DoB}
         onChange={(e) => updateDriver("DoB", e ?? "")}
       />

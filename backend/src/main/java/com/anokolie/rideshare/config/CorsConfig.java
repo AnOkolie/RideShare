@@ -33,7 +33,8 @@ import java.util.List;
 
             configuration.setAllowedHeaders(List.of(
                     "Authorization",
-                    "Content-Type"
+                    "Content-Type",
+                    "X-Active-Role"
             ));
             configuration.setAllowCredentials(true);
 

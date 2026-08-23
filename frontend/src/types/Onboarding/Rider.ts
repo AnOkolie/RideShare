@@ -116,4 +116,5 @@ export type riderProfile = {
   id: String;
   firstName: string;
   lastName: string;
+  homeAddress: string;
 };

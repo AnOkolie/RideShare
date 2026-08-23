@@ -1,10 +1,9 @@
 package com.anokolie.rideshare.controllers;
 
 import com.anokolie.rideshare.dto.trips.CreateTripRequest;
-import com.anokolie.rideshare.dto.trips.TripObject;
 import com.anokolie.rideshare.dto.trips.TripResponse;
-import com.anokolie.rideshare.model.trips.Trips;
 import com.anokolie.rideshare.service.TripService;
+import jakarta.validation.constraints.NotNull;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -21,7 +20,8 @@ public class TripController {
         this.service = service;
     }
     @PostMapping("/")
-    public TripResponse requestTrip (@RequestBody CreateTripRequest trip, @AuthenticationPrincipal Jwt jwt){
+    public TripResponse requestTrip (@NotNull @RequestBody CreateTripRequest trip, @AuthenticationPrincipal Jwt jwt){
+        System.out.println("create trip " + trip);
         return service.requestTrip(jwt.getSubject(), trip);
     }
 }

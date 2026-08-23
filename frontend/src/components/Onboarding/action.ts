@@ -6,10 +6,11 @@ import {
   updateRiderOnboarding,
 } from "~/api/syncUser";
 import { useUserStore } from "~/zustand/userStore";
+import { riderStore } from "~/zustand/riderStore";
+import { driverStore } from "~/zustand/driverStore";
 
 export const onboardingAction = async ({ request }: ActionFunctionArgs) => {
   const formData = await request.formData();
-  console.log("formData", formData);
   const type = formData.get("onboarding-type");
   const status = formData.get("status");
   const id = useUserStore.getState().user?.id;
@@ -28,14 +29,23 @@ export const checkOnboardingAction = async ({
   request,
 }: ActionFunctionArgs) => {
   const formData = await request.formData();
-  console.log("formData onboarding check", formData);
   const type = formData.get("type");
   const id = useUserStore.getState().user?.id;
+  const setRider = riderStore.getState().setRider;
+  const setDriver = driverStore.getState().setDriver;
   if (!type || !id) return;
   switch (type) {
     case "rider":
-      return checkRiderOnboarding(id);
+      const rider = await checkRiderOnboarding(id);
+      if (rider.data) {
+        setRider(rider.data);
+      }
+      return { rider, role: "rider" };
     case "driver":
-      return checkDriverOnboarding(id);
+      const driver = await checkDriverOnboarding(id);
+      if (driver.data) {
+        setDriver(driver.data);
+      }
+      return { driver, role: "driver" };
   }
 };

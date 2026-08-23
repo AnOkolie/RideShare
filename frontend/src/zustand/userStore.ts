@@ -10,6 +10,7 @@ type User = {
   role: UserRole;
   emailVerified: boolean;
   id: string;
+  phoneNumber: string;
 };
 
 type UserStore = {

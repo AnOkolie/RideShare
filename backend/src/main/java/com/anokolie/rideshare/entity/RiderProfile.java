@@ -10,7 +10,8 @@ import java.math.BigDecimal;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class RiderProfile {
+@ToString
+public class RiderProfile extends BaseEntity {
 
     @Id
     private Long id;
@@ -23,4 +24,5 @@ public class RiderProfile {
     private BigDecimal rating;
     private Integer totalTrips = 0;
     private Boolean onboarding = false;
+    private String homeAddress;
 }

@@ -2,8 +2,10 @@ package com.anokolie.rideshare.service.user;
 
 import com.anokolie.rideshare.dto.user.UserResponse;
 import com.anokolie.rideshare.entity.User;
+import com.anokolie.rideshare.mapper.user.UserMapper;
 import com.anokolie.rideshare.repository.UserRepository;
 import com.anokolie.rideshare.service.CognitoService;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanWrapperImpl;
 import org.springframework.security.oauth2.jwt.Jwt;
@@ -18,15 +20,12 @@ import java.util.stream.Collectors;
 
 @Slf4j
 @Service
+@AllArgsConstructor
 public class UserService {
 
     final private UserRepository userRepository;
     final private CognitoService cognitoService;
-    public UserService(UserRepository userRepository, CognitoService cognitoService){
-        this.userRepository = userRepository;
-        this.cognitoService = cognitoService;
-    }
-
+   private final UserMapper userMapper;
     public String getSub(Jwt jwt) {
         return jwt.getSubject();
     }
@@ -60,8 +59,10 @@ public class UserService {
         return userRepository.findById(id).orElseThrow();
     }
 
-    public void updateUser(Long id, UserResponse dto){
+    public UserResponse updateUser(Long id, UserResponse dto){
         User entity = getUserById(id);
+
+        System.out.println("User: " + dto.toString());
         if (dto.getFirstName() != null)
 
             entity.setFirstName(dto.getFirstName());
@@ -77,7 +78,8 @@ public class UserService {
         if (dto.getProfilePicture() != null)
 
             entity.setProfilePicture(dto.getProfilePicture());
-        userRepository.save(entity);
+
+        return userMapper.toResponse(userRepository.save(entity));
     }
 
     public Optional<User> findByCognitoSub(String sub){

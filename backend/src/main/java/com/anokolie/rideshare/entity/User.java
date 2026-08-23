@@ -11,6 +11,7 @@ import java.util.List;
 @Getter
 @Setter
 @Builder
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class User extends BaseEntity {

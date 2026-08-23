@@ -17,7 +17,7 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class DriverProfile {
+public class DriverProfile extends BaseEntity{
     @Id
     private Long id;
     @OneToOne

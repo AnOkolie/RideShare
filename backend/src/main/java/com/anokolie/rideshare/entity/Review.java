@@ -23,7 +23,7 @@ public class Review {
 
     @ManyToOne
     @JoinColumn(name="trip_id")
-    private Trip trip;
+    private Trips trip;
 
 
 

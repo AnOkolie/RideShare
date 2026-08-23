@@ -1,3 +1,5 @@
+import { todaysDate } from "~/utils/date";
+
 export type onboardingValues = {
   driver: {
     name: string;
@@ -37,7 +39,7 @@ export const defaultOnboarding = {
   driver: {
     name: "",
     phone: "",
-    DoB: null,
+    DoB: todaysDate(),
   },
   address: {
     address: "",
@@ -133,4 +135,6 @@ export type driverProfile = {
   lng: number;
   status: "accepted" | "declined";
   driverOnboarding: boolean;
+  rating: number;
+  totalTrips: number;
 };

@@ -2,29 +2,31 @@ package com.anokolie.rideshare.service;
 
 import com.anokolie.rideshare.dto.trips.CreateTripRequest;
 import com.anokolie.rideshare.dto.trips.TripResponse;
-import com.anokolie.rideshare.entity.RiderProfile;
-import com.anokolie.rideshare.entity.Trip;
-import com.anokolie.rideshare.entity.TripEvent;
-import com.anokolie.rideshare.entity.User;
+import com.anokolie.rideshare.entity.*;
 import com.anokolie.rideshare.enums.TripEventType;
 import com.anokolie.rideshare.enums.TripStatus;
-import com.anokolie.rideshare.model.drivers.Driver;
 import com.anokolie.rideshare.dto.trips.TripObject;
-import com.anokolie.rideshare.model.trips.Trips;
 import com.anokolie.rideshare.repository.RiderRepository;
 import com.anokolie.rideshare.repository.TripRepository;
 import com.anokolie.rideshare.repository.UserRepository;
+import jakarta.transaction.Transactional;
+import org.locationtech.jts.geom.Coordinate;
+import org.locationtech.jts.geom.GeometryFactory;
+import org.locationtech.jts.geom.Point;
+import org.locationtech.jts.geom.PrecisionModel;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class TripService {
     private final TripRepository repository;
     private final UserRepository userRepository;
     private final RiderRepository riderRepository;
+    private static final GeometryFactory GEOMETRY_FACTORY =
+            new GeometryFactory(new PrecisionModel(), 4326);
 
     public TripService(TripRepository repository, UserRepository userRepository, RiderRepository riderRepository){
         this.repository = repository;
@@ -32,39 +34,61 @@ public class TripService {
         this.riderRepository = riderRepository;
     }
 
-    public Trip createRide (Trip trip) {
+    public Trips createRide (Trips trip) {
         return repository.save(trip);
     }
-    public TripResponse requestTrip(String authSubject, CreateTripRequest request){
-        User user = userRepository.findByCognitoSub(authSubject).orElseThrow(() -> new Error("User not found"));
-        RiderProfile rider = riderRepository.findById(user.getId()).orElseThrow(() -> new Error("Rider profile not found"));
-        int estimatedFareCents = 1250;
-        Trip trip = new Trip();
+    @Transactional
+    public TripResponse requestTrip(String authSubject, CreateTripRequest request) {
+        User user = userRepository.findByCognitoSub(authSubject)
+                .orElseThrow(() -> new IllegalStateException("User not found"));
+
+        RiderProfile rider = riderRepository.findById(user.getId())
+                .orElseThrow(() -> new IllegalStateException("Rider profile not found"));
+        System.out.println("rider " + rider.toString());
+        System.out.println("trip request " + request.toString());
+        Trips trip = new Trips();
         trip.setRider(rider);
         trip.setStatus(TripStatus.REQUESTED);
+
         trip.setPickupAddress(request.pickupAddress());
+        trip.setPickupLocation(generatePoint(request.pickupLongitude(), request.pickupLatitude()));
+
         trip.setDestinationAddress(request.destinationAddress());
-        trip.setFareCents(estimatedFareCents);
+        trip.setDestinationLocation(generatePoint(request.pickupLongitude(), request.pickupLatitude()));
+
+        // Replace these placeholders with a route/distance API result later.
+        trip.setEstimatedDistance(3.8);
+        trip.setEstimatedDuration(12);
+        trip.setFareCents(1250);
+
         trip.setRequestedAt(LocalDateTime.now());
+
         TripEvent requestedEvent = new TripEvent();
         requestedEvent.setTrip(trip);
         requestedEvent.setEventType(TripEventType.REQUESTED);
         requestedEvent.setCreatedAt(LocalDateTime.now());
 
-        trip.setEvents(List.of(requestedEvent));
-
-        Trip savedTrip = repository.save(trip);
-
+        trip.setEvents(new ArrayList<>(List.of(requestedEvent)));
+        System.out.println("Adding trip with structure: " + trip.toString());
+        Trips savedTrip = repository.save(trip);
         return TripResponse.from(savedTrip);
     }
-    public List<Trip> getAllRides (){
+    private Point generatePoint(Double lng, Double lat){
+        Point point= GEOMETRY_FACTORY.createPoint(
+                new Coordinate(lng, lat)
+        );
+        point.setSRID(4326);
+
+        return point;
+    }
+    public List<Trips> getAllRides (){
         return repository.findAll();
     }
 
-    public Trip getAllRidesByDriver(Long driverId){
+    public Trips getAllRidesByDriver(Long driverId){
         return repository.findById(driverId).orElse(null);
     }
-    public List<Driver> matchDrivers(TripObject trip){
+    public List<DriverProfile> matchDrivers(TripObject trip){
         return repository.findMatchingDrivers(trip.getPickupLng(), trip.getPickupLat(), 5);
     }
 }

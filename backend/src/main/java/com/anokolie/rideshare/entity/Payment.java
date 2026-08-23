@@ -24,7 +24,7 @@ public class Payment {
 
     @OneToOne
     @JoinColumn(name="trip_id")
-    private Trip trip;
+    private Trips trip;
 
 
 

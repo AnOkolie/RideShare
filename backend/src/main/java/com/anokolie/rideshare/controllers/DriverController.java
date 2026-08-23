@@ -1,30 +1,37 @@
 package com.anokolie.rideshare.controllers;
 
+import com.anokolie.rideshare.dto.driver.DriverLocationUpdateRequest;
 import com.anokolie.rideshare.dto.driver.DriverResponse;
 import com.anokolie.rideshare.dto.rider.RiderObject;
 import com.anokolie.rideshare.entity.DriverProfile;
 import com.anokolie.rideshare.entity.RiderProfile;
 import com.anokolie.rideshare.mapper.driver.DriverMapper;
 import com.anokolie.rideshare.repository.DriverRepository;
+import com.anokolie.rideshare.service.drivers.DriverLocationService;
+import com.anokolie.rideshare.service.drivers.DriverService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/api/onboarding")
+@RequestMapping("/api")
 public class DriverController {
     private final DriverRepository driverRepository;
     private final DriverMapper driverMapper;
+    private final DriverLocationService driverLocationService;
 
-    public DriverController(DriverRepository driverRepository, DriverMapper driverMapper){
+    public DriverController(DriverRepository driverRepository, DriverMapper driverMapper, DriverLocationService driverLocationService){
         this.driverRepository = driverRepository;
         this.driverMapper = driverMapper;
+        this.driverLocationService = driverLocationService;
     }
 
-    @PatchMapping("/driver/{id}")
+    @PatchMapping("/onboarding/driver/{id}")
     public ResponseEntity<DriverProfile> updateOnboardingState(@PathVariable("id") Long id, @RequestBody String status){
         Optional<DriverProfile> driverOptional = driverRepository.findById(id);
         if(driverOptional.isPresent()){
@@ -40,13 +47,19 @@ public class DriverController {
             return ResponseEntity.status(HttpStatus.CREATED).body(driver);
         }
 }
-    @GetMapping("/driver/state/{id}")
+    @GetMapping("/onboarding/driver/state/{id}")
     public ResponseEntity<DriverResponse> completedRiderOnboarding (@PathVariable("id") Long id){
         Optional <DriverProfile> riderOptional= driverRepository.findById(id);
         if(riderOptional.isPresent()){
             DriverResponse rider = driverMapper.toResponse(riderOptional.get());
             return ResponseEntity.ok().body(rider);
         }
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+    }
+
+    @PutMapping("/drivers/me/location")
+    public ResponseEntity<Void> updateLocation(@RequestBody DriverLocationUpdateRequest location, @AuthenticationPrincipal Jwt jwt){
+        driverLocationService.updateLocation(jwt.getSubject(),location);
+        return ResponseEntity.ok().build();
     }
 }

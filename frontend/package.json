@@ -18,6 +18,7 @@
     "@mantine/hooks": "^9.4.2",
     "@mantine/notifications": "^9.4.2",
     "@phosphor-icons/react": "^2.1.10",
+    "@stomp/stompjs": "^7.3.0",
     "@tabler/icons-react": "^3.45.0",
     "@vis.gl/react-google-maps": "^1.9.0",
     "aws-amplify": "^6.20.0",

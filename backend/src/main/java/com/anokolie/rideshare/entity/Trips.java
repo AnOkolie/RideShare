@@ -2,7 +2,9 @@ package com.anokolie.rideshare.entity;
 
 import com.anokolie.rideshare.enums.TripStatus;
 import jakarta.persistence.*;
+import org.locationtech.jts.geom.Point;
 import lombok.*;
+
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -13,7 +15,8 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Trip extends BaseEntity {
+@ToString
+public class Trips extends BaseEntity {
     @Id
     @GeneratedValue(strategy=GenerationType.IDENTITY)
     private Long id;
@@ -21,12 +24,14 @@ public class Trip extends BaseEntity {
     @JoinColumn(name="rider_id",referencedColumnName="id")
     private RiderProfile rider;
     @ManyToOne
-    @JoinColumn(name="driver_id",referencedColumnName="user_id")
+    @JoinColumn(name = "driver_profile_id")
     private DriverProfile driver;
     @Enumerated(EnumType.STRING)
     private TripStatus status;
     private String pickupAddress;
+    private Point pickupLocation;
     private String destinationAddress;
+    private Point destinationLocation;
     private Double estimatedDistance;
     private Integer estimatedDuration;
     private Double actualDistance;

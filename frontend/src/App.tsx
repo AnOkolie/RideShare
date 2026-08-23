@@ -17,6 +17,10 @@ import {
   onboardingAction,
   checkOnboardingAction,
 } from "./components/Onboarding/action";
+import { Profile } from "./components/Profile/Profile";
+import { driverAction } from "./components/Driver/action";
+import { changeRoleAction } from "./components/Role/action";
+import { profileAction } from "./components/Profile/action";
 function App() {
   const router = createBrowserRouter([
     {
@@ -67,6 +71,16 @@ function App() {
             {
               element: <Driver />,
               path: "/driver",
+              action: driverAction,
+            },
+            {
+              element: <Profile />,
+              path: "/profile",
+              action: profileAction,
+            },
+            {
+              path: "/switch-role",
+              action: changeRoleAction,
             },
           ],
         },

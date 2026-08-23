@@ -3,7 +3,6 @@ import {
   Button,
   Image,
   Loader,
-  Card,
   TextInput,
   Stack,
   Title,
@@ -49,7 +48,6 @@ const LoginBody = () => {
         return;
       }
       const loginResult = await handleLogin(email, password);
-      console.log(loginResult);
       if (loginResult?.success) {
         navigate("/onboarding");
       } else {

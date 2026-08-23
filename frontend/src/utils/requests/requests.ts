@@ -11,8 +11,7 @@ export const request = async <Type>(
   try {
     const requestHeaders = new Headers();
     const token = await getAccessToken();
-    console.log("access token:", token);
-    const role = useUserStore.getState().user?.role;
+    const role = useUserStore.getState().role;
     if (token) {
       requestHeaders.append("Authorization", `Bearer ${token}`);
     }
@@ -22,9 +21,10 @@ export const request = async <Type>(
     for (const [key, value] of Object.entries(headers ?? {})) {
       requestHeaders.append(key, value);
     }
-    for (const [key, value] of requestHeaders) {
-      console.log(`${key} : ${value}`);
+    for (const [key, value] of Object.entries(headers ?? {})) {
+      console.log(`${key}: ${value}`);
     }
+    requestHeaders.append("Content-Type", "application/json");
     const res = await fetch(`${import.meta.env.VITE_BASE_URL}/${path}`, {
       method,
       headers: requestHeaders,

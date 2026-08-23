@@ -13,6 +13,9 @@ public class UserMapper {
         newResponse.setId(user.getId());
         newResponse.setFirstName(user.getFirstName());
         newResponse.setLastName(user.getLastName());
+        newResponse.setPhoneNumber(user.getPhoneNumber());
+        newResponse.setProfilePicture(user.getProfilePicture());
+        newResponse.setEmailVerified(user.getEmailVerified());
         return newResponse;
     }
 }

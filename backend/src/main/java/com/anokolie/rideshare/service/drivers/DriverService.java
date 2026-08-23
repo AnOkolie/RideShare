@@ -3,8 +3,6 @@ package com.anokolie.rideshare.service.drivers;
 import com.anokolie.rideshare.dto.driver.DriverResponse;
 import com.anokolie.rideshare.entity.DriverProfile;
 import com.anokolie.rideshare.enums.DriverStatus;
-import com.anokolie.rideshare.model.drivers.Driver;
-import com.anokolie.rideshare.model.drivers.status;
 import com.anokolie.rideshare.repository.DriverRepository;
 import com.anokolie.rideshare.util.GeometryUtil;
 
@@ -33,7 +31,7 @@ public class DriverService {
         return repository.findById(driverId).orElse(null);
     }
     public void updateHeartbeat(DriverResponse driver){
-        Driver newDriver = new Driver();
+        DriverProfile newDriver = new DriverProfile();
 
     }
 }

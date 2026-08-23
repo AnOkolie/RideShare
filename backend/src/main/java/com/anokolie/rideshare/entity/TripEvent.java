@@ -19,7 +19,7 @@ public class TripEvent {
     private Long id;
     @ManyToOne
     @JoinColumn(name="trip_id")
-    private Trip trip;
+    private Trips trip;
     @Enumerated(EnumType.STRING)
     private TripEventType eventType;
     @Column(columnDefinition="JSON")

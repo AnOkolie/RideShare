@@ -6,12 +6,21 @@ import {
   LOGIN_TEXT,
 } from "~/utils/string";
 import { useHover } from "@mantine/hooks";
-import { Outlet, useNavigate } from "react-router-dom";
+import { NavLink, Outlet, useNavigate } from "react-router-dom";
+import type { UserRole } from "~/types/user";
+import { useUserStore } from "~/zustand/userStore";
 
 export const AppLayout = () => {
   const { hovered: loginHover, ref: loginRef } = useHover();
   const { hovered: riderHover, ref: riderRef } = useHover();
   const navigate = useNavigate();
+
+  const setRole = useUserStore((s) => s.setRole);
+
+  const handleRoleNavigate = (role: UserRole) => {
+    setRole(role);
+    navigate(`/${role}`);
+  };
   return (
     <AppShell padding={{ base: 10, sm: 15, lg: "xl" }} withBorder>
       <AppShell.Header>
@@ -23,13 +32,23 @@ export const AppLayout = () => {
                 variant="transparent"
                 ref={riderRef}
                 c={riderHover ? "black" : "rideshare.9"}
+                onClick={() => handleRoleNavigate("rider")}
               >
                 {RIDER_LOGIN_TEXT}
               </Button>
-              <Button variant="transparent" c="black">
+              <Button
+                variant="transparent"
+                c="black"
+                onClick={() => handleRoleNavigate("driver")}
+              >
                 {DRIVER_LOGIN_TEXT}
               </Button>
-              <Button variant="transparent" c="black">
+              <Button
+                variant="transparent"
+                c="black"
+                onClick={() => navigate("/safety")}
+              >
+                <NavLink to={"/rider"} />
                 {SAFETY_TEXT}
               </Button>
             </Flex>
