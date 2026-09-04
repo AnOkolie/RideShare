@@ -7,11 +7,14 @@ import { RiderInfo } from "./Rider/RiderInfo";
 import { useRiderProfile } from "~/hooks/useRiderProfile";
 import { Form, useSubmit } from "react-router-dom";
 import type { riderStructure } from "~/types/riderProfile";
+import { VehicleInfo } from "./Driver/VehicleInfo";
 export const Profile = () => {
   const role = useUserStore((s) => s.role);
   const {
     form,
     disableBtn,
+    changedAddress,
+    getHomeDetails,
     updatePersonalInfo,
     updateProfile,
     updateRiderInfo,
@@ -34,7 +37,7 @@ export const Profile = () => {
   ];
   const driverOptions = [
     {
-      element: <PersonalInfo handleFieldChange={updatePersonalInfo} />,
+      element: <VehicleInfo />,
       description: "Vehicle",
     },
     {
@@ -51,9 +54,12 @@ export const Profile = () => {
 
   const [pageNum, setPageNum] = useState(0);
   const submit = useSubmit();
-  const handleSubmit = (e: React.SubmitEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.SubmitEvent<HTMLFormElement>) => {
     e.preventDefault();
     console.log("submitting");
+    if (changedAddress) {
+      await getHomeDetails();
+    }
     const formData = new FormData();
     formData.append("profile", JSON.stringify(mapForm(form)));
     submit(formData, {
@@ -70,6 +76,9 @@ export const Profile = () => {
       displayName: form.personalInfo.displayName,
       profilePic: form.profile.profilePic ?? "",
       homeAddress: form.riderInfo.homeAddress,
+      homePlaceId: form.riderInfo.homePlaceId,
+      homeLatitude: form.riderInfo.homeLatitude,
+      homeLongitude: form.riderInfo.homeLongitude,
     };
   };
 

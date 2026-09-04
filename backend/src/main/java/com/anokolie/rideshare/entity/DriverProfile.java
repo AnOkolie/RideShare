@@ -19,21 +19,22 @@ import java.util.List;
 @AllArgsConstructor
 public class DriverProfile extends BaseEntity{
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @OneToOne
-    @JoinColumn(name="user_id")
+    @OneToOne(optional = false)
+    @JoinColumn(name="id")
     @MapsId
     private User user;
     @Enumerated(EnumType.STRING)
     private ApprovalStatus approvalStatus;
     @Enumerated(EnumType.STRING)
     private DriverStatus status;
-    private String geohash;
+    private String geohash = "";
     private LocalDateTime lastHeartbeat;
     private BigDecimal rating;
     private Integer totalTrips=0;
-    @OneToMany(mappedBy="driver")
-    private List<Vehicle> vehicles;
+    @OneToOne(mappedBy = "driver")
+    private Vehicle vehicle;
     @OneToMany(mappedBy="driver")
     private List<DriverDocument> documents;
     @Column(

@@ -14,13 +14,15 @@ import { VerifiedLayout } from "./components/AppLayout/VerifiedLayout";
 import { riderAction } from "./components/Rider/action";
 import { authAction } from "./loader/auth";
 import {
-  onboardingAction,
   checkOnboardingAction,
+  updateAction,
+  vehicleModelsAction,
 } from "./components/Onboarding/action";
 import { Profile } from "./components/Profile/Profile";
 import { driverAction } from "./components/Driver/action";
 import { changeRoleAction } from "./components/Role/action";
 import { profileAction } from "./components/Profile/action";
+import { makeLoader } from "./components/Onboarding/loader";
 function App() {
   const router = createBrowserRouter([
     {
@@ -53,25 +55,26 @@ function App() {
         {
           element: <RiderOnBoarding />,
           path: "/onboarding/rider",
-          action: onboardingAction,
+          action: updateAction,
         },
         {
           element: <DriverOnboarding />,
           path: "/onboarding/driver",
-          action: onboardingAction,
+          action: updateAction,
+          loader: makeLoader,
         },
         {
           element: <VerifiedLayout />,
           children: [
             {
-              element: <Rider />,
-              path: "/rider",
-              action: riderAction,
-            },
-            {
               element: <Driver />,
               path: "/driver",
               action: driverAction,
+            },
+            {
+              element: <Rider />,
+              path: "/rider",
+              action: riderAction,
             },
             {
               element: <Profile />,
@@ -83,6 +86,10 @@ function App() {
               action: changeRoleAction,
             },
           ],
+        },
+        {
+          path: "/vehicle/model",
+          action: vehicleModelsAction,
         },
       ],
     },

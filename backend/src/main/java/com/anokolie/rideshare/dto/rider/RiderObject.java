@@ -17,4 +17,7 @@ public class RiderObject {
     private String firstName;
     private String lastName;
     private String homeAddress;
+    private String homePlaceId;
+    private Double homeLatitude;
+    private Double homeLongitude;
 }

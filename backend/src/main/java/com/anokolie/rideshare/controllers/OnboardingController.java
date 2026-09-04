@@ -1,11 +1,13 @@
 package com.anokolie.rideshare.controllers;
 
 
+import com.anokolie.rideshare.dto.driver.DriverResponse;
 import com.anokolie.rideshare.dto.rider.RiderObject;
 import com.anokolie.rideshare.entity.RiderProfile;
 import com.anokolie.rideshare.mapper.rider.RiderMapper;
 import com.anokolie.rideshare.repository.RiderRepository;
 import com.anokolie.rideshare.repository.UserRepository;
+import com.anokolie.rideshare.service.drivers.DriverService;
 import com.anokolie.rideshare.service.riders.RiderService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -25,6 +27,7 @@ public class OnboardingController {
     private final UserRepository userRepository;
     private final RiderMapper riderMapper;
     private final RiderService riderService;
+    private final DriverService driverService;
 
     @PatchMapping("/rider/{id}")
     public ResponseEntity<RiderObject> updateRiderOnboardingState(
@@ -45,5 +48,14 @@ public class OnboardingController {
             return ResponseEntity.ok().body(rider);
         }
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+    }
+    @GetMapping("/driver/state/{id}")
+    public ResponseEntity<DriverResponse> completedDriverOnboarding (@PathVariable("id") Long id){
+        try{
+            DriverResponse driver = driverService.updateOnboardingState(id);
+            return ResponseEntity.ok().body(driver);
+        }catch(RuntimeException e){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
     }
 }

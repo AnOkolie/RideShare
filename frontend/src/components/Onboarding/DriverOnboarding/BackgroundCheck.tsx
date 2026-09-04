@@ -1,4 +1,4 @@
-import { Checkbox, Stack, Text, Title } from "@mantine/core";
+import { Checkbox, Flex, Stack, Text, Title } from "@mantine/core";
 import type { BackgroundCheckProps } from "~/types/Onboarding/Driver";
 import {
   BACKGROUND_CHECK_HEADER,
@@ -15,10 +15,14 @@ export const BackgroundCheck = ({
       <Title>{BACKGROUND_CHECK_HEADER}</Title>
       <Text>{BACKGROUND_DISCLOSURE_TEXT}</Text>
       <Text>{BACKGROUND_CONSENT_TEXT}</Text>
-      <Checkbox
-        defaultChecked={form.background.consent}
-        onChange={(e) => updateBackground("consent", e.target.checked)}
-      />
+      <Flex justify={"flex-end"} gap={"md"}>
+        <Text>Confirm</Text>
+        <Checkbox
+          required
+          defaultChecked={form.background.consent}
+          onChange={(e) => updateBackground("consent", e.target.checked)}
+        />
+      </Flex>
     </Stack>
   );
 };

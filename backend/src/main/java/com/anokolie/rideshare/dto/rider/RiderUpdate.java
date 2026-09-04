@@ -13,5 +13,8 @@ public class RiderUpdate {
     private String phoneNumber;
     private String profilePic;
     private String homeAddress;
+    private String homePlaceId;
+    private Double homeLatitude;
+    private Double homeLongitude;
 }
 

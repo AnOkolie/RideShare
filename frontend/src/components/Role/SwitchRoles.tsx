@@ -28,7 +28,6 @@ export const SwitchRoles = () => {
   const setRole = useUserStore((s) => s.setRole);
 
   useEffect(() => {
-    console.log("response: ", fetcher.data);
     if (!fetcher.data) return;
 
     if (fetcher.data.error) {

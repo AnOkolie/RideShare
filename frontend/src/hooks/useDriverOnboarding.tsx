@@ -1,17 +1,116 @@
-import { useState } from "react";
-import type { onboardingValues } from "~/types/Onboarding/Driver";
+import { useEffect, useState } from "react";
+import { useActionData, useNavigate, useSubmit } from "react-router-dom";
+import type {
+  onboardingValues,
+  PageStructure,
+} from "~/types/Onboarding/Driver";
 import { defaultOnboarding } from "~/types/Onboarding/Driver";
+import { s3Upload } from "~/utils/aws/s3Upload";
+import {
+  formatDriverOnboarding,
+  driverOnboardingStructure,
+} from "~/utils/formatResponse/driverOnboarding";
+import { displayNotifications } from "~/utils/notifications/displayNotification";
 
 export const useDriverOnboarding = () => {
   const [form, setForm] = useState<onboardingValues>(defaultOnboarding);
+
   const [disableBtn, setDisabelBtn] = useState(false);
+  const [pageNumber, setPageNumber] = useState(0);
+  const navigate = useNavigate();
+  const submit = useSubmit();
+  const actionData = useActionData();
+  useEffect(() => {
+    if (!actionData) return;
+    console.log("action data", actionData);
+    if (actionData.data) {
+      navigate("/driver");
+    }
+  }, [actionData]);
+
+  const handlePrev = () => {
+    setPageNumber((prev) => Math.max(prev - 1, 0));
+  };
+
+  const formSubmit = async () => {
+    if (
+      !form.license.back ||
+      !form.license.front ||
+      !form.insurance.insurance
+    ) {
+      displayNotifications(
+        "Missing Required Fields",
+        "Please upload all required documents",
+        "red",
+      );
+    }
+    const { license, insurance, profile } = await fileUpload();
+    const formData = new FormData();
+    formData.append("intent", "update");
+    formData.append(
+      "driver",
+      JSON.stringify(
+        driverOnboardingStructure(
+          form,
+          license.frontKey,
+          license.backKey,
+          insurance,
+        ),
+      ),
+    );
+    formData.append("onboarding-type", "driver");
+    formData.append("status", "driver");
+    submit(formData, {
+      method: "POST",
+    });
+  };
+  const fileUpload = async () => {
+    const license = await licenseUpload();
+    const profile = await profileUpload();
+    const insurance = await insuranceUpload();
+    return { license, profile, insurance };
+  };
+  const licenseUpload = async () => {
+    const [frontKey, backKey] = await Promise.all([
+      s3Upload(form.license.front!, "DRIVER_DOCUMENT", "DRIVER"),
+      s3Upload(form.license.back!, "DRIVER_DOCUMENT", "DRIVER"),
+    ]);
+
+    return {
+      frontKey,
+      backKey,
+    };
+  };
+
+  const insuranceUpload = async () => {
+    return {
+      insuranceKey: await s3Upload(
+        form.insurance.insurance!,
+        "INSURANCE_DOCUMENT",
+        "DRIVER",
+      ),
+    };
+  };
+
+  const profileUpload = async () => ({
+    profilePictureKey: form.profile.profilePicture
+      ? await s3Upload(form.profile.profilePicture, "PROFILE_PICTURE", "DRIVER")
+      : null,
+  });
+  const handleNext = (isLastPage: boolean) => {
+    if (isLastPage) {
+      formSubmit();
+      return;
+    }
+    setPageNumber(pageNumber + 1);
+  };
   const updateLicense = (
     key: keyof onboardingValues["license"],
     value: string | File | null,
   ) => {
     setForm((prev) => ({
       ...prev,
-      payment: {
+      license: {
         ...prev.license,
         [key]: value,
       },
@@ -70,7 +169,7 @@ export const useDriverOnboarding = () => {
   ) => {
     setForm((prev) => ({
       ...prev,
-      home: {
+      address: {
         ...prev.address,
         [key]: value,
       },
@@ -90,40 +189,24 @@ export const useDriverOnboarding = () => {
     }));
   };
 
-  const isCurrentPageValid = <K extends keyof onboardingValues>(
-    key: K,
-    skip: boolean,
-    optionalFields: string[],
-  ) => {
-    const keys = Object.keys(form[key]) as Array<keyof onboardingValues[K]>;
-
-    for (const term of keys) {
-      const value = form[key][term];
-
-      if (
-        !skip &&
-        (value === null || value === "") &&
-        !compareStrings(term, optionalFields)
-      )
-        return true;
+  const isPageInvalid = (page: PageStructure) => {
+    if (page.optional) {
+      return false;
     }
-    return false;
-  };
-
-  const compareStrings = (
-    key: string | number | symbol,
-    optionalFields: string[],
-  ) => {
-    for (const str of optionalFields) {
-      if (key === str) {
+    return page.requiredValues().some((value) => {
+      if (value === null || value === undefined || value === "") {
+        // console.log(`value (element # ${index}: from array ${arr}: ${value}`);
         return true;
       }
-    }
-    return false;
+      return false;
+    });
   };
   return {
     form,
     disableBtn,
+    pageNumber,
+    handleNext,
+    handlePrev,
     setDisabelBtn,
     updateAddress,
     updateDriver,
@@ -132,6 +215,6 @@ export const useDriverOnboarding = () => {
     updateBackground,
     updateVehicle,
     updateLicense,
-    isCurrentPageValid,
+    isPageInvalid,
   };
 };

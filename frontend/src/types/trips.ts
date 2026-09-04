@@ -7,11 +7,15 @@ export type tripOption = {
 };
 
 export type TripOptions = tripOption[];
-export type Distance = {};
+export type Distance = {
+  routes: {
+    duration: string;
+  }[];
+};
 
 export type calculateDistanceStructure = {
   origin: addressNumber | addressString;
-  destination: addressNumber | addressString;
+  destination: addressNumber;
 };
 
 type addressNumber = {
@@ -21,4 +25,17 @@ type addressNumber = {
 
 type addressString = {
   address: string;
+};
+
+export type tripFare = {
+  estimatedDistanceMeters: number;
+  estimatedDurationSeconds: number;
+  estimatedFareCents: number;
+};
+
+export type RequestRideStructure = {
+  pickupLatitude: number;
+  pickupLongitude: number;
+  destinationLatitude: number;
+  destinationLongitude: number;
 };

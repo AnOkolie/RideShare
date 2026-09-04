@@ -41,17 +41,6 @@ public class UserController {
         logger.info(">>> 'api/auth/bootstrap' is called");
         try{
             User user = userService.syncUser(jwt);
-//        if(user == null){
-//            ErrorResponse error = new ErrorResponse(
-//                    LocalDateTime.now(),
-//                    HttpStatus.BAD_REQUEST.value(),
-//                    "Bad Request",
-//                    "This coupon code has expired.",
-//                    "/api/users/bootstrap"
-//            );
-//
-//            return ResponseEntity.badRequest().body(error); // Returns 400 with payload
-//        }
             UserResponse response = userMapper.toResponse(user);
             logger.info(
                     "Authenticated user: {}",
@@ -68,10 +57,8 @@ public class UserController {
                     e.getMessage(),
                     "/api/users/bootstrap"
             );
-
             return ResponseEntity.badRequest().body(error); // Returns 400 with payload
         }
-
     }
     @PatchMapping ("/select-role")
     public ResponseEntity<Void> selectRole(@PathVariable Long id, @RequestBody UserResponse user){

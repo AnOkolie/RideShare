@@ -1,6 +1,6 @@
 import { riderStore } from "~/zustand/riderStore";
 import { useUserStore } from "~/zustand/userStore";
-import type { userStructure } from "./user";
+import type { User } from "./user";
 import type { riderProfile } from "./Onboarding/Rider";
 
 const profile = riderStore.getState().rider;
@@ -18,6 +18,9 @@ export const riderProfileValues = {
   },
   riderInfo: {
     homeAddress: profile?.homeAddress ?? "",
+    homePlaceId: profile?.homePlaceId ?? "",
+    homeLatitude: profile?.homeLatitude ?? 0,
+    homeLongitude: profile?.homeLongitude ?? 0,
   },
 };
 
@@ -34,6 +37,9 @@ export type riderStructure = {
   };
   riderInfo: {
     homeAddress: string;
+    homePlaceId: string;
+    homeLatitude: number;
+    homeLongitude: number;
   };
 };
 
@@ -48,7 +54,7 @@ export type riderActionStructure = {
 };
 
 export type riderUpdateResponse = {
-  userProfile: userStructure;
+  userProfile: User;
   riderProfile: riderProfile;
 };
 
@@ -56,4 +62,9 @@ export type riderProfileOptions = {
   element: React.ReactNode;
   description: string;
   verificationFunction: (key: keyof riderStructure, value: string) => boolean;
+};
+
+export type riderUpdate = {
+  userProfile: User;
+  riderProfile: riderProfile;
 };

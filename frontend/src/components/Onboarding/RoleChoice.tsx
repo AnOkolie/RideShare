@@ -58,9 +58,10 @@ export const RoleChoice = () => {
     if (!actionData) return;
     console.log("action data", actionData);
     if (actionData.error) {
-      navigate(`${userRole}`);
+      navigate(`/onboarding/${userRole}`);
       return;
     }
+    console.log(userRole);
     navigate(`/${userRole}`);
   }, [actionData]);
   const handleSubmit = (e: React.SubmitEvent<HTMLFormElement>) => {

@@ -55,5 +55,5 @@ export const PlaceAutocompleteInput = ({
     };
   }, [places, placeholderKey, onPlaceSelected]);
 
-  return <Box ref={containerRef} />;
+  return <Box w={"100%"} ref={containerRef} />;
 };

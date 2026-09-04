@@ -1,5 +1,5 @@
 import { todaysDate } from "~/utils/date";
-
+import { type DropzoneProps } from "@mantine/dropzone";
 export type onboardingValues = {
   driver: {
     name: string;
@@ -16,7 +16,7 @@ export type onboardingValues = {
     number: string;
   };
   vehicle: {
-    manufacturer: string;
+    make: string;
     model: string;
     year: string;
     colour: string;
@@ -24,7 +24,7 @@ export type onboardingValues = {
     seats: number;
   };
   insurance: {
-    insurance: string;
+    insurance: File | null;
     expiration: string | null;
   };
   profile: {
@@ -47,11 +47,11 @@ export const defaultOnboarding = {
   license: {
     front: null,
     back: null,
-    expiry: null,
+    expiry: todaysDate(),
     number: "",
   },
   vehicle: {
-    manufacturer: "",
+    make: "",
     model: "",
     year: "",
     colour: "rgba(47, 119, 150, 0.7)",
@@ -59,7 +59,7 @@ export const defaultOnboarding = {
     seats: 0,
   },
   insurance: {
-    insurance: "",
+    insurance: null,
     expiration: null,
   },
   profile: {
@@ -93,8 +93,7 @@ export type AddressProps = {
 export type VehicleProps = {
   form: onboardingValues;
   updateVehicle: (
-    key:
-      "manufacturer" | "model" | "year" | "colour" | "licensePlate" | "seats",
+    key: "make" | "model" | "year" | "colour" | "licensePlate" | "seats",
     value: string | number,
   ) => void;
 };
@@ -113,21 +112,18 @@ export type LicenseProps = {
     key: "front" | "back" | "expiry" | "number",
     value: string | File | null,
   ) => void;
+  pageNum: number;
 };
 
-export type pagesStructure = {
+export type PageStructure = {
   element: React.ReactNode;
   title?: string;
-  subtitle?: string;
-  optional: boolean;
-  key: keyof onboardingValues;
-  verificationFunction: (
-    key: keyof onboardingValues,
-    skip: boolean,
-    optionalFields: string[],
-  ) => boolean;
-  optionalFields: string[];
+  section: number;
+  optional?: boolean;
+  requiredValues: () => unknown[];
 };
+
+export type PagesStructure = PageStructure[];
 
 export type driverProfile = {
   fullName: string;
@@ -137,4 +133,65 @@ export type driverProfile = {
   driverOnboarding: boolean;
   rating: number;
   totalTrips: number;
+  approvalStatus: "APPROVED" | "PENDING" | "REJECTED";
+  vehicle: VehicleStructure;
+};
+
+export type VehicleStructure = {
+  make: string;
+  model: string;
+  year: number;
+  color: string;
+  licensePlate: string;
+  seats: number;
+  vehicleType: VehicleType;
+  approved: boolean;
+};
+
+enum VehicleType {
+  SEDAN,
+  SUV,
+}
+
+export type UploadProps = {
+  updateLicense: (
+    key: "number" | "front" | "back" | "expiry",
+    value: string | File | null,
+  ) => void;
+  form: onboardingValues;
+} & Partial<DropzoneProps>;
+
+export type CompleteDriverOnboardingRequest = {
+  driver: {
+    name: string;
+    phone: string;
+    DoB: string | null;
+  };
+  address: {
+    address: string;
+  };
+  license: {
+    front: string;
+    back: string;
+    expiry: string | null;
+    number: string;
+  };
+  vehicle: {
+    make: string;
+    model: string;
+    year: string;
+    colour: string;
+    licensePlate: string;
+    seats: number;
+  };
+  insurance: {
+    insurance: string;
+    expiration: string | null;
+  };
+  profile: {
+    profilePicture: string;
+  };
+  background: {
+    consent: boolean;
+  };
 };

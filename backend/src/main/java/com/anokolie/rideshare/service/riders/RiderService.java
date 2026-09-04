@@ -34,6 +34,14 @@ public class RiderService {
         RiderProfile riderProfile = riderRepository.findById(user.getId()).orElseThrow(()-> new RuntimeException("Rider profile doesnt exist"));
         if(rider.getHomeAddress() != null)
             riderProfile.setHomeAddress(rider.getHomeAddress());
+
+        if(rider.getHomePlaceId() != null)
+            riderProfile.setHomePlaceId(rider.getHomePlaceId());
+        if(rider.getHomeLatitude() != null)
+            riderProfile.setHomeLatitude(rider.getHomeLatitude());
+        if(rider.getHomeLongitude() != null)
+            riderProfile.setHomeLongitude(rider.getHomeLongitude());
+        riderRepository.save(riderProfile);
         return riderMapper.toResponse(riderProfile);
     }
 

@@ -1,17 +1,6 @@
 import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
-import type { UserRole } from "~/types/user";
-
-type User = {
-  firstName: string;
-  lastName: string;
-  email: string;
-  profilePic: string;
-  role: UserRole;
-  emailVerified: boolean;
-  id: string;
-  phoneNumber: string;
-};
+import type { UserRole, User } from "~/types/user";
 
 type UserStore = {
   user: User | null;

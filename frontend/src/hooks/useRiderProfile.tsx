@@ -1,9 +1,11 @@
 import { useState } from "react";
 import { riderProfileValues, type riderStructure } from "~/types/riderProfile";
+import { getHomeCoordinates } from "../utils/address";
 
 export const useRiderProfile = () => {
-  const [changes, setChanges] = useState(false);
+  const [changes, _setChanges] = useState(false);
   const [disableBtn, setDisableBtn] = useState(true);
+  const [changedAddress, setChangedAddress] = useState(false);
   const [form, setForm] = useState<riderStructure>(riderProfileValues);
 
   const updatePersonalInfo = (
@@ -34,8 +36,9 @@ export const useRiderProfile = () => {
   };
   const updateRiderInfo = (
     key: keyof riderStructure["riderInfo"],
-    value: string,
+    value: string | number,
   ) => {
+    if (key === "homeAddress") setChangedAddress(true);
     setForm((prev) => ({
       ...prev,
       riderInfo: {
@@ -45,12 +48,24 @@ export const useRiderProfile = () => {
     }));
     flipDisableBtn();
   };
+  const getHomeDetails = async () => {
+    if (!form.riderInfo.homeAddress) return;
+    const { lat, lng, placeId } = await getHomeCoordinates(
+      form.riderInfo.homeAddress,
+    );
+    updateRiderInfo("homePlaceId", placeId);
+    updateRiderInfo("homeLatitude", lat);
+    updateRiderInfo("homeLongitude", lng);
+  };
+
   const flipDisableBtn = () => {
     setDisableBtn(false);
   };
   return {
     form,
     disableBtn,
+    changedAddress,
+    getHomeDetails,
     changes,
     updatePersonalInfo,
     updateProfile,

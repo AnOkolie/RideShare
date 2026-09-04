@@ -1,45 +1,31 @@
 package com.anokolie.rideshare.controllers;
 
-import com.anokolie.rideshare.dto.RouteRequest;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.MediaType;
-import org.springframework.http.RequestEntity;
+import com.anokolie.rideshare.dto.route.RouteRequest;
+import com.anokolie.rideshare.dto.route.RouteResponse;
+import com.anokolie.rideshare.service.RouteService;
+import jakarta.validation.Valid;
+import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.client.RestClient;
-
-import java.util.Map;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/routes")
+@AllArgsConstructor
 public class RouteController {
-    @Value("${google.api.key}")
-    private String apiKey;
-    private RestClient restClient;
+    private final RouteService routeService;
     @PostMapping("/calculate")
-    public ResponseEntity<String> calculateDistance (@RequestBody RouteRequest routeRequest){
-        String googleUrl = "https://googleapis.com" + apiKey;
-        Map<String, Object> googlePayload = Map.of(
-                "origin", Map.of("address", routeRequest.getOrigin().getAddress()),
-                "destination", Map.of("address", routeRequest.getDestination().getAddress()),
-                "travelMode", "DRIVE",
-                "routingPreference", "TRAFFIC_AWARE"
-        );
+    public ResponseEntity<RouteResponse> calculateDistance(
+            @Valid @RequestBody RouteRequest routeRequest
+    ) {
         try {
-            String jsonResponse = restClient.post()
-                    .uri(googleUrl)
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .header("X-Goog-FieldMask", "routes.duration,routes.distanceMeters,routes.polyline.encodedPolyline")
-                    .body(googlePayload)
-                    .retrieve()
-                    .body(String.class);
-
-            return ResponseEntity.ok(jsonResponse);
-        } catch (Exception e) {
-            return ResponseEntity.internalServerError().body("Error calling Google Routes API: " + e.getMessage());
+            RouteRequest.AddressWrapper origin = routeRequest.getOrigin();
+            RouteRequest.AddressWrapper dest = routeRequest.getOrigin();
+            RouteResponse response = routeService.calculateDistance(origin.getLatitude(), origin.getLongitude(),dest.getLatitude(), dest.getLongitude());
+            return ResponseEntity.ok(response);
+        } catch (Exception exception) {
+//            return ResponseEntity.internalServerError()
+//                    .body("Error calling Google Routes API: " + exception.getMessage());
+            return ResponseEntity.internalServerError().build();
         }
     }
 }

@@ -15,6 +15,9 @@ export type onboardingValues = {
 
   home: {
     address: string;
+    placeId: string;
+    latitude: number;
+    longitude: number;
   };
 
   payment: {
@@ -77,6 +80,9 @@ export const defaultOnboarding = {
   },
   home: {
     address: "",
+    placeId: "",
+    latitude: 0,
+    longitude: 0,
   },
 
   payment: {
@@ -117,4 +123,7 @@ export type riderProfile = {
   firstName: string;
   lastName: string;
   homeAddress: string;
+  homePlaceId: string;
+  homeLatitude: number;
+  homeLongitude: number;
 };

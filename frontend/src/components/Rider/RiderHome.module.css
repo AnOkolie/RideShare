@@ -1,0 +1,75 @@
+/* RiderHome.module.css */
+.page {
+  min-height: 100%;
+  padding: var(--mantine-spacing-lg);
+  background: var(--rw-page);
+}
+
+.bookingLayout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 360px;
+  gap: var(--mantine-spacing-md);
+  align-items: stretch;
+}
+
+.mapPanel {
+  min-height: 500px;
+  overflow: hidden;
+  background: var(--rw-surface);
+  border-color: var(--rw-border);
+}
+
+.bookingPanel {
+  align-self: start;
+  background: var(--rw-surface);
+  border-color: var(--rw-border);
+}
+
+.savedPlace {
+  display: flex;
+  align-items: center;
+  gap: var(--mantine-spacing-sm);
+  width: 100%;
+  padding: var(--mantine-spacing-sm);
+  border-radius: var(--mantine-radius-sm);
+  text-align: left;
+  transition: background-color 150ms ease;
+}
+
+.savedPlace:hover {
+  background: var(--rw-accent-soft);
+}
+
+.savedPlace:focus-visible {
+  outline: 2px solid var(--mantine-color-ridewave-7);
+  outline-offset: 2px;
+}
+
+.placeIcon {
+  margin-left: auto;
+  color: var(--mantine-color-dimmed);
+}
+
+@media (max-width: 62em) {
+  .bookingLayout {
+    grid-template-columns: 1fr;
+  }
+
+  .mapPanel {
+    min-height: 360px;
+  }
+
+  .bookingPanel {
+    width: 100%;
+  }
+}
+
+@media (max-width: 36em) {
+  .page {
+    padding: var(--mantine-spacing-md);
+  }
+
+  .mapPanel {
+    min-height: 280px;
+  }
+}

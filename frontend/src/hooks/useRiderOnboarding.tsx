@@ -1,6 +1,7 @@
 import { useState } from "react";
 import type { onboardingValues } from "~/types/Onboarding/Rider";
 import { defaultOnboarding } from "~/types/Onboarding/Rider";
+import { getHomeCoordinates } from "../utils/address";
 
 export const useRiderOnboarding = () => {
   const [form, setForm] = useState<onboardingValues>(defaultOnboarding);
@@ -66,6 +67,16 @@ export const useRiderOnboarding = () => {
     }));
   };
 
+  const getHomeDetails = async () => {
+    if (!form.home.address) return;
+    const { lat, lng, placeId } = await getHomeCoordinates(
+      form.address.address,
+    );
+    updateAddress("placeId", placeId);
+    updateAddress("latitude", lat);
+    updateAddress("longitude", lng);
+  };
+
   const isCurrentPageValid = <K extends keyof onboardingValues>(
     key: K,
     skip: boolean,
@@ -106,5 +117,6 @@ export const useRiderOnboarding = () => {
     updateAvatar,
     updateEmergencyContact,
     isCurrentPageValid,
+    getHomeDetails,
   };
 };

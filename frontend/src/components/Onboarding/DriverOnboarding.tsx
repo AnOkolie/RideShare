@@ -11,24 +11,24 @@ import {
   Stack,
 } from "@mantine/core";
 import { BackgroundCheck } from "./DriverOnboarding/BackgroundCheck";
-import { DriverLicense } from "./DriverOnboarding/DriverLicense";
 import { HomeAddress } from "./DriverOnboarding/HomeAddress";
 import { PersonalInfo } from "./DriverOnboarding/PersonalInfo";
 import { ProfilePhoto } from "./DriverOnboarding/ProfilePhoto";
 import { VehicleInfo } from "./DriverOnboarding/VehicleInfo";
 import { VehicleInsurance } from "./DriverOnboarding/VehicleInsurance";
 import { WelcomePage } from "./DriverOnboarding/WelcomePage";
-import { useState } from "react";
-import type { onboardingValues } from "~/types/Onboarding/Driver";
 import { useDriverOnboarding } from "~/hooks/useDriverOnboarding";
-import type { pagesStructure } from "~/types/Onboarding/Driver";
-import { useEffect } from "react";
-import { useSubmit } from "react-router-dom";
+import { ExpiryUpload } from "./DriverOnboarding/DriverLicense/LicenseExpiry";
+import { LicenseNumber } from "./DriverOnboarding/DriverLicense/LicenseNumber";
+import { LicenseBack } from "./DriverOnboarding/DriverLicense/LicenseBack";
+import { LicenseFront } from "./DriverOnboarding/DriverLicense/LicenseFront";
+import type { PagesStructure } from "~/types/Onboarding/Driver";
 export const DriverOnboarding = () => {
   const {
     form,
-    disableBtn,
-    setDisabelBtn,
+    pageNumber,
+    handleNext,
+    handlePrev,
     updateAddress,
     updateDriver,
     updateProfilePhoto,
@@ -36,126 +36,101 @@ export const DriverOnboarding = () => {
     updateBackground,
     updateVehicle,
     updateLicense,
-    isCurrentPageValid,
+    isPageInvalid,
   } = useDriverOnboarding();
-
-  const pages: pagesStructure[] = [
+  const pages: PagesStructure = [
     {
+      section: 0,
+      optional: false,
+      requiredValues: () => [
+        form.driver.name,
+        form.driver.DoB,
+        form.driver.phone,
+      ],
       element: <PersonalInfo form={form} updateDriver={updateDriver} />,
-      optional: false,
-      key: "driver",
-      verificationFunction: (
-        key: keyof onboardingValues,
-        skip: boolean,
-        optionalFields: string[],
-      ) => {
-        return isCurrentPageValid(key, skip, optionalFields);
-      },
-      optionalFields: ["profilePicture"],
     },
+
     {
+      section: 1,
+      optional: true,
+      requiredValues: () => [form.address.address],
       element: <HomeAddress form={form} updateAddress={updateAddress} />,
-      optional: true,
-      key: "address",
-      optionalFields: [],
-      verificationFunction: (
-        key: keyof onboardingValues,
-        skip: boolean,
-        optionalFields: string[],
-      ) => {
-        return isCurrentPageValid(key, skip, optionalFields);
-      },
     },
+
     {
-      element: <DriverLicense form={form} updateLicense={updateLicense} />,
+      section: 2,
       optional: false,
-      key: "license",
-      optionalFields: [],
-      verificationFunction: (
-        key: keyof onboardingValues,
-        skip: boolean,
-        optionalFields: string[],
-      ) => {
-        return isCurrentPageValid(key, skip, optionalFields);
-      },
+      requiredValues: () => [form.license.front],
+      element: <LicenseFront updateLicense={updateLicense} form={form} />,
     },
+
     {
+      section: 2,
+      optional: false,
+      requiredValues: () => [form.license.back],
+      element: <LicenseBack updateLicense={updateLicense} form={form} />,
+    },
+
+    {
+      section: 2,
+      optional: false,
+      requiredValues: () => [form.license.expiry],
+      element: <ExpiryUpload updateLicense={updateLicense} form={form} />,
+    },
+
+    {
+      section: 2,
+      optional: false,
+      requiredValues: () => [form.license.number],
+      element: <LicenseNumber updateLicense={updateLicense} form={form} />,
+    },
+
+    {
+      section: 3,
+      optional: false,
+      requiredValues: () => [
+        form.vehicle.make,
+        form.vehicle.model,
+        form.vehicle.year,
+        form.vehicle.colour,
+        form.vehicle.licensePlate,
+        form.vehicle.seats,
+      ],
       element: <VehicleInfo form={form} updateVehicle={updateVehicle} />,
-      optional: true,
-      key: "vehicle",
-      optionalFields: [],
-      verificationFunction: (
-        key: keyof onboardingValues,
-        skip: boolean,
-        optionalFields: string[],
-      ) => {
-        return isCurrentPageValid(key, skip, optionalFields);
-      },
     },
+
     {
+      section: 4,
+      optional: false,
+      requiredValues: () => [
+        form.insurance.insurance,
+        form.insurance.expiration,
+      ],
       element: (
         <VehicleInsurance form={form} updateInsurance={updateInsurance} />
       ),
-      optional: true,
-      key: "insurance",
-      optionalFields: [],
-      verificationFunction: (
-        key: keyof onboardingValues,
-        skip: boolean,
-        optionalFields: string[],
-      ) => {
-        return isCurrentPageValid(key, skip, optionalFields);
-      },
     },
+
     {
+      section: 5,
+      optional: true,
+      requiredValues: () => [form.profile.profilePicture],
       element: (
         <ProfilePhoto form={form} updateProfilePhoto={updateProfilePhoto} />
       ),
-      optional: true,
-      key: "profile",
-      optionalFields: [],
-      verificationFunction: (
-        key: keyof onboardingValues,
-        skip: boolean,
-        optionalFields: string[],
-      ) => {
-        return isCurrentPageValid(key, skip, optionalFields);
-      },
     },
+
     {
+      section: 6,
+      optional: false,
+      requiredValues: () => [form.background.consent],
       element: (
         <BackgroundCheck form={form} updateBackground={updateBackground} />
       ),
-      optional: true,
-      key: "background",
-      optionalFields: [],
-      verificationFunction: (
-        key: keyof onboardingValues,
-        skip: boolean,
-        optionalFields: string[],
-      ) => {
-        return isCurrentPageValid(key, skip, optionalFields);
-      },
     },
   ];
-  const submit = useSubmit();
-  const handlePrev = () => {
-    setPageNumber(pageNumber - 1);
-  };
-  const handleNext = () => {
-    if (pageNumber < pages.length) {
-      setPageNumber(pageNumber + 1);
-    }
-  };
-  const [pageNumber, setPageNumber] = useState(-1);
-  useEffect(() => {
-    if (pageNumber === pages.length) {
-      const form = new FormData();
-      form.append("status", "true");
-      form.append("onboarding-type", "driver");
-      submit(form, { method: "PATCH" });
-    }
-  }, [pageNumber]);
+  const page = pages[pageNumber];
+
   return (
     <Box
       style={{
@@ -179,7 +154,7 @@ export const DriverOnboarding = () => {
             <Stack>
               <Text>Driver Application</Text>
               <Stepper
-                active={pageNumber}
+                active={page.section}
                 size="sm"
                 iconSize={36}
                 p={"md"}
@@ -189,7 +164,6 @@ export const DriverOnboarding = () => {
                   stepIcon: { width: 32, height: 32 }, // Smaller icons
                 }}
               >
-                <Stepper.Step description="Welcome" />
                 <Stepper.Step description="Personal Info" />
                 <Stepper.Step description="Home Address" />
                 <Stepper.Step description="Driver License" />
@@ -214,21 +188,11 @@ export const DriverOnboarding = () => {
                 </Box>
               )}
             </Transition>
-            <Group justify="space-between">
-              <Divider orientation="vertical" />
+            <Group justify="space-around">
               <Button onClick={handlePrev}>Back</Button>
               <Button
-                onClick={handleNext}
-                disabled={
-                  disableBtn ||
-                  (pageNumber > 0
-                    ? pages[pageNumber].verificationFunction(
-                        pages[pageNumber].key,
-                        pages[pageNumber].optional,
-                        pages[pageNumber].optionalFields,
-                      )
-                    : false)
-                }
+                onClick={() => handleNext(pageNumber === pages.length - 1)}
+                disabled={isPageInvalid(page)}
               >
                 {pageNumber < pages.length - 1 ? "Next" : "Finish"}
               </Button>

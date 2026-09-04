@@ -11,6 +11,6 @@ export default defineConfig({
     },
   },
   optimizeDeps: {
-    include: ["react-router-dom", "tabler/icons-react"],
+    include: ["react-router-dom"],
   },
 });

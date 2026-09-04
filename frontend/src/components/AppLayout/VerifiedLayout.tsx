@@ -2,7 +2,6 @@ import {
   ActionIcon,
   AppShell,
   Box,
-  Container,
   Group,
   TextInput,
   Text,
@@ -55,7 +54,7 @@ export const VerifiedLayout = () => {
     {
       text: "Account",
       icon: IconUser,
-      path: "/driver/profile",
+      path: "/profile",
     },
   ];
   const riderOptions = [
@@ -142,9 +141,7 @@ export const VerifiedLayout = () => {
             // background: "linear-gradient(135deg, #0f172a 0%, #1e293b 100%)",
           }}
         >
-          <Container size={600}>
-            <Outlet />
-          </Container>
+          <Outlet />
         </Box>
       </AppShell.Main>
     </AppShell>

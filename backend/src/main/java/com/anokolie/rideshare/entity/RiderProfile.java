@@ -13,7 +13,7 @@ import java.math.BigDecimal;
 @ToString
 public class RiderProfile extends BaseEntity {
 
-    @Id
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @OneToOne(optional = false)
@@ -25,4 +25,7 @@ public class RiderProfile extends BaseEntity {
     private Integer totalTrips = 0;
     private Boolean onboarding = false;
     private String homeAddress;
+    private String homePlaceId;
+    private Double homeLatitude;
+    private Double homeLongitude;
 }

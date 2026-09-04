@@ -1,7 +1,7 @@
 package com.anokolie.rideshare.enums;
 public enum DocumentType {
-
-    LICENSE,
-    INSURANCE,
-    REGISTRATION
+    LICENSE_FRONT,
+    LICENSE_BACK,
+    INSURANCE_DOCUMENT,
+    PROFILE_PICTURE
 }

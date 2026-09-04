@@ -1,20 +1,25 @@
-import { getTripOptions } from "~/api/trips";
+import { calculateFare } from "~/api/trips";
 import type { ActionFunctionArgs } from "react-router";
 export const riderAction = async ({ request }: ActionFunctionArgs) => {
   const formData = await request.formData();
-  const intent = formData.get("intent");
-  switch (intent) {
-    case "request-ride":
-      return rider(formData);
-  }
+  return rider(formData);
 };
 
 const rider = async (formData: FormData) => {
   if (!formData) return;
-  const pickupLat = formData.get("pickup-latitiude")?.toString();
+  const pickupLat = formData.get("pickup-latitude")?.toString();
   const pickupLong = formData.get("pickup-longitude")?.toString();
-  const destLat = formData.get("destination-latitiude")?.toString();
+  const destLat = formData.get("destination-latitude")?.toString();
   const destLong = formData.get("destination-longitude")?.toString();
   if (!pickupLat || !pickupLong || !destLat || !destLong) return;
-  await getTripOptions(pickupLat, pickupLong, destLat, destLong);
+  console.log("rider");
+  const body = {
+    pickupLatitude: Number(pickupLat),
+    pickupLongitude: Number(pickupLong),
+    destinationLatitude: Number(destLat),
+    destinationLongitude: Number(destLong),
+  };
+  const result = await calculateFare(body);
+  console.log(result);
+  return result;
 };

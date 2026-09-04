@@ -9,7 +9,7 @@ type props = {
     value: string,
   ) => void;
 };
-export const ProfileHero = ({ handleFieldChange }: props) => {
+export const ProfileHero = ({}: props) => {
   const userProfile = useUserStore((s) => s.user);
   const role = useUserStore((s) => s.role);
   const driver = driverStore((s) => s.driver);

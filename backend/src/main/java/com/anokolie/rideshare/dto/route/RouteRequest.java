@@ -1,4 +1,4 @@
-package com.anokolie.rideshare.dto;
+package com.anokolie.rideshare.dto.route;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -9,6 +9,7 @@ public class RouteRequest {
     private AddressWrapper destination;
     @Getter @Setter
     public static class AddressWrapper {
-        private String address;
+        private Double latitude;
+        private Double longitude;
     }
 }

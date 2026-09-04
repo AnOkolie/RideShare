@@ -15,12 +15,12 @@ export const updateRiderOnboarding = async (id: string, status: boolean) =>
     JSON.stringify({ status }),
   );
 
-export const updateDriverOnboarding = async (id: string, status: boolean) =>
+export const updateDriverOnboarding = async (id: string, profile: string) =>
   await request(
     RequestMethods.PATCH,
     `api/onboarding/driver/${id}`,
     undefined,
-    JSON.stringify({ status }),
+    profile,
   );
 
 export const checkRiderOnboarding = async (

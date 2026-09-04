@@ -11,20 +11,15 @@ import lombok.*;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@Data
 public class Vehicle extends BaseEntity {
-
-
     @Id
     @GeneratedValue(strategy=GenerationType.IDENTITY)
     private Long id;
-
-
-    @ManyToOne
+    @OneToOne
     @JoinColumn(name="driver_id")
+    @MapsId
     private DriverProfile driver;
-
-
-
     private String make;
 
     private String model;
@@ -37,11 +32,7 @@ public class Vehicle extends BaseEntity {
 
     private Integer seats;
 
-
-
     @Enumerated(EnumType.STRING)
     private VehicleType vehicleType;
-
-
     private Boolean approved;
 }

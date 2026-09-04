@@ -15,6 +15,9 @@ public class RiderMapper {
         newResponse.setRating(riderProfile.getRating());
         newResponse.setTotalTrips(riderProfile.getTotalTrips());
         newResponse.setHomeAddress(riderProfile.getHomeAddress());
+        newResponse.setHomeLatitude(riderProfile.getHomeLatitude());
+        newResponse.setHomeLongitude(riderProfile.getHomeLongitude());
+        newResponse.setHomePlaceId(riderProfile.getHomePlaceId());
         return newResponse;
     }
 }

@@ -8,12 +8,12 @@ export type driverShape = {
   rating: number;
 };
 
-export type userStructure = {
-  email: string;
-  emailVerified: boolean;
+export type User = {
   firstName: string;
   lastName: string;
+  email: string;
+  profilePic: string;
+  emailVerified: boolean;
   id: string;
   phoneNumber: string;
-  profilePic: string;
 };

@@ -36,9 +36,10 @@ export const request = async <Type>(
     }
     return { error: await res.json() };
   } catch (err) {
+    console.log(err);
     return {
       error: {
-        status: 400,
+        status: 500,
         message: "Internal server error",
       },
     };

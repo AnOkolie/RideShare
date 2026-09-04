@@ -135,6 +135,7 @@ export const RiderOnBoarding = () => {
   useEffect(() => {
     if (finish) {
       const form = new FormData();
+      getHomeDetails();
       form.append("status", "true");
       form.append("onboarding-type", "rider");
       submit(form, { method: "PATCH" });

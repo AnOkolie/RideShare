@@ -2,6 +2,8 @@ import { RequestMethods, type RequestResolve } from "~/types/request";
 import type {
   calculateDistanceStructure,
   Distance,
+  RequestRideStructure,
+  tripFare,
   TripOptions,
 } from "~/types/trips";
 import { request } from "~/utils/requests/requests";
@@ -14,7 +16,7 @@ export const getTripOptions = async (
 ): Promise<RequestResolve<TripOptions>> =>
   await request(
     RequestMethods.POST,
-    "/api/trips/options",
+    "api/trips/options",
     undefined,
     JSON.stringify({
       pickupLat,
@@ -29,7 +31,17 @@ export const calculateDistance = async (
 ): Promise<RequestResolve<Distance>> =>
   await request(
     RequestMethods.POST,
-    "/api/routes/calculate",
+    "api/routes/calculate",
+    undefined,
+    JSON.stringify(body),
+  );
+
+export const calculateFare = async (
+  body: RequestRideStructure,
+): Promise<RequestResolve<tripFare>> =>
+  await request(
+    RequestMethods.POST,
+    "api/trips/quote",
     undefined,
     JSON.stringify(body),
   );
