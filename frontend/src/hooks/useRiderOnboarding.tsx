@@ -32,7 +32,7 @@ export const useRiderOnboarding = () => {
   };
   const updateAddress = (
     key: keyof onboardingValues["home"],
-    value: string,
+    value: string | number,
   ) => {
     setForm((prev) => ({
       ...prev,
@@ -69,9 +69,7 @@ export const useRiderOnboarding = () => {
 
   const getHomeDetails = async () => {
     if (!form.home.address) return;
-    const { lat, lng, placeId } = await getHomeCoordinates(
-      form.address.address,
-    );
+    const { lat, lng, placeId } = await getHomeCoordinates(form.home.address);
     updateAddress("placeId", placeId);
     updateAddress("latitude", lat);
     updateAddress("longitude", lng);

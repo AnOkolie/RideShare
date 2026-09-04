@@ -6,10 +6,7 @@ import type {
 } from "~/types/Onboarding/Driver";
 import { defaultOnboarding } from "~/types/Onboarding/Driver";
 import { s3Upload } from "~/utils/aws/s3Upload";
-import {
-  formatDriverOnboarding,
-  driverOnboardingStructure,
-} from "~/utils/formatResponse/driverOnboarding";
+import { driverOnboardingStructure } from "~/utils/formatResponse/driverOnboarding";
 import { displayNotifications } from "~/utils/notifications/displayNotification";
 
 export const useDriverOnboarding = () => {
@@ -44,7 +41,15 @@ export const useDriverOnboarding = () => {
         "red",
       );
     }
-    const { license, insurance, profile } = await fileUpload();
+    const { license, insurance } = await fileUpload();
+    if (
+      !license ||
+      !license.backKey ||
+      !license.frontKey ||
+      !insurance ||
+      !insurance.insuranceKey
+    )
+      return;
     const formData = new FormData();
     formData.append("intent", "update");
     formData.append(
@@ -54,7 +59,7 @@ export const useDriverOnboarding = () => {
           form,
           license.frontKey,
           license.backKey,
-          insurance,
+          insurance.insuranceKey,
         ),
       ),
     );

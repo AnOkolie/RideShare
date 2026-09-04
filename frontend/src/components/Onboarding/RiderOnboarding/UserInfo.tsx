@@ -1,4 +1,4 @@
-import { Card, TextInput, Group, Stack } from "@mantine/core";
+import { TextInput, Group, Stack } from "@mantine/core";
 import { PhoneInput } from "../Utilities/PhoneInput";
 import type { UserProps } from "~/types/Onboarding/Rider";
 import { AvatarElement } from "../Utilities/AvatarElement";

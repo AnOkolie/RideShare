@@ -1,4 +1,4 @@
-import { Card, Group, TextInput } from "@mantine/core";
+import { Group, TextInput } from "@mantine/core";
 import type { PaymentProps } from "~/types/Onboarding/Rider";
 export const PaymentInfo = ({ form, updatePayment }: PaymentProps) => {
   return (

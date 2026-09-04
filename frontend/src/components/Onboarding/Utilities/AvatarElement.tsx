@@ -1,5 +1,4 @@
 import { Avatar, Box, FileButton, Overlay, Tooltip } from "@mantine/core";
-import type { onboardingValues } from "~/types/Onboarding/Rider";
 
 type AvatarProps = {
   image: File | null;

@@ -1,5 +1,4 @@
 import { Group, Indicator, Stack, Text } from "@mantine/core";
-import type { driverProfile } from "~/types/Onboarding/Driver";
 import { driverStore } from "~/zustand/driverStore";
 
 type approvalStatus = "APPROVED" | "PENDING" | "REJECTED";

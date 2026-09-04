@@ -44,6 +44,7 @@ export const RiderOnBoarding = () => {
     updatePayment,
     updateAvatar,
     isCurrentPageValid,
+    getHomeDetails,
   } = useRiderOnboarding();
   const pages: pagesStructure[] = [
     {

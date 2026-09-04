@@ -1,5 +1,4 @@
 import {
-  MantineProvider,
   createTheme,
   Paper,
   Container,

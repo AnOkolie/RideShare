@@ -23,15 +23,16 @@ export const updateAction = async ({ request }: ActionFunctionArgs) => {
   switch (type) {
     case "rider":
       const rider = await updateRiderOnboarding(id, true);
-      console.log("rider");
-      setRider(rider);
+      if (!rider || !rider.data) return;
+      setRider(rider.data);
       return rider;
     case "driver":
+      //You probabluy need to verify the type in the api sync user file (Im tired rn)
       const driverProfile = formData.get("driver")?.toString();
       if (!driverProfile) return;
       console.log("driver profile: ", driverProfile);
       const driver = await updateDriverOnboarding(id, driverProfile);
-      console.log(driver);
+      if (!driver || !driver.data) return;
       setDriver(driver.data);
       return driver;
   }

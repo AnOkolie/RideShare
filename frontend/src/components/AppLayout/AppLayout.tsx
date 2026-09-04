@@ -1,4 +1,4 @@
-import { Group, Button, AppShell, Pill, Flex } from "@mantine/core";
+import { Group, Button, AppShell, Flex } from "@mantine/core";
 import {
   DRIVER_LOGIN_TEXT,
   RIDER_LOGIN_TEXT,

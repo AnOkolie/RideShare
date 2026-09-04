@@ -1,13 +1,16 @@
-import type { syncUser } from "~/types/auth/auth";
 import type { driverProfile } from "~/types/Onboarding/Driver";
 import type { riderProfile } from "~/types/Onboarding/Rider";
 import { RequestMethods, type RequestResolve } from "~/types/request";
+import type { User } from "~/types/user";
 import { request } from "~/utils/requests/requests";
 
-export const getUser = async (): Promise<RequestResolve<syncUser>> =>
+export const getUser = async (): Promise<RequestResolve<User>> =>
   await request(RequestMethods.POST, "api/users/bootstrap");
 
-export const updateRiderOnboarding = async (id: string, status: boolean) =>
+export const updateRiderOnboarding = async (
+  id: string,
+  status: boolean,
+): Promise<RequestResolve<riderProfile>> =>
   await request(
     RequestMethods.PATCH,
     `api/onboarding/rider/${id}`,
@@ -15,7 +18,10 @@ export const updateRiderOnboarding = async (id: string, status: boolean) =>
     JSON.stringify({ status }),
   );
 
-export const updateDriverOnboarding = async (id: string, profile: string) =>
+export const updateDriverOnboarding = async (
+  id: string,
+  profile: string,
+): Promise<RequestResolve<driverProfile>> =>
   await request(
     RequestMethods.PATCH,
     `api/onboarding/driver/${id}`,

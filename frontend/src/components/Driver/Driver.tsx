@@ -1,5 +1,4 @@
-import { Box, Divider, Group, Text, Stack } from "@mantine/core";
-import { useSubmit } from "react-router-dom";
+import { Box } from "@mantine/core";
 import { useLocationHook } from "~/hooks/useDriverLocation";
 export const Driver = () => {
   useLocationHook();
