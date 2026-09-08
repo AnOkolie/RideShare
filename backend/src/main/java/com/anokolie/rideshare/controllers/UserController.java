@@ -37,7 +37,7 @@ public class UserController {
      * @return string
      */
     @PostMapping("/bootstrap")
-    public ResponseEntity<?> bootstrap(@AuthenticationPrincipal Jwt jwt){
+    public ResponseEntity<UserResponse> bootstrap(@AuthenticationPrincipal Jwt jwt){
         logger.info(">>> 'api/auth/bootstrap' is called");
         try{
             User user = userService.syncUser(jwt);
@@ -57,7 +57,7 @@ public class UserController {
                     e.getMessage(),
                     "/api/users/bootstrap"
             );
-            return ResponseEntity.badRequest().body(error); // Returns 400 with payload
+            return ResponseEntity.badRequest().build(); // Returns 400 with payload
         }
     }
     @PatchMapping ("/select-role")

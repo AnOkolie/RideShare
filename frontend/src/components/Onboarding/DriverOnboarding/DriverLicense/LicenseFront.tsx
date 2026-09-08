@@ -23,6 +23,7 @@ export const LicenseFront = ({ updateLicense, form }: UploadProps) => {
     const file = files[0];
     console.log("calling file update: ", file.name);
 
+    setSelectedFile(file);
     updateLicense("front", file);
 
     // setStatus("selected");
@@ -36,7 +37,6 @@ export const LicenseFront = ({ updateLicense, form }: UploadProps) => {
     <FileDropzone
       handleDrop={handleDrop}
       selectedFile={selectedFile}
-      setSelectedFile={setSelectedFile}
       status={status}
       title={LICENSE_FRONT_TEXT}
     />

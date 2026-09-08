@@ -15,7 +15,6 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString
 public class Trips extends BaseEntity {
     @Id
     @GeneratedValue(strategy=GenerationType.IDENTITY)
@@ -36,7 +35,7 @@ public class Trips extends BaseEntity {
     private Integer estimatedDuration;
     private Double actualDistance;
     private Integer actualDuration;
-    private Integer fareCents;
+    private Double fareCents;
     private Integer tipCents;
     private LocalDateTime requestedAt;
     private LocalDateTime acceptedAt;

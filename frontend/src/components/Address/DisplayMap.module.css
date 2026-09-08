@@ -1,0 +1,44 @@
+.wrapper {
+  position: relative;
+  width: 100%;
+}
+
+.currentLocationButton {
+  position: absolute;
+  z-index: 1;
+  bottom: var(--mantine-spacing-lg);
+  left: var(--mantine-spacing-lg);
+  display: grid;
+  width: 48px;
+  height: 48px;
+  place-items: center;
+  color: var(--mantine-color-dark-8);
+  cursor: pointer;
+  background: rgb(255 255 255 / 96%);
+  border: 1px solid var(--rw-border);
+  border-radius: var(--mantine-radius-md);
+  box-shadow: var(--mantine-shadow-sm);
+}
+
+.currentLocationButton:hover:not(:disabled) {
+  color: var(--mantine-color-green-7);
+  background: #fff;
+}
+
+.currentLocationButton:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+.carMarker {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  color: #fff;
+  background: #18794e;
+  border: 3px solid #fff;
+  border-radius: 50%;
+  box-shadow: 0 4px 12px rgb(0 0 0 / 28%);
+}

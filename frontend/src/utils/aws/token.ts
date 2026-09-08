@@ -1,4 +1,6 @@
 import { fetchAuthSession } from "aws-amplify/auth";
+import { Hub } from "aws-amplify/utils";
+import { useUserStore } from "~/zustand/userStore";
 
 export async function getAccessToken() {
   const session = await fetchAuthSession();
@@ -14,4 +16,20 @@ export async function callBackendApi() {
     },
   );
   return response.json();
+}
+
+export function startAuthTokenSync() {
+  return Hub.listen("auth", async ({ payload }) => {
+    switch (payload.event) {
+      case "tokenRefresh":
+        await getAccessToken();
+        break;
+
+      case "signedOut":
+      case "tokenRefresh_failure":
+        useUserStore.getState().setToken("");
+        localStorage.removeItem("accessToken");
+        break;
+    }
+  });
 }

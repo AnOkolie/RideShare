@@ -4,13 +4,16 @@ import type { driverProfile } from "~/types/Onboarding/Driver";
 
 type DriveStore = {
   driver: driverProfile | null;
+  status: "ONLINE" | "OFFLINE" | "BUSY";
   setDriver: (newRider: driverProfile) => void;
+  setStatus: (status: "ONLINE" | "OFFLINE" | "BUSY") => void;
   clearDriver: () => void;
 };
 export const driverStore = create<DriveStore>()(
   persist(
     (set) => ({
       driver: null,
+      status: "OFFLINE",
       setDriver: (newRider) => {
         set({ driver: newRider });
       },
@@ -18,6 +21,7 @@ export const driverStore = create<DriveStore>()(
         set({
           driver: null,
         }),
+      setStatus: (status) => set({ status }),
     }),
     {
       name: "driver-profile",

@@ -1,8 +1,6 @@
 import {
   useEffect,
-  type Dispatch,
   type RefObject,
-  type SetStateAction,
 } from "react";
 import { Stack, Title, Text, rem, Loader, Group } from "@mantine/core";
 import {
@@ -16,15 +14,13 @@ import type { state } from "~/types/dropzone";
 type props = {
   handleDrop: (files: File[]) => void;
   selectedFile: File | null;
-  setSelectedFile: Dispatch<SetStateAction<File | null>>;
   status: RefObject<state>;
-  title: String;
+  title: string;
 } & Partial<DropzoneProps>;
 
 export const FileDropzone = ({
   handleDrop,
   selectedFile,
-  setSelectedFile,
   status,
   title,
   ...props

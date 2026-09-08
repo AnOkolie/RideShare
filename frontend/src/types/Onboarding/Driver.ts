@@ -129,7 +129,7 @@ export type driverProfile = {
   fullName: string;
   lat: number;
   lng: number;
-  status: "accepted" | "declined";
+  status: "ONLINE" | "OFFLINE" | "BUSY";
   driverOnboarding: boolean;
   rating: number;
   totalTrips: number;

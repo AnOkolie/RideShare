@@ -13,6 +13,7 @@ import {
   Card,
   ThemeIcon,
   Group,
+  Button,
 } from "@mantine/core";
 import { IconBriefcase, IconHome, IconMapPin } from "@tabler/icons-react";
 import classes from "./RiderHome.module.css";
@@ -33,16 +34,40 @@ export const Rider = () => {
   const handleSubmit = (e: React.SubmitEvent<HTMLFormElement>) => {
     e.preventDefault();
     console.log("submitting form");
-    const form = new FormData();
-    if (!geoCords || !destination) return;
-    form.append("pickup-latitude", String(geoCords.latitude));
-    form.append("pickup-longitude", String(geoCords.longitude));
-    form.append("destination-latitude", String(destination?.latitude));
-    form.append("destination-longitude", String(destination?.longitude));
+    const form = generateFormSubmission("quote");
+    if (!form) return;
     submit(form, {
       method: "POST",
       action: "/rider",
     });
+  };
+  const requestRideSubmit = (e: React.SubmitEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const form = generateFormSubmission("request-ride");
+    if (!form) return;
+    form.append(
+      "estimatedDistanceMeters",
+      String(fare?.estimatedDistanceMeters),
+    );
+    form.append(
+      "estimatedDurationSeconds",
+      String(fare?.estimatedDurationSeconds),
+    );
+    form.append("estimatedFareCents", String(fare?.estimatedFareCents));
+    submit(form, {
+      method: "POST",
+      action: "/rider",
+    });
+  };
+  const generateFormSubmission = (intent: string) => {
+    const form = new FormData();
+    if (!geoCords || !destination) return;
+    form.append("intent", intent);
+    form.append("pickup-latitude", String(geoCords.latitude));
+    form.append("pickup-longitude", String(geoCords.longitude));
+    form.append("destination-latitude", String(destination?.latitude));
+    form.append("destination-longitude", String(destination?.longitude));
+    return form;
   };
   useEffect(() => {
     if (!actionData) return;
@@ -81,7 +106,9 @@ export const Rider = () => {
                 </Form>
               </Box>
 
-              {fare && <FareDetails fare={fare} />}
+              {fare && (
+                <FareDetails fare={fare} handleSubmit={requestRideSubmit} />
+              )}
 
               <Divider label="Saved places" labelPosition="center" />
 
@@ -138,9 +165,10 @@ export const Rider = () => {
 
 type fareProps = {
   fare: tripFare;
+  handleSubmit: (e: React.SubmitEvent<HTMLFormElement>) => void;
 };
 
-const FareDetails = ({ fare }: fareProps) => {
+const FareDetails = ({ fare, handleSubmit }: fareProps) => {
   const distance = getMetersKilometers(fare.estimatedDistanceMeters);
   const duration = getHoursMinutesSeconds(fare.estimatedDurationSeconds);
   const price = getDollarsAndCents(fare.estimatedFareCents);
@@ -202,6 +230,9 @@ const FareDetails = ({ fare }: fareProps) => {
           </Text>
         </Stack>
       </Group>
+      <Form onSubmit={handleSubmit}>
+        <Button type="submit">Request Ride</Button>
+      </Form>
     </Card>
   );
 };

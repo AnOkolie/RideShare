@@ -119,7 +119,7 @@ export type riderProfile = {
   riderOnboarding: boolean;
   totalTrips: number;
   rating: number;
-  id: String;
+  id: string;
   firstName: string;
   lastName: string;
   homeAddress: string;

@@ -1,6 +1,10 @@
 /* RiderHome.module.css */
 .page {
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 1520px;
   min-height: 100%;
+  margin: 0 auto;
   padding: var(--mantine-spacing-lg);
   background: var(--rw-page);
 }

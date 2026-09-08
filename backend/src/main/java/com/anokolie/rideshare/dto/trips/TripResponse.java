@@ -1,6 +1,7 @@
 package com.anokolie.rideshare.dto.trips;
 
 import com.anokolie.rideshare.entity.Trips;
+import com.anokolie.rideshare.enums.TripStatus;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import org.locationtech.jts.geom.Point;
@@ -8,18 +9,19 @@ import org.locationtech.jts.geom.Point;
 import java.time.LocalDateTime;
 
 public record TripResponse(
-        @NotNull  Long riderId,
-        @NotBlank String status,
-        @NotBlank String pickupAddress,
-        @NotNull Double pickupLatitude,
-        @NotNull Double pickupLongitude,
-        @NotBlank String destinationAddress,
-        @NotNull Double destinationLatitude,
-        @NotNull Double destinationLongitude,
-        @NotNull Double estimatedDistance,
-        @NotNull Integer estimatedDuration,
-        @NotNull Integer fareCents,
-        @NotNull LocalDateTime requestedAt
+        Long id,
+        TripStatus status,
+        String pickupAddress,
+        Double pickupLatitude,
+        Double pickupLongitude,
+        String destinationAddress,
+        Double destinationLatitude,
+        Double destinationLongitude,
+        Double estimatedDistanceMeters,
+        Integer estimatedDurationSeconds,
+        Double fareCents,
+        LocalDateTime requestedAt,
+        Long driverId
 ) {
     public static TripResponse from(Trips trip) {
         System.out.println("Trip response object " +trip);
@@ -27,7 +29,7 @@ public record TripResponse(
         Point destination = trip.getDestinationLocation();
         return new TripResponse(
                 trip.getId(),
-                trip.getStatus().name(),
+                trip.getStatus(),
                 trip.getPickupAddress(),
                 pickup.getY(),       // latitude
                 pickup.getX(),       // longitude
@@ -37,8 +39,8 @@ public record TripResponse(
                 trip.getEstimatedDistance(),
                 trip.getEstimatedDuration(),
                 trip.getFareCents(),
-                trip.getRequestedAt()
-//                trip.getDriver() != null ? trip.getDriver().getId() : null
+                trip.getRequestedAt(),
+                trip.getDriver() != null ? trip.getDriver().getId() : null
         );
     }
 }

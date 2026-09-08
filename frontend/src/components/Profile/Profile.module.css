@@ -1,0 +1,114 @@
+.page {
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 1360px;
+  margin: 0 auto;
+  padding: clamp(20px, 3vw, 40px);
+}
+
+.pageHeading {
+  margin-bottom: var(--mantine-spacing-xl);
+}
+
+.settingsLayout {
+  display: grid;
+  grid-template-columns: 260px minmax(0, 1fr);
+  gap: var(--mantine-spacing-lg);
+  align-items: start;
+}
+
+.settingsNav,
+.contentCard {
+  background: var(--rw-surface);
+  border-color: var(--rw-border);
+  box-shadow: 0 8px 24px rgb(15 23 42 / 4%);
+}
+
+.settingsNav {
+  position: sticky;
+  top: var(--mantine-spacing-lg);
+}
+
+.stepper :global(.mantine-Stepper-step) {
+  padding-bottom: var(--mantine-spacing-md);
+}
+
+.stepper :global(.mantine-Stepper-stepBody) {
+  padding-left: var(--mantine-spacing-xs);
+}
+
+.contentColumn {
+  min-width: 0;
+}
+
+.contentCard {
+  min-height: 470px;
+}
+
+.saveBar {
+  padding: var(--mantine-spacing-md) var(--mantine-spacing-lg);
+  background: var(--rw-surface);
+  border: 1px solid var(--rw-border);
+  border-radius: var(--mantine-radius-md);
+}
+
+.formSection {
+  width: min(100%, 760px);
+}
+
+.heroCard {
+  overflow: hidden;
+  background: linear-gradient(135deg, var(--mantine-color-rideshare-0), #fff 65%);
+  border-color: var(--mantine-color-rideshare-2);
+}
+
+.roleBadge {
+  width: fit-content;
+  text-transform: capitalize;
+}
+
+.metricCard,
+.readOnlyCard {
+  background: #fff;
+  border-color: var(--rw-border);
+}
+
+@media (max-width: 62em) {
+  .settingsLayout {
+    grid-template-columns: 1fr;
+  }
+
+  .settingsNav {
+    position: static;
+  }
+
+  .stepper :global(.mantine-Stepper-steps) {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--mantine-spacing-sm);
+  }
+
+  .stepper :global(.mantine-Stepper-step) {
+    flex: 1 1 190px;
+    padding-bottom: 0;
+  }
+
+  .stepper :global(.mantine-Stepper-separator) {
+    display: none;
+  }
+}
+
+@media (max-width: 36em) {
+  .page {
+    padding: var(--mantine-spacing-md);
+  }
+
+  .contentCard {
+    padding: var(--mantine-spacing-lg);
+  }
+
+  .saveBar {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+}

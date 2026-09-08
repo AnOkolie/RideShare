@@ -11,6 +11,7 @@ export const VehicleInsurance = ({ form, updateInsurance }: InsuranceProps) => {
   const handleDrop = (files: File[]) => {
     const file = files[0];
     console.log("calling file update: ", file.name);
+    setSelectedFile(file);
     updateInsurance("insurance", file);
 
     // setStatus("selected");
@@ -21,7 +22,6 @@ export const VehicleInsurance = ({ form, updateInsurance }: InsuranceProps) => {
       <FileDropzone
         handleDrop={handleDrop}
         selectedFile={selectedFile}
-        setSelectedFile={setSelectedFile}
         status={status}
         title="Insuurance"
       />

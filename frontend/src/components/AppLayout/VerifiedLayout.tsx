@@ -7,6 +7,8 @@ import {
   Text,
   Button,
   Stack,
+  Avatar,
+  UnstyledButton,
 } from "@mantine/core";
 import {
   IconCar,
@@ -16,16 +18,19 @@ import {
   IconWallet,
 } from "@tabler/icons-react";
 import { Icon } from "../Shared/Icon";
-import { Outlet } from "react-router-dom";
+import { Outlet, useLocation } from "react-router-dom";
 import { AppLogo } from "../Images/AppLogo";
 import { IconBell, IconSearch } from "@tabler/icons-react";
 import { logout } from "~/utils/aws/logout";
 import { useNavigate } from "react-router-dom";
 import { useUserStore } from "~/zustand/userStore";
 import { SwitchRoles } from "../Role/SwitchRoles";
+import { driverStore } from "~/zustand/driverStore";
+import classes from "./VerifiedLayout.module.css";
 
 export const VerifiedLayout = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const role = useUserStore((s) => s.role);
   const handleLogout = () => {
     logout();
@@ -33,7 +38,7 @@ export const VerifiedLayout = () => {
   const driverOptions = [
     {
       text: "Drive",
-      path: "/",
+      path: "/driver",
       icon: IconHome,
     },
     {
@@ -61,7 +66,7 @@ export const VerifiedLayout = () => {
     {
       text: "Home",
       icon: IconHome,
-      path: "",
+      path: "/rider",
     },
     {
       text: "My Trips",
@@ -85,64 +90,94 @@ export const VerifiedLayout = () => {
     },
   ];
   const navigationOptions = role === "driver" ? driverOptions : riderOptions;
+  const driver = driverStore((s) => s.driver);
   return (
     <AppShell
       header={{ height: 60 }}
-      styles={{
-        main: {
-          height: "calc(100vh - 60px)",
-          display: "flex",
-          flexDirection: "column",
-        },
-      }}
+      navbar={{ width: 264, breakpoint: "sm" }}
     >
-      <AppShell.Header>
-        <Group justify="space-between" align="center" h="100%" px="md">
-          <AppLogo />
-          <TextInput leftSection={<IconSearch />} />
-          <Group flex={"space-around"}>
-            <ActionIcon variant="outline">
+      <AppShell.Header className={classes.header}>
+        <Group
+          className={classes.headerContent}
+          justify="space-between"
+          align="center"
+          h="100%"
+        >
+          <Box className={classes.brand}>
+            <AppLogo />
+          </Box>
+          <TextInput
+            className={classes.search}
+            leftSection={<IconSearch size={17} />}
+            placeholder="Search trips, riders, or support"
+          />
+          <Group gap="sm">
+            <ActionIcon
+              aria-label="Notifications"
+              className={classes.notification}
+              variant="subtle"
+            >
               <IconBell />
             </ActionIcon>
-            <Button onClick={handleLogout}>Logout</Button>
+            <Button
+              className={classes.logoutButton}
+              onClick={handleLogout}
+              variant="subtle"
+            >
+              Logout
+            </Button>
           </Group>
         </Group>
       </AppShell.Header>
-      <AppShell.Navbar p="md">
-        <Stack p="md" h="100%" justify="space-between">
-          <Stack>
-            {navigationOptions.map((nav) => (
-              <Group
-                key={nav.path}
-                wrap="nowrap"
-                onClick={() => navigate(nav.path)}
-                style={{ cursor: "pointer" }}
-                mb="sm" // Optional: adds spacing between your items
-              >
-                <Icon IconType={nav.icon} />
-                <Text c="rideshare.9" style={{ fontFamily: "sans-serif" }}>
-                  {nav.text}
+      <AppShell.Navbar className={classes.navbar} p={0}>
+        <Stack className={classes.navbarContent} justify="space-between">
+          <Stack gap="xl">
+            <Group className={classes.profile} gap="sm" wrap="nowrap">
+              <Avatar color="rideshare" radius="xl" size={48}>
+                {driver?.fullName?.charAt(0) ?? "D"}
+              </Avatar>
+              <Stack gap={2}>
+                <Text c="white" fw={700} size="sm">
+                  {driver?.fullName ?? "Driver"}
                 </Text>
-              </Group>
-            ))}
+                <Text className={classes.rating} size="xs">
+                  {`★ ${driver?.rating ?? "New"}`}
+                </Text>
+              </Stack>
+            </Group>
+            <Stack gap={10}>
+              {navigationOptions.map((nav) => {
+                const isActive =
+                  location.pathname === nav.path ||
+                  (nav.path === "/" && location.pathname === "/driver");
+
+                return (
+                  <UnstyledButton
+                    key={nav.path}
+                    className={classes.navItem}
+                    data-active={isActive || undefined}
+                    onClick={() => navigate(nav.path)}
+                  >
+                    <Group gap="sm" wrap="nowrap">
+                      <Icon IconType={nav.icon} />
+                      <Text fw={isActive ? 700 : 500} size="sm">
+                        {nav.text}
+                      </Text>
+                    </Group>
+                  </UnstyledButton>
+                );
+              })}
+            </Stack>
           </Stack>
-          <SwitchRoles />
+
+          <Box className={classes.navbarFooter}>
+            <SwitchRoles />
+          </Box>
         </Stack>
       </AppShell.Navbar>
 
-      <AppShell.Main>
-        <Box
-          style={{
-            maxHeight: "100vh",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            backgroundColor: "rideshare.5",
-            // background: "linear-gradient(135deg, #0f172a 0%, #1e293b 100%)",
-          }}
-        >
-          <Outlet />
-        </Box>
+      <AppShell.Main className={classes.mainWorkspace}>
+        <Outlet />
       </AppShell.Main>
     </AppShell>
   );

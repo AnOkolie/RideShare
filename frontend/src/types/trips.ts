@@ -33,9 +33,30 @@ export type tripFare = {
   estimatedFareCents: number;
 };
 
-export type RequestRideStructure = {
+export type RequestQuoteStructure = {
   pickupLatitude: number;
   pickupLongitude: number;
   destinationLatitude: number;
   destinationLongitude: number;
+};
+
+export type RequestRideResponse = {
+  id: string;
+  status: string;
+  pickupAddress: string;
+  pickupLatitude: string;
+  pickupLongitude: string;
+  destinationAddress: string;
+  destinationLatitude: string;
+  destinationLongitude: string;
+  estimatedDistanceMeters: string;
+  estimatedDurationSeconds: string;
+  fareCents: string;
+  requestedAt: string;
+  driverId: string;
+};
+
+export type RequestRideStructure = {
+  trip: RequestQuoteStructure;
+  fare: tripFare;
 };

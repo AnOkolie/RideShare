@@ -3,7 +3,6 @@ import { riderProfileValues, type riderStructure } from "~/types/riderProfile";
 import { getHomeCoordinates } from "../utils/address";
 
 export const useRiderProfile = () => {
-  const [changes, _setChanges] = useState(false);
   const [disableBtn, setDisableBtn] = useState(true);
   const [changedAddress, setChangedAddress] = useState(false);
   const [form, setForm] = useState<riderStructure>(riderProfileValues);
@@ -16,19 +15,6 @@ export const useRiderProfile = () => {
       ...prev,
       personalInfo: {
         ...prev.personalInfo,
-        [key]: value,
-      },
-    }));
-    flipDisableBtn();
-  };
-  const updateProfile = (
-    key: keyof riderStructure["profile"],
-    value: string,
-  ) => {
-    setForm((prev) => ({
-      ...prev,
-      profile: {
-        ...prev.profile,
         [key]: value,
       },
     }));
@@ -66,9 +52,7 @@ export const useRiderProfile = () => {
     disableBtn,
     changedAddress,
     getHomeDetails,
-    changes,
     updatePersonalInfo,
-    updateProfile,
     updateRiderInfo,
   };
 };

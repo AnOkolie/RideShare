@@ -24,4 +24,6 @@ public class DriverLocation extends BaseEntity{
     private Double longitude;
     private Double accuracyMeters;
     private Double heading;
+    private Double speed;
+    private String recordedAt;
 }

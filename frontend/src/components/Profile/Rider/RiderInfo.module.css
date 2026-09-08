@@ -1,0 +1,23 @@
+.section {
+  width: min(100%, 720px);
+  min-width: 0;
+}
+
+.card {
+  background: var(--rw-surface);
+  border-color: var(--rw-border);
+  box-shadow: 0 8px 24px rgb(15 23 42 / 5%);
+}
+
+.privacyNote {
+  padding: var(--mantine-spacing-sm);
+  color: var(--mantine-color-dimmed);
+  background: var(--mantine-color-rideshare-0);
+  border-radius: var(--mantine-radius-sm);
+}
+
+@media (max-width: 36em) {
+  .section {
+    width: 100%;
+  }
+}

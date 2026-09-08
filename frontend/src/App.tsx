@@ -23,7 +23,17 @@ import { driverAction } from "./components/Driver/action";
 import { changeRoleAction } from "./components/Role/action";
 import { profileAction } from "./components/Profile/action";
 import { makeLoader } from "./components/Onboarding/loader";
+import { useEffect } from "react";
+import { getAccessToken, startAuthTokenSync } from "./utils/aws/token";
 function App() {
+  useEffect(() => {
+    const stopListening = startAuthTokenSync();
+
+    void getAccessToken();
+
+    return stopListening;
+  });
+
   const router = createBrowserRouter([
     {
       element: <AppLayout />,

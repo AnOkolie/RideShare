@@ -1,0 +1,82 @@
+.navbar {
+  color: white;
+  background:
+    radial-gradient(circle at 12% 0%, rgb(90 195 135 / 28%), transparent 30%),
+    linear-gradient(180deg, #075337 0%, #043d2a 100%);
+  border-right: 0;
+}
+
+.mainWorkspace {
+  display: flex;
+  width: 100%;
+  min-width: 0;
+  min-height: calc(100vh - 60px);
+  padding: 0;
+  background: var(--rw-page);
+}
+
+.mainWorkspace > * {
+  width: 100%;
+  min-width: 0;
+  min-height: calc(100vh - 60px);
+}
+
+.navbarContent {
+  height: 100%;
+  padding: var(--mantine-spacing-lg) var(--mantine-spacing-md);
+}
+
+.profile {
+  padding: var(--mantine-spacing-sm);
+  border-radius: var(--mantine-radius-md);
+  background: rgb(255 255 255 / 8%);
+}
+
+.rating {
+  color: rgb(255 255 255 / 78%);
+}
+
+.navItem {
+  width: 100%;
+  padding: 11px var(--mantine-spacing-sm);
+  color: rgb(255 255 255 / 82%);
+  border-radius: var(--mantine-radius-md);
+  transition: background-color 150ms ease, color 150ms ease;
+}
+
+.navItem svg {
+  flex: 0 0 auto;
+  width: 20px;
+  height: 20px;
+}
+
+.navItem:hover {
+  color: white;
+  background: rgb(255 255 255 / 11%);
+}
+
+.navItem[data-active] {
+  color: white;
+  background: rgb(255 255 255 / 17%);
+  box-shadow: inset 3px 0 0 var(--mantine-color-rideshare-3);
+}
+
+.navItem:focus-visible {
+  outline: 2px solid white;
+  outline-offset: 2px;
+}
+
+.navbarFooter {
+  padding-top: var(--mantine-spacing-md);
+  border-top: 1px solid rgb(255 255 255 / 15%);
+}
+
+.navbarFooter :global(.mantine-Divider-root) {
+  display: none;
+}
+
+.navbarFooter :global(.mantine-Button-root) {
+  width: 100%;
+  color: white;
+  background: rgb(255 255 255 / 12%);
+}

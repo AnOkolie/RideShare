@@ -35,7 +35,6 @@ export const LicenseBack = ({ updateLicense, form }: UploadProps) => {
     <FileDropzone
       handleDrop={handleDrop}
       selectedFile={selectedFile}
-      setSelectedFile={setSelectedFile}
       status={status}
       title={LICENSE_BACK_TEXT}
     />

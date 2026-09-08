@@ -12,6 +12,7 @@ export const request = async <Type>(
     const requestHeaders = new Headers();
     const token = await getAccessToken();
     const role = useUserStore.getState().role;
+    console.log(token ? "Token is available" : "No token given");
     if (token) {
       requestHeaders.append("Authorization", `Bearer ${token}`);
     }

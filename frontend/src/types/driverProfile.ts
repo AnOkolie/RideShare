@@ -7,3 +7,5 @@ export type driverActionStructure = {
   profilePic: string;
   homeAddress: string;
 };
+
+export type availabilityOptions = "ONLINE" | "OFFLINE" | "BUSY";
