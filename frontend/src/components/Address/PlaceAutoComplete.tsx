@@ -6,7 +6,7 @@ import { useMapsLibrary } from "@vis.gl/react-google-maps";
 import type { PlaceSelection } from "~/types/address/address";
 
 type Props = {
-  placeholderKey: "pickup" | "destination";
+  placeholderKey: "pickup" | "destination" | "home";
   onPlaceSelected: (place: PlaceSelection) => void;
 };
 
@@ -20,6 +20,7 @@ export const PlaceAutocompleteInput = ({
   const placeholderTextMap = {
     pickup: "Enter your pickup location",
     destination: "Enter your destination",
+    home: "Start typing your home address",
   };
 
   useEffect(() => {
@@ -45,6 +46,7 @@ export const PlaceAutocompleteInput = ({
         address: place.formattedAddress ?? "",
         latitude: place.location.lat(),
         longitude: place.location.lng(),
+        placeId: place.id,
       });
     });
 

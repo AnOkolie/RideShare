@@ -27,7 +27,11 @@ import { useUserStore } from "~/zustand/userStore";
 import { SwitchRoles } from "../Role/SwitchRoles";
 import { driverStore } from "~/zustand/driverStore";
 import classes from "./VerifiedLayout.module.css";
+import { useStompHook } from "~/hooks/useStompHook";
+import { createContext, useContext } from "react";
+import { type tripOffer } from "~/types/trips";
 
+const OfferContext = createContext<tripOffer | null>(null);
 export const VerifiedLayout = () => {
   const navigate = useNavigate();
   const location = useLocation();
@@ -91,11 +95,10 @@ export const VerifiedLayout = () => {
   ];
   const navigationOptions = role === "driver" ? driverOptions : riderOptions;
   const driver = driverStore((s) => s.driver);
+  const { subscribeToRideOffers, offer } = useStompHook();
+  subscribeToRideOffers();
   return (
-    <AppShell
-      header={{ height: 60 }}
-      navbar={{ width: 264, breakpoint: "sm" }}
-    >
+    <AppShell header={{ height: 60 }} navbar={{ width: 264, breakpoint: "sm" }}>
       <AppShell.Header className={classes.header}>
         <Group
           className={classes.headerContent}
@@ -177,8 +180,22 @@ export const VerifiedLayout = () => {
       </AppShell.Navbar>
 
       <AppShell.Main className={classes.mainWorkspace}>
-        <Outlet />
+        <OfferContext.Provider value={offer ?? null}>
+          <Outlet />
+        </OfferContext.Provider>
       </AppShell.Main>
     </AppShell>
   );
+};
+
+export const useOfferContext = () => {
+  const role = useUserStore((s) => s.role);
+  if (role !== "driver") {
+    throw new Error("Permission denied");
+  }
+  const context = useContext(OfferContext);
+  if (context === undefined) {
+    throw new Error("Must be used within an Offer Context provider");
+  }
+  return context;
 };

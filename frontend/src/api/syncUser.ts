@@ -1,7 +1,7 @@
 import type { driverProfile } from "~/types/Onboarding/Driver";
 import type { riderProfile } from "~/types/Onboarding/Rider";
 import { RequestMethods, type RequestResolve } from "~/types/request";
-import type { User } from "~/types/user";
+import type { newUser, User } from "~/types/user";
 import { request } from "~/utils/requests/requests";
 
 export const getUser = async (): Promise<RequestResolve<User>> =>
@@ -9,13 +9,13 @@ export const getUser = async (): Promise<RequestResolve<User>> =>
 
 export const updateRiderOnboarding = async (
   id: string,
-  status: boolean,
+  profile: string,
 ): Promise<RequestResolve<riderProfile>> =>
   await request(
     RequestMethods.PATCH,
     `api/onboarding/rider/${id}`,
     undefined,
-    JSON.stringify({ status }),
+    profile,
   );
 
 export const updateDriverOnboarding = async (
@@ -38,3 +38,13 @@ export const checkDriverOnboarding = async (
   id: string,
 ): Promise<RequestResolve<driverProfile>> =>
   await request(RequestMethods.GET, `api/onboarding/driver/state/${id}`);
+
+export const createUser = async (
+  body: newUser,
+): Promise<RequestResolve<User>> =>
+  await request(
+    RequestMethods.POST,
+    "api/public/create-user",
+    undefined,
+    JSON.stringify(body),
+  );

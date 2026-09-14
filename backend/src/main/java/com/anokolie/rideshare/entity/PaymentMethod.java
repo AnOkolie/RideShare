@@ -14,34 +14,18 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Payment {
-
-
     @Id
     @GeneratedValue(strategy=GenerationType.IDENTITY)
     private Long id;
-
-
-
-    @OneToOne
-    @JoinColumn(name="trip_id")
-    private Trips trip;
-
-
-
-    private String stripePaymentIntent;
-
-
-    private Integer amountCents;
-
-
-    private String currency;
-
-
-
-    @Enumerated(EnumType.STRING)
-    private PaymentStatus status;
-
-
+    @ManyToOne(optional = false)
+    @JoinColumn(name="user_id")
+    private User user;
+    @Column(nullable = false, unique = true)
+    private String providerPaymentMethodId;
+    private String brand;
+    private String last4;
+    private Integer expiryMonth;
+    private Integer expiryYear;
+    private boolean defaultPayment = false;
     private LocalDateTime createdAt;
-
 }

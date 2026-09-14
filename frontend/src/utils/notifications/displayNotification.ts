@@ -9,5 +9,6 @@ export const displayNotifications = (
     color: color,
     message: message,
     title: title,
+    autoClose: 5000,
   });
 };

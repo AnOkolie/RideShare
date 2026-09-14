@@ -3,4 +3,5 @@ export type PlaceSelection = {
   address: string;
   latitude: number;
   longitude: number;
+  placeId: string;
 };

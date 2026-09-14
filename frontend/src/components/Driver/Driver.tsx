@@ -23,7 +23,12 @@ import { useLocationHook } from "~/hooks/useDriverLocation";
 import type { availabilityOptions } from "~/types/driverProfile";
 import { driverStore } from "~/zustand/driverStore";
 import classes from "./Driver.module.css";
-import { useEffect, useState } from "react";
+import { useEffect, useState, type Dispatch, type SetStateAction } from "react";
+import { useOfferContext } from "../AppLayout/VerifiedLayout";
+import type { tripOffer } from "~/types/trips";
+import { getMetersKilometers } from "~/utils/measuringUnits";
+import { useActionData, useNavigate, useSubmit } from "react-router-dom";
+import { useUserStore } from "~/zustand/userStore";
 
 const statusColors: Record<availabilityOptions, string> = {
   ONLINE: "green",
@@ -37,19 +42,17 @@ export const Driver = () => {
   const status = driverStore((state) => state.status);
   const { coord } = useLocationHook();
   const [timer, setTimer] = useState(TIMER_FOR_RIDE_ACCEPT);
-
+  const [offer, setOffer] = useState<tripOffer | undefined>(undefined);
+  const trip = useOfferContext();
   useEffect(() => {
-    let intervalId = null;
-    if (timer > 0) {
-      intervalId = setInterval(() => {
-        setTimer(timer - 1);
-      }, 1000);
-    } else if (timer === 0 && intervalId) {
-      clearInterval(intervalId);
+    if (trip) {
+      setOffer(trip);
+      setTimer(TIMER_FOR_RIDE_ACCEPT);
     }
-    return () => {
-      if (intervalId) clearInterval(intervalId);
-    };
+  }, [trip]);
+  useEffect(() => {
+    if (timer > 0) return;
+    setOffer(undefined);
   }, [timer]);
 
   return (
@@ -86,7 +89,9 @@ export const Driver = () => {
         />
         <Box className={classes.mapWash} />
 
-        {timer > 0 && <TripRequestCard timer={timer} />}
+        {timer > 0 && offer && (
+          <TripRequestCard timer={timer} setTimer={setTimer} trip={offer} />
+        )}
 
         <Stack className={classes.statsRail} gap="md">
           <EarningsCard />
@@ -135,8 +140,45 @@ export const Sidebar = ({ status }: SidebarProps) => {
 
 type requestCardProps = {
   timer: number;
+  setTimer: Dispatch<SetStateAction<number>>;
+  trip: tripOffer;
 };
-const TripRequestCard = ({ timer }: requestCardProps) => {
+const TripRequestCard = ({ timer, trip, setTimer }: requestCardProps) => {
+  const submit = useSubmit();
+  const actionData = useActionData();
+  const navigate = useNavigate();
+  useEffect(() => {
+    let intervalId = null;
+    if (timer > 0) {
+      intervalId = setInterval(() => {
+        setTimer(timer - 1);
+      }, 1000);
+    } else if (timer === 0 && intervalId) {
+      clearInterval(intervalId);
+    }
+    return () => {
+      // setOffer(undefined);
+      if (intervalId) clearInterval(intervalId);
+    };
+  }, [timer]);
+  useEffect(() => {
+    if (!actionData) return;
+    if (actionData.data) {
+      navigate("/ride");
+    }
+  });
+  const user = useUserStore((s) => s.user);
+  const acceptTrip = (tripId: string, driverId: string | undefined) => {
+    if (!driverId || !tripId || driverId === undefined) return;
+    const formData = new FormData();
+    formData.append("tripId", tripId);
+    formData.append("driverId", driverId);
+    formData.append("intent", "accept-ride");
+    submit(formData, {
+      action: "/driver",
+      method: "PATCH",
+    });
+  };
   return (
     <Card
       className={classes.tripRequest}
@@ -163,12 +205,14 @@ const TripRequestCard = ({ timer }: requestCardProps) => {
         </Box>
         <Stack gap="lg">
           <Box>
-            <Text fw={700}>1.2 mi away</Text>
+            <Text fw={700}>
+              {getMetersKilometers(trip.estimatedDistanceMeters)}
+            </Text>
             <Text c="dimmed" mt={14} size="sm">
               Pickup near
             </Text>
             <Text fw={600} size="sm">
-              320 Maple St
+              {trip.pickupAddress}
             </Text>
             <Text c="dimmed" size="sm">
               Riverside, CA
@@ -179,7 +223,7 @@ const TripRequestCard = ({ timer }: requestCardProps) => {
               Drop-off
             </Text>
             <Text fw={600} size="sm">
-              945 Market St
+              {trip.destinationAddress}
             </Text>
             <Text c="dimmed" size="sm">
               Downtown, CA
@@ -203,7 +247,9 @@ const TripRequestCard = ({ timer }: requestCardProps) => {
         <Button color="gray" variant="default">
           Decline
         </Button>
-        <Button color="green">Accept</Button>
+        <Button color="green" onClick={() => acceptTrip(trip.tripId, user?.id)}>
+          Accept
+        </Button>
       </Group>
     </Card>
   );

@@ -1,5 +1,5 @@
 import { AddressField } from "../Address/AddressField";
-import { Form, useActionData, useSubmit } from "react-router-dom";
+import { Form, useFetcher, type FetcherWithComponents } from "react-router-dom";
 import { useEffect, useState } from "react";
 import type { PlaceSelection } from "~/types/address/address";
 import { useCalculateRiderDistance } from "~/hooks/useCalculateRiderDistance";
@@ -25,26 +25,65 @@ import {
   getHoursMinutesSeconds,
   getMetersKilometers,
 } from "~/utils/measuringUnits";
+import {
+  RIDER_BTN,
+  RIDER_CTA,
+  RIDER_ESTIMATE,
+  RIDER_ESTIMATED_TRIP,
+  RIDER_FARE_DESC,
+  RIDER_HEADER,
+  RIDER_QUICK_SELECT_1,
+  RIDER_QUICK_SELECT_2,
+  RIDER_SUBHEADER,
+} from "~/utils/string";
+import { getAddressFromCoordinates } from "~/utils/address";
+import { riderStore } from "~/zustand/riderStore";
+import { useRiderLocation } from "~/hooks/useRiderLocation";
 export const Rider = () => {
-  const submit = useSubmit();
   const [fare, setFare] = useState<tripFare | null>(null);
-  const actionData = useActionData();
   const [destination, setDestination] = useState<PlaceSelection | null>(null);
+  const quoteFetcher = useFetcher();
+  const rideRequestFetcher = useFetcher();
+  const [rideType, setRideType] = useState<"home" | "work" | "generic">(
+    "generic",
+  );
+  const rider = riderStore((s) => s.rider);
+  type formStructure = {
+    latitude: number;
+    longitude: number;
+  };
 
   const handleSubmit = (e: React.SubmitEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log("submitting form");
     const form = generateFormSubmission("quote");
+    setRideType("generic");
     if (!form) return;
-    submit(form, {
+    quoteFetcher.submit(form, {
       method: "POST",
       action: "/rider",
     });
   };
-  const requestRideSubmit = (e: React.SubmitEvent<HTMLFormElement>) => {
+  const requestRideSubmit = async (e: React.SubmitEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const form = generateFormSubmission("request-ride");
-    if (!form) return;
+    console.log("requesting ride");
+    const dest =
+      rideType === "home" && rider
+        ? {
+            latitude: rider.homeLatitude,
+            longitude: rider.homeLongitude,
+          }
+        : undefined;
+    const form = generateFormSubmission("request-ride", undefined, dest);
+    if (!form || !geoCords) {
+      console.log("something is missing");
+      return;
+    }
+    const result = await getAddressFromCoordinates(
+      geoCords.latitude,
+      geoCords.longitude,
+    );
+    const address = result?.address;
+    if (!address) return;
     form.append(
       "estimatedDistanceMeters",
       String(fare?.estimatedDistanceMeters),
@@ -54,34 +93,82 @@ export const Rider = () => {
       String(fare?.estimatedDurationSeconds),
     );
     form.append("estimatedFareCents", String(fare?.estimatedFareCents));
-    submit(form, {
+    switch (rideType) {
+      case "home":
+        if (!rider) return;
+        appendAddressToRequest(form, address, rider.homeAddress);
+        break;
+      case "work":
+      default:
+        if (!destination) return;
+        appendAddressToRequest(form, address, destination.address);
+    }
+    rideRequestFetcher.submit(form, {
       method: "POST",
       action: "/rider",
     });
   };
-  const generateFormSubmission = (intent: string) => {
-    const form = new FormData();
-    if (!geoCords || !destination) return;
-    form.append("intent", intent);
-    form.append("pickup-latitude", String(geoCords.latitude));
-    form.append("pickup-longitude", String(geoCords.longitude));
-    form.append("destination-latitude", String(destination?.latitude));
-    form.append("destination-longitude", String(destination?.longitude));
+  const appendAddressToRequest = (
+    form: FormData,
+    pickup: string,
+    destination: string,
+  ) => {
+    form.append("pickup-address", pickup);
+    form.append("destination-address", destination);
     return form;
   };
+  const generateFormSubmission = (
+    intent: string,
+    pickupCoord?: formStructure,
+    dstCoord?: formStructure,
+  ) => {
+    const form = new FormData();
+    const pickup = pickupCoord ?? geoCords;
+    const dest = dstCoord ?? destination;
+    if (!pickup || !dest) return;
+    form.append("intent", intent);
+    form.append("pickup-latitude", String(pickup.latitude));
+    form.append("pickup-longitude", String(pickup.longitude));
+    form.append("destination-latitude", String(dest?.latitude));
+    form.append("destination-longitude", String(dest?.longitude));
+    return form;
+  };
+
   useEffect(() => {
-    if (!actionData) return;
-    console.log("actionData", actionData.data);
-    setFare(actionData.data);
-  }, [actionData]);
+    if (!quoteFetcher) return;
+    console.log("actionData", quoteFetcher.data);
+    setFare(quoteFetcher.data?.fare ?? null);
+  }, [quoteFetcher]);
+
+  const handleQuickSelect = async (type: "home" | "work") => {
+    console.log("type: ", type);
+    switch (type) {
+      case "home":
+        if (!rider) return;
+        const home = {
+          latitude: rider?.homeLatitude ?? 0,
+          longitude: rider?.homeLongitude ?? 0,
+        };
+        setRideType("home");
+        const form = generateFormSubmission("quote", undefined, home);
+        if (!form || !geoCords) return;
+        quoteFetcher.submit(form, {
+          method: "POST",
+          action: "/rider",
+        });
+        break;
+      case "work":
+        setRideType("work");
+    }
+  };
   const { duration, geoCords } = useCalculateRiderDistance();
-  useEffect(() => {});
+  useRiderLocation();
   return (
     <Box className={classes.page} w="100%">
       <Stack gap="lg">
-        <Title order={2}>Where are you going?</Title>
+        <Title order={2}>{RIDER_HEADER}</Title>
         <Text size="sm" c="dimmed" mt={4}>
-          Choose a pickup point and destination to see available rides.
+          {RIDER_CTA}
         </Text>
 
         <Box className={classes.bookingLayout}>
@@ -98,7 +185,7 @@ export const Rider = () => {
             <Stack gap="md">
               <Box>
                 <Text fw={700} size="sm" mb="xs">
-                  Plan your trip
+                  {RIDER_SUBHEADER}
                 </Text>
 
                 <Form onSubmit={handleSubmit}>
@@ -107,7 +194,11 @@ export const Rider = () => {
               </Box>
 
               {fare && (
-                <FareDetails fare={fare} handleSubmit={requestRideSubmit} />
+                <FareDetails
+                  fare={fare}
+                  handleSubmit={requestRideSubmit}
+                  rideRequestFetcher={rideRequestFetcher}
+                />
               )}
 
               <Divider label="Saved places" labelPosition="center" />
@@ -118,12 +209,12 @@ export const Rider = () => {
                     <IconHome size={17} />
                   </ThemeIcon>
 
-                  <Box>
+                  <Box onClick={() => handleQuickSelect("home")}>
                     <Text fw={700} size="sm">
-                      Home
+                      {RIDER_QUICK_SELECT_1}
                     </Text>
                     <Text size="xs" c="dimmed">
-                      {duration} away
+                      {duration}
                     </Text>
                   </Box>
 
@@ -139,12 +230,12 @@ export const Rider = () => {
                     <IconBriefcase size={17} />
                   </ThemeIcon>
 
-                  <Box>
+                  <Box onClick={() => handleQuickSelect("home")}>
                     <Text fw={700} size="sm">
-                      Work
+                      {RIDER_QUICK_SELECT_2}
                     </Text>
                     <Text size="xs" c="dimmed">
-                      {duration} away
+                      {duration}
                     </Text>
                   </Box>
 
@@ -166,13 +257,14 @@ export const Rider = () => {
 type fareProps = {
   fare: tripFare;
   handleSubmit: (e: React.SubmitEvent<HTMLFormElement>) => void;
+  rideRequestFetcher: FetcherWithComponents<any>;
 };
 
-const FareDetails = ({ fare, handleSubmit }: fareProps) => {
+const FareDetails = ({ fare, handleSubmit, rideRequestFetcher }: fareProps) => {
   const distance = getMetersKilometers(fare.estimatedDistanceMeters);
   const duration = getHoursMinutesSeconds(fare.estimatedDurationSeconds);
   const price = getDollarsAndCents(fare.estimatedFareCents);
-
+  console.log("Tip fare details: ", fare);
   return (
     <Card
       withBorder
@@ -186,7 +278,7 @@ const FareDetails = ({ fare, handleSubmit }: fareProps) => {
       <Group justify="space-between" align="center" wrap="nowrap">
         <Stack gap="sm">
           <Text size="sm" fw={700}>
-            Estimated trip
+            {RIDER_ESTIMATED_TRIP}
           </Text>
 
           <Group gap="xs">
@@ -217,7 +309,7 @@ const FareDetails = ({ fare, handleSubmit }: fareProps) => {
               color="var(--mantine-color-ridewave-7)"
             />
             <Text size="xs" c="dimmed" tt="uppercase" fw={700}>
-              Estimate
+              {RIDER_ESTIMATE}
             </Text>
           </Group>
 
@@ -226,12 +318,14 @@ const FareDetails = ({ fare, handleSubmit }: fareProps) => {
           </Text>
 
           <Text size="xs" c="dimmed">
-            Final fare may vary
+            {RIDER_FARE_DESC}
           </Text>
         </Stack>
       </Group>
       <Form onSubmit={handleSubmit}>
-        <Button type="submit">Request Ride</Button>
+        <Button type="submit" loading={rideRequestFetcher.state !== "idle"}>
+          {RIDER_BTN}
+        </Button>
       </Form>
     </Card>
   );

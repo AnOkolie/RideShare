@@ -4,7 +4,7 @@ import { useUserStore } from "~/zustand/userStore";
 
 export const authAction = async () => {
   const user = await getUser();
-  const { setUser } = useUserStore();
+  const setUser = useUserStore.getState().setUser;
   if (user.error) {
     displayNotifications(
       "Login Failure",

@@ -7,5 +7,3 @@ export type syncUser = {
   role: "rider" | "driver";
   profilePic: string;
 };
-
-export type authUser = {};

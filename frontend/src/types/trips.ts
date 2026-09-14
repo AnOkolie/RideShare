@@ -60,3 +60,25 @@ export type RequestRideStructure = {
   trip: RequestQuoteStructure;
   fare: tripFare;
 };
+
+export type tripOffer = {
+  tripId: string;
+  pickupAddress: string;
+  destinationAddress: string;
+  estimatedDistanceMeters: number;
+  estimatedFareCents: number;
+  estimatedDurationSeconds: number;
+};
+
+export const defaultTripOffer = {
+  tripId: "",
+  pickupAddress: "",
+  destinationAddress: "",
+  estimatedDistanceMeters: 0,
+  estimatedFareCents: 0,
+  estimatedDurationSeconds: 0,
+};
+
+export type acceptTripPayload = {
+  driverId: string;
+};

@@ -1,68 +1,19 @@
-import { useEffect, useRef, useState } from "react";
-import { Client } from "@stomp/stompjs";
+import { useEffect, useState } from "react";
 import { useUserStore } from "~/zustand/userStore";
 import { driverStore } from "~/zustand/driverStore";
+import { useStompClient } from "react-stomp-hooks";
 
 export const useLocationHook = () => {
   const driverId = useUserStore((s) => s.user?.id);
-  const token = useUserStore((s) => s.token);
   const driverStatus = driverStore((s) => s.status);
+  const client = useStompClient();
 
   const [coord, setCoord] = useState<GeolocationCoordinates>();
-  if (driverStatus !== "ONLINE") return { coord };
 
-  const stompClientRef = useRef<Client | null>(null);
-
-  /*
-   * Establish one STOMP connection.
-   */
   useEffect(() => {
-    if (!driverId || !token) return;
-
-    const client = new Client({
-      brokerURL: "ws://localhost:8080/ws",
-
-      connectHeaders: {
-        // Custom token authentication header
-        Authorization: `Bearer ${token}`,
-      },
-
-      reconnectDelay: 5_000,
-
-      onConnect: () => {
-        console.log("Connected to STOMP");
-      },
-
-      onDisconnect: () => {
-        console.log("Disconnected from STOMP");
-      },
-
-      onStompError: (frame) => {
-        console.error("Broker error:", frame.headers["message"]);
-
-        console.error("Additional details:", frame.body);
-      },
-
-      onWebSocketError: (event) => {
-        console.error("WebSocket error:", event);
-      },
-    });
-
-    stompClientRef.current = client;
-
-    client.activate();
-
-    return () => {
-      stompClientRef.current = null;
-      void client.deactivate();
-    };
-  }, [driverId, token]);
-
-  /*
-   * Watch GPS and publish location updates.
-   */
-  useEffect(() => {
-    if (!driverId) return;
+    if (driverStatus !== "ONLINE" || !driverId || !client) {
+      return;
+    }
 
     let lastSentAt = 0;
 
@@ -72,19 +23,16 @@ export const useLocationHook = () => {
 
         const now = Date.now();
 
-        // Send at most once every 5 seconds.
         if (now - lastSentAt < 5_000) {
           return;
         }
 
-        const client = stompClientRef.current;
-
-        if (!client?.connected) {
+        if (!client.connected) {
           return;
         }
 
         lastSentAt = now;
-        console.log("publishing coords", coords);
+        // console.log("publishing stomp: ", coords);
         client.publish({
           destination: `/app/drivers/${driverId}/location`,
 
@@ -100,20 +48,35 @@ export const useLocationHook = () => {
       },
 
       (error) => {
-        console.error("Unable to get driver location", error);
+        switch (error.code) {
+          case error.PERMISSION_DENIED:
+            console.error("Location permission denied");
+            break;
+
+          case error.POSITION_UNAVAILABLE:
+            console.error("Location temporarily unavailable");
+            break;
+
+          case error.TIMEOUT:
+            console.error("Location request timed out");
+            break;
+
+          default:
+            console.error("Unknown geolocation error", error);
+        }
       },
 
       {
         enableHighAccuracy: true,
+        timeout: 15_000,
         maximumAge: 5_000,
-        timeout: 10_000,
       },
     );
 
     return () => {
       navigator.geolocation.clearWatch(watchId);
     };
-  }, [driverId, token]);
+  }, [driverStatus, driverId, client]);
 
   return {
     coord,

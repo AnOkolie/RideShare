@@ -1,0 +1,51 @@
+.page {
+  min-height: 100vh;
+  padding: clamp(1rem, 3vw, 3rem);
+  background:
+    radial-gradient(circle at 4% 2%, rgba(94, 191, 126, .16), transparent 24rem),
+    linear-gradient(135deg, #f7faf7, #edf5ef);
+}
+
+.shell { width: min(100%, 76rem); margin: 0 auto; }
+.topbar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.25rem; padding: 0 .25rem; }
+.brand { color: #087537; font-size: .95rem; font-weight: 900; letter-spacing: .08em; }
+.saveCopy { color: #758279; font-size: .85rem; }
+.workspace { display: grid; grid-template-columns: 17rem minmax(0, 1fr); overflow: hidden; border: 1px solid #dce7df; border-radius: 1.5rem; background: white; box-shadow: 0 24px 64px rgba(15, 66, 37, .12); }
+.rail { padding: clamp(1.25rem, 3vw, 2.25rem) 1.25rem; color: white; background: linear-gradient(165deg, #07492f, #087537); }
+.railEyebrow { margin: 0; color: #aee8c0; font-size: .7rem; font-weight: 800; letter-spacing: .1em; }
+.railTitle { margin: .55rem 0 1.7rem; color: white; font-size: 1.45rem; line-height: 1.15; }
+.stepper :global(.mantine-Stepper-stepDescription) { color: rgba(255,255,255,.7); font-size: .78rem; }
+.stepper :global(.mantine-Stepper-stepLabel) { color: white; font-weight: 650; }
+.stepper :global(.mantine-Stepper-stepIcon) { color: #087537; border-color: rgba(255,255,255,.35); background: rgba(255,255,255,.95); }
+.stepper :global(.mantine-Stepper-separator) { background: rgba(255,255,255,.25); }
+.railFoot { margin-top: 2rem; padding-top: 1.25rem; border-top: 1px solid rgba(255,255,255,.17); color: rgba(255,255,255,.72); font-size: .82rem; line-height: 1.5; }
+.content { display: flex; flex-direction: column; min-width: 0; min-height: 39rem; }
+.contentHead { padding: clamp(1.5rem, 4vw, 3rem) clamp(1.5rem, 5vw, 4rem) 1.4rem; border-bottom: 1px solid #edf1ee; }
+.stepBadge { display: inline-flex; margin-bottom: .7rem; color: #087537; font-size: .75rem; font-weight: 800; letter-spacing: .07em; }
+.contentTitle { margin: 0; color: #163624; font-size: clamp(1.7rem, 3vw, 2.25rem); letter-spacing: -.03em; }
+.contentSubtitle { margin: .5rem 0 0; color: #657269; max-width: 37rem; line-height: 1.55; }
+.formArea { flex: 1; padding: clamp(1.5rem, 4vw, 3rem) clamp(1.5rem, 5vw, 4rem); }
+.formArea :global(.mantine-Stack-root) { max-width: 42rem; }
+.actions { display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding: 1.25rem clamp(1.5rem, 5vw, 4rem); border-top: 1px solid #edf1ee; background: #fbfdfb; }
+.next { min-width: 8rem; box-shadow: 0 8px 18px rgba(8,117,55,.18); }
+.optional { margin-left: .45rem; color: #748078; font-size: .82rem; font-weight: 500; }
+.fieldStack { gap: 1rem; }
+.fieldHint { color: #758279; font-size: .86rem; line-height: 1.5; }
+.uploadZone { min-height: 13rem; display: grid; place-items: center; border: 1.5px dashed #9ac9aa; border-radius: 1rem; background: #f8fcf9; transition: border-color .15s ease, background .15s ease; }
+.uploadZone:hover { border-color: #087537; background: #eff9f1; }
+.consentBox { padding: 1.25rem; border: 1px solid #e0e9e2; border-radius: 1rem; background: #f8fbf8; }
+.avatarRow { display: flex; align-items: center; gap: 1.25rem; padding: 1rem; border: 1px solid #e0e9e2; border-radius: 1rem; background: #f8fbf8; }
+
+@media (max-width: 48rem) {
+  .page { padding: 0; background: #f7faf7; }
+  .topbar { margin: 0; padding: 1rem 1.25rem; }
+  .workspace { grid-template-columns: 1fr; border: 0; border-radius: 0; box-shadow: none; }
+  .rail { padding: 1.25rem; }
+  .railTitle { margin-bottom: 1rem; }
+  .stepper { overflow-x: auto; }
+  .stepper :global(.mantine-Stepper-steps) { min-width: max-content; }
+  .stepper :global(.mantine-Stepper-stepDescription), .stepper :global(.mantine-Stepper-stepLabel) { display: none; }
+  .railFoot { display: none; }
+  .content { min-height: calc(100vh - 12rem); }
+  .actions { position: sticky; bottom: 0; }
+}

@@ -2,7 +2,7 @@ import {
   useEffect,
   type RefObject,
 } from "react";
-import { Stack, Title, Text, rem, Loader, Group } from "@mantine/core";
+import { Stack, Text, rem, Loader, Group } from "@mantine/core";
 import {
   Dropzone,
   IMAGE_MIME_TYPE,
@@ -11,6 +11,7 @@ import {
 import { IconCheck, IconPhoto } from "@tabler/icons-react";
 import { UploadSimpleIcon, XIcon } from "@phosphor-icons/react";
 import type { state } from "~/types/dropzone";
+import classes from "~/components/Onboarding/Onboarding.module.css";
 type props = {
   handleDrop: (files: File[]) => void;
   selectedFile: File | null;
@@ -32,14 +33,15 @@ export const FileDropzone = ({
     console.log(`${title} sends status: ${status.current}`);
   }, [status]);
   return (
-    <Stack>
-      <Title>{title}</Title>
+    <Stack gap="sm">
+      <Text fw={700} c="dark.8">{title}</Text>
 
       <Dropzone
         onDrop={(files) => handleDrop(files)}
         onReject={() => (status.current = "error")}
         maxSize={5 * 1024 ** 2}
         accept={IMAGE_MIME_TYPE}
+        className={classes.uploadZone}
         {...props}
       >
         <Dropzone.Accept>

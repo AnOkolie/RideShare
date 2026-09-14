@@ -1,21 +1,17 @@
 import { AuthLayout } from "../AuthLayout/AuthLayout";
 import {
   Button,
-  Image,
-  Loader,
   TextInput,
   Stack,
   Title,
   Text,
   Checkbox,
   Group,
-  Anchor,
   Divider,
   PasswordInput,
 } from "@mantine/core";
-import { Form, useNavigate } from "react-router-dom";
+import { Form, Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
-import appLogo from "../../assets/logo-horizontal.svg";
 import {
   FORGOT_PASSWORD_TEXT,
   KEEP_SIGNED_IN_TEXT,
@@ -42,66 +38,88 @@ const LoginBody = () => {
   const navigate = useNavigate();
 
   const handleSubmit = async (e: React.SubmitEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (!email || !password || loading) return;
+    setLoading(true);
     try {
-      e.preventDefault();
-      if (!email || !password) {
-        return;
-      }
       const loginResult = await handleLogin(email, password);
       if (loginResult?.success) {
+        console.log("success navigating...");
         navigate("/onboarding");
       } else {
+        console.log("failed...");
         displayNotifications("Failed Login", "User failed to login", "red");
       }
     } finally {
       setLoading(false);
     }
   };
-  const buttonStyle = {
-    marginTop: "10px",
-    padding: "8px 16px",
-    cursor: "pointer",
-  };
   return (
-    <>
-      <Stack gap="md">
-        <Image src={appLogo} radius="sm" />
-        <Title>{WELCOME_TEXT}</Title>
-        <Text c="dimmed">{LOGIN_SUBTITLE}</Text>
-        <Form onSubmit={handleSubmit}>
-          <Stack gap={"md"}>
-            <TextInput
-              label="Email"
-              name="email"
-              onChange={(e) => setEmail(e.target.value)}
-              radius={"md"}
-            />
-            <PasswordInput
-              label="Enter your password"
-              type="password"
-              name="password"
-              onChange={(e) => setPassword(e.target.value)}
-              radius={"md"}
-            />
-            <Group justify="space-between">
-              <Checkbox label={KEEP_SIGNED_IN_TEXT} />
-              <Anchor href="/forgot-password">{FORGOT_PASSWORD_TEXT}</Anchor>
-            </Group>
-          </Stack>
-          <Button
-            type="submit"
-            onClick={() => setLoading(true)}
-            style={buttonStyle}
-          >
-            {loading ? <Loader /> : "Continue"}
-          </Button>
-        </Form>
-        <Divider label={OAUTH_SUBTEXT} labelPosition="center" />
-        <Text>
-          {SIGNUP_QUESTION}
-          <Anchor href="/signup">{SIGNUP_CTA}</Anchor>
+    <Stack gap="lg">
+      <Stack gap={4}>
+        <Text
+          size="xs"
+          fw={800}
+          c="rideshare.7"
+          style={{ letterSpacing: "0.1em" }}
+        >
+          WELCOME BACK
         </Text>
+        <Title order={2} c="dark.9">
+          {WELCOME_TEXT}
+        </Title>
+        <Text c="dimmed">{LOGIN_SUBTITLE}</Text>
       </Stack>
-    </>
+      <Form onSubmit={handleSubmit}>
+        <Stack gap="sm">
+          <TextInput
+            label="Email"
+            name="email"
+            value={email}
+            type="email"
+            placeholder="you@example.com"
+            onChange={(e) => setEmail(e.target.value)}
+            radius={"md"}
+          />
+          <PasswordInput
+            label="Enter your password"
+            name="password"
+            value={password}
+            placeholder="Your password"
+            onChange={(e) => setPassword(e.target.value)}
+            radius={"md"}
+          />
+          <Group justify="space-between">
+            <Checkbox label={KEEP_SIGNED_IN_TEXT} />
+            <Text
+              component={Link}
+              to="/forgot-password"
+              size="sm"
+              fw={650}
+              c="rideshare.8"
+            >
+              {FORGOT_PASSWORD_TEXT}
+            </Text>
+          </Group>
+        </Stack>
+        <Button
+          type="submit"
+          fullWidth
+          size="md"
+          mt="lg"
+          loading={loading}
+          disabled={!email || !password}
+        >
+          Continue
+        </Button>
+      </Form>
+      <Divider label={OAUTH_SUBTEXT} labelPosition="center" c="dimmed" />
+      <Text ta="center" size="sm" c="dimmed">
+        {SIGNUP_QUESTION}
+        <Text component={Link} to="/signup" span fw={700} c="rideshare.8">
+          {SIGNUP_CTA}
+        </Text>
+      </Text>
+    </Stack>
   );
 };

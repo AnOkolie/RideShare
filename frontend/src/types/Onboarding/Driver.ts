@@ -118,6 +118,7 @@ export type LicenseProps = {
 export type PageStructure = {
   element: React.ReactNode;
   title?: string;
+  subtitle?: string;
   section: number;
   optional?: boolean;
   requiredValues: () => unknown[];

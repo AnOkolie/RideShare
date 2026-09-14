@@ -23,7 +23,7 @@ export const useDriverOnboarding = () => {
     if (actionData.data) {
       navigate("/driver");
     }
-  }, [actionData]);
+  }, [actionData, navigate]);
 
   const handlePrev = () => {
     setPageNumber((prev) => Math.max(prev - 1, 0));

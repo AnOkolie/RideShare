@@ -1,5 +1,6 @@
 import { RequestMethods, type RequestResolve } from "~/types/request";
 import type {
+  acceptTripPayload,
   calculateDistanceStructure,
   Distance,
   RequestQuoteStructure,
@@ -55,4 +56,15 @@ export const requestRide = async (
     "api/trips/",
     undefined,
     JSON.stringify(body),
+  );
+
+export const acceptRide = async (
+  tripId: string,
+  driverId: acceptTripPayload,
+): Promise<RequestResolve<RequestRideStructure>> =>
+  await request(
+    RequestMethods.PATCH,
+    `api/trips/accept/${tripId}`,
+    undefined,
+    JSON.stringify(driverId),
   );

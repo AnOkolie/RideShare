@@ -1,12 +1,14 @@
-import { Group, TextInput } from "@mantine/core";
+import { Group, Text, TextInput, Stack } from "@mantine/core";
 import type { EmergencyProps } from "~/types/Onboarding/Rider";
 import { PhoneInput } from "../Utilities/PhoneInput";
+import classes from "../Onboarding.module.css";
 export const EmergencyContact = ({
   form,
   updateEmergencyContact,
 }: EmergencyProps) => {
   return (
-    <>
+    <Stack className={classes.fieldStack}>
+      <Text className={classes.fieldHint}>Optional, but recommended. We will only use this contact in an emergency.</Text>
       <Group grow wrap="nowrap">
         <TextInput
           label="First Name"
@@ -25,6 +27,6 @@ export const EmergencyContact = ({
         value={form.emergencyContact.phoneNumber}
         onChange={(e) => updateEmergencyContact("phoneNumber", e ?? "")}
       />
-    </>
+    </Stack>
   );
 };

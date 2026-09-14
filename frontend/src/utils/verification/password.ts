@@ -1,10 +1,6 @@
 // PASSWORD VERIFICATION LOGIC
 
 const equalPasswords = (pass1: string, pass2: string) => {
-  console.log(pass1, pass2);
-  if (pass1 === pass2) {
-    console.log("equal");
-  }
   return pass1 === pass2;
 };
 

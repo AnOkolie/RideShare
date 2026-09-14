@@ -4,13 +4,17 @@ import { requestRide as rideRequest } from "~/api/trips";
 export const riderAction = async ({ request }: ActionFunctionArgs) => {
   const formData = await request.formData();
   const intent = formData.get("intent");
+  console.log("intent: ", intent);
   switch (intent) {
     case "quote":
-      return rider(formData);
+      const fare = await rider(formData);
+      return { intent: "fare" as const, fare: fare?.data };
     case "request-ride":
-      return requestRide(formData);
+      const trip = await requestRide(formData);
+      return { intent: "request-ride" as const, trip: trip?.data };
+    default:
+      return { intent: "error" as const, message: "Unknown rider action" };
   }
-  return rider(formData);
 };
 
 const rider = async (formData: FormData) => {
@@ -49,6 +53,8 @@ const requestRide = async (formData: FormData) => {
     "estimatedDurationSeconds",
   );
   const estimatedFareCents = getNumberField(formData, "estimatedFareCents");
+  const pickupAddress = formData.get("pickup-address");
+  const destinationAddress = formData.get("destination-address");
 
   if (
     pickupLatitude === undefined ||
@@ -57,7 +63,9 @@ const requestRide = async (formData: FormData) => {
     destinationLongitude === undefined ||
     estimatedDistanceMeters === undefined ||
     estimatedDurationSeconds === undefined ||
-    estimatedFareCents === undefined
+    estimatedFareCents === undefined ||
+    pickupAddress === undefined ||
+    destinationAddress === undefined
   ) {
     return null;
   }
@@ -66,9 +74,10 @@ const requestRide = async (formData: FormData) => {
     trip: {
       pickupLatitude,
       pickupLongitude,
-      destinationAddress: "",
+      destinationAddress,
       destinationLatitude,
       destinationLongitude,
+      pickupAddress,
     },
     fare: {
       estimatedDistanceMeters,

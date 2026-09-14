@@ -1,7 +1,7 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import App from "./App.tsx";
-import { MantineProvider } from "@mantine/core";
+import { MantineProvider, Notification } from "@mantine/core";
 import { AppErrorBoundary } from "./components/Error/ErrorComponent.tsx";
 import "@mantine/core/styles.css";
 import "@mantine/notifications/styles.css";
@@ -17,6 +17,7 @@ createRoot(document.getElementById("root")!).render(
     <MantineProvider theme={theme}>
       <AppErrorBoundary>
         <APIProvider apiKey={import.meta.env.VITE_GOOGLE_API_KEY}>
+          <Notification />
           <App />
         </APIProvider>
       </AppErrorBoundary>

@@ -17,3 +17,11 @@ export type User = {
   id: string;
   phoneNumber: string;
 };
+
+export type newUser = {
+  cognitoSub: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  emailVerified: boolean;
+};

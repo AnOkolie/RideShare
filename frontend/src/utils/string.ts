@@ -133,3 +133,17 @@ export const PROFILE_PHOTO_HEADER_TEXT = "Profile Photo";
 export const BACKGROUND_CHECK_HEADER = "Background Consent";
 export const BACKGROUND_DISCLOSURE_TEXT = "Disclosure";
 export const BACKGROUND_CONSENT_TEXT = `RideShare (the "Company") may obtain information about you from a consumer reporting agency for employment, volunteer, or tenancy purposes. A background check may include information about your character, general reputation, personal characteristics, and mode of living. This report may include verifications of your employment history, education, credit history, and criminal records.`;
+
+/*
+///////RIDER COMPONENT////////
+*/
+export const RIDER_HEADER = "Where are you going?";
+export const RIDER_CTA =
+  "Choose a pickup point and destination to see available rides.";
+export const RIDER_SUBHEADER = "Plan your trip";
+export const RIDER_QUICK_SELECT_1 = "Home";
+export const RIDER_QUICK_SELECT_2 = "Work";
+export const RIDER_ESTIMATE = "Estimate";
+export const RIDER_FARE_DESC = "Final fare may vary";
+export const RIDER_BTN = "Request Ride";
+export const RIDER_ESTIMATED_TRIP = "Estimated Trip";

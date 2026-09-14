@@ -37,7 +37,7 @@ export type HomeAddressProps = {
   form: onboardingValues;
   updateAddress: <K extends keyof onboardingValues["home"]>(
     key: K,
-    value: string,
+    value: string | number,
   ) => void;
   //   setForm: React.Dispatch<React.SetStateAction<onboardingValues>>;
 };

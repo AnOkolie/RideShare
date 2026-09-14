@@ -13,6 +13,7 @@ export const getMetersKilometers = (distance: number) => {
 };
 
 export const getDollarsAndCents = (cost: number) => {
+  console.log(cost);
   const power = Math.pow(10, 2);
   return `$${Math.trunc((cost / 100) * power) / power}`;
 };

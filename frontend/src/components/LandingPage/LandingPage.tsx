@@ -1,87 +1,38 @@
 import {
   Button,
-  Container,
   Box,
   Group,
   Image,
-  Stack,
   Text,
-  Title,
 } from "@mantine/core";
 
 import appLogo from "../../assets/hero-illustration.svg";
 import { useNavigate } from "react-router-dom";
+import classes from "./LandingPage.module.css";
 
 export const LandingPage = () => {
   const navigate = useNavigate();
   return (
-    <Container size="xl" fluid p={0}>
-      <Box
-        mih="calc(100vh - 60px)"
-        style={{
-          display: "flex",
-          alignItems: "stretch",
-        }}
-      >
-        {/* Left — Content */}
-        <Box
-          style={{
-            flex: 1,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-          p={{ base: "xl", md: 60 }}
-        >
-          <Box
-            style={{
-              flex: 1,
-              display: "flex",
-              alignItems: "left",
-              justifyContent: "left",
-            }}
-            p={{ base: "xl", md: 60 }}
-          >
-            <Stack gap="lg" maw={550}>
-              <Text
-                fw={900}
-                size="sm"
-                c="rideshare.7"
-                style={{ letterSpacing: "0.12em" }}
-              >
-                YOUR CITY, ON DEMAND
-              </Text>
-
-              <Title
-                order={1}
-                fw={500}
-                size="clamp(1rem, 5vw, 3rem)"
-                lh={1.0}
-                c={"black"}
-              >
-                Every trip
-                <br />
-                starts here.
-              </Title>
-
-              <Text size="lg" c="dimmed" lh={1.6}>
-                Reliable rides for passengers and flexible earnings for drivers
-                all in one place.
-              </Text>
-
-              <Group mt="md" gap="sm" wrap="nowrap">
+    <Box className={classes.page}>
+      <Box className={classes.hero}>
+        <Box className={classes.copy}>
+          <Text className={classes.eyebrow}><span className={classes.dot} /> LOCAL RIDES, SIMPLIFIED</Text>
+          <h1 className={classes.title}>Move through your city, <span className={classes.titleAccent}>on your terms.</span></h1>
+          <Text className={classes.subtitle}>
+            Dependable rides for passengers and flexible opportunities for drivers — all in one thoughtfully designed experience.
+          </Text>
+          <Group className={classes.actions} gap="sm">
                 <Button
-                  size="md"
+                  size="lg"
                   radius="md"
-                  color="rideshare.8"
-                  style={{ fontWeight: 400 }}
+                  className={classes.primary}
                   onClick={() => navigate("/signup")}
                 >
-                  Get Started
+                  Create an account
                 </Button>
 
                 <Button
-                  size="md"
+                  size="lg"
                   radius="md"
                   variant="subtle"
                   color="dark"
@@ -89,30 +40,21 @@ export const LandingPage = () => {
                 >
                   Sign in
                 </Button>
-              </Group>
-            </Stack>
+          </Group>
+          <Box className={classes.proof}>
+            <Text className={classes.proofItem}><strong>Real-time</strong>Trip visibility</Text>
+            <Text className={classes.proofItem}><strong>Flexible</strong>Ride or drive</Text>
+            <Text className={classes.proofItem}><strong>Built for trust</strong>Verified community</Text>
           </Box>
         </Box>
-
-        {/* Right — Illustration */}
-        <Box
-          style={{
-            flex: 1,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-          p="xl"
-        >
+        <Box className={classes.art}>
           <Image
             src={appLogo}
             alt="Ride sharing app"
-            maw={450}
-            w="80%"
-            fit="contain"
+            className={classes.illustration}
           />
         </Box>
       </Box>
-    </Container>
+    </Box>
   );
 };

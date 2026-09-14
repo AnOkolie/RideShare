@@ -60,7 +60,7 @@ export const useRiderOnboarding = () => {
   const updateAvatar = (key: updateAvatarType, value: File | null) => {
     setForm((prev) => ({
       ...prev,
-      user: {
+      rider: {
         ...prev.rider,
         [key]: value,
       },
@@ -73,6 +73,7 @@ export const useRiderOnboarding = () => {
     updateAddress("placeId", placeId);
     updateAddress("latitude", lat);
     updateAddress("longitude", lng);
+    console.log(form.home);
   };
 
   const isCurrentPageValid = <K extends keyof onboardingValues>(

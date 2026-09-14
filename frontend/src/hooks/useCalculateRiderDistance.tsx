@@ -1,13 +1,18 @@
 import { useEffect, useState } from "react";
 import { calculateDistance } from "~/api/trips";
+import { getHoursMinutesSeconds } from "~/utils/measuringUnits";
 import { riderStore } from "~/zustand/riderStore";
 
 export const useCalculateRiderDistance = () => {
   const homeLatitude = riderStore((s) => s.rider?.homeLatitude);
   const homeLongitude = riderStore((s) => s.rider?.homeLongitude);
 
-  const [duration, setDuration] = useState(0);
+  const [duration, setDuration] = useState("0");
   const [geoCords, setGeoCords] = useState<GeolocationCoordinates | null>(null);
+
+  const formatDuration = (duration: number) => {
+    return getHoursMinutesSeconds(duration);
+  };
 
   useEffect(() => {
     // Use == null so latitude/longitude 0 are still valid values.
@@ -53,7 +58,7 @@ export const useCalculateRiderDistance = () => {
           // Google Routes duration arrives as a string such as "742s".
           const seconds = Number.parseFloat(route.duration ?? "0");
 
-          setDuration(seconds);
+          setDuration(formatDuration(seconds));
         } catch (error) {
           console.error("Unable to calculate route distance", error);
         }

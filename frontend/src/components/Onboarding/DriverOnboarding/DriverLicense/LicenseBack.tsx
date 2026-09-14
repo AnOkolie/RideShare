@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { FileDropzone } from "~/components/Shared/FileDropzone";
 import type { state } from "~/types/dropzone";
 import type { onboardingValues } from "~/types/Onboarding/Driver";
@@ -28,9 +28,6 @@ export const LicenseBack = ({ updateLicense, form }: UploadProps) => {
     // setStatus("selected");
     status.current = "selected";
   };
-  useEffect(() => {
-    console.log("file submission: ", form.license.back);
-  }, []);
   return (
     <FileDropzone
       handleDrop={handleDrop}

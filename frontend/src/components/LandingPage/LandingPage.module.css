@@ -1,0 +1,18 @@
+.page { min-height: calc(100vh - 3.75rem); overflow: hidden; background: #f7faf7; }
+.hero { position: relative; display: grid; grid-template-columns: minmax(0, 1.03fr) minmax(20rem, .97fr); min-height: calc(100vh - 3.75rem); max-width: 90rem; margin: 0 auto; padding: clamp(2rem, 6vw, 6rem); gap: clamp(2rem, 5vw, 6rem); align-items: center; }
+.copy { position: relative; z-index: 1; max-width: 39rem; }
+.eyebrow { display: inline-flex; align-items: center; gap: .5rem; padding: .45rem .8rem; border: 1px solid #cfe8d7; border-radius: 999px; color: #087537; background: #eef9f1; font-size: .77rem; font-weight: 800; letter-spacing: .08em; }
+.dot { width: .45rem; height: .45rem; border-radius: 50%; background: #0eaa58; box-shadow: 0 0 0 .25rem rgba(14,170,88,.13); }
+.title { margin: 1.5rem 0; color: #123021; font-size: clamp(3rem, 6vw, 5.7rem); font-weight: 800; line-height: .98; letter-spacing: -.065em; }
+.titleAccent { color: #087537; }
+.subtitle { max-width: 34rem; color: #5c6b62; font-size: clamp(1rem, 1.5vw, 1.2rem); line-height: 1.65; }
+.actions { margin-top: 2rem; }
+.primary { box-shadow: 0 12px 22px rgba(8,117,55,.22); }
+.proof { display: flex; flex-wrap: wrap; gap: 1.5rem; margin-top: 3.5rem; padding-top: 1.5rem; border-top: 1px solid #dfe8e1; }
+.proofItem { color: #607067; font-size: .85rem; }
+.proofItem strong { display: block; margin-bottom: .15rem; color: #163624; font-size: 1.05rem; }
+.art { position: relative; display: flex; justify-content: center; align-items: center; min-height: 28rem; }
+.art::before { content: ""; position: absolute; inset: 7% 0 5%; border-radius: 3rem; background: linear-gradient(145deg, #dff4e6, #bce8ca); transform: rotate(5deg); }
+.art::after { content: ""; position: absolute; width: 14rem; height: 14rem; top: 0; right: -3rem; border: 1px solid #afdabc; border-radius: 50%; }
+.illustration { position: relative; z-index: 1; width: min(100%, 34rem); filter: drop-shadow(0 26px 24px rgba(20,81,45,.18)); }
+@media (max-width: 48rem) { .hero { grid-template-columns: 1fr; min-height: auto; padding: 3rem 1.5rem; } .title { font-size: clamp(3rem, 14vw, 4.5rem); } .art { order: -1; min-height: 14rem; } .art::before { inset: 10% 10%; } .illustration { width: min(80%, 20rem); } .proof { margin-top: 2.5rem; } }

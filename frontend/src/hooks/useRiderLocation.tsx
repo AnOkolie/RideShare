@@ -1,22 +1,8 @@
-// import { Client } from "@stomp/stompjs";
-// import { useEffect } from "react";
+import { useSubscription } from "react-stomp-hooks";
 
-// export const useRiderLocation = (tripId: string) => {
-//     useEffect(() => {
-//       const client = new Client({
-//         brokerURL: "ws://localhost:8080/ws",
-//         reconnectDelay: 5_000,
-//       });
-//       client.onConnect = () => {
-//         client.subscribe(`/topic/trips/${tripId}/driver-location`, (message) => {
-//           const location = JSON.parse(message.body);
-//           setDriverPosition({
-//             lat: location.latitude,
-//             lng: location.longitude,
-//           });
-//         });
-//       };
-//       client.activate();
-//       return () => client.deactivate();
-//     }, [tripId]);
-// };
+export const useRiderLocation = () => {
+  useSubscription("/user/queue/ride-accepted", (message) => {
+    const trip = JSON.parse(message.body);
+    console.log("trip: ", trip);
+  });
+};

@@ -28,5 +28,7 @@ export const changeRoleAction = async ({ request }: ActionFunctionArgs) => {
       } else {
         return { error: driver.error, role: "driver" };
       }
+    default:
+      return { error: { status: 500, message: "This action does not exist" } };
   }
 };

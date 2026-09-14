@@ -22,7 +22,9 @@ export const updateAction = async ({ request }: ActionFunctionArgs) => {
   if (!type || !status || !id) return;
   switch (type) {
     case "rider":
-      const rider = await updateRiderOnboarding(id, true);
+      const riderProfile = formData.get("rider")?.toString();
+      if (!riderProfile) return;
+      const rider = await updateRiderOnboarding(id, riderProfile);
       if (!rider || !rider.data) return;
       setRider(rider.data);
       return rider;

@@ -1,15 +1,11 @@
 import {
   Text,
   Box,
-  Card,
-  Group,
   Button,
   Title,
   Paper,
   Stepper,
   Transition,
-  Divider,
-  Stack,
 } from "@mantine/core";
 import {
   ADDRESS_HEADER,
@@ -25,17 +21,22 @@ import { UserInfo } from "./RiderOnboarding/UserInfo";
 import { EmergencyContact } from "./RiderOnboarding/EmergencyContact";
 import { HomeAddress } from "./RiderOnboarding/HomeAddress";
 import { PaymentInfo } from "./RiderOnboarding/PaymentInfo";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useNavigate, useSubmit } from "react-router-dom";
 import { useRiderOnboarding } from "~/hooks/useRiderOnboarding";
 import type {
   onboardingValues,
   pagesStructure,
 } from "~/types/Onboarding/Rider";
+import {
+  IconArrowLeft,
+  IconArrowRight,
+  IconShieldCheck,
+} from "@tabler/icons-react";
+import classes from "./Onboarding.module.css";
 
 export const RiderOnBoarding = () => {
   const [pageNumber, setPageNumber] = useState(0);
-  const [finish, setFinish] = useState(false);
   const {
     form,
     updateEmergencyContact,
@@ -44,7 +45,6 @@ export const RiderOnBoarding = () => {
     updatePayment,
     updateAvatar,
     isCurrentPageValid,
-    getHomeDetails,
   } = useRiderOnboarding();
   const pages: pagesStructure[] = [
     {
@@ -124,7 +124,7 @@ export const RiderOnBoarding = () => {
   const navigate = useNavigate();
   const handleNext = () => {
     if (pageNumber === PAGES_LENGTH) {
-      setFinish(true);
+      submitOnboarding();
       return;
     }
     if (pageNumber > PAGES_LENGTH) return;
@@ -133,98 +133,114 @@ export const RiderOnBoarding = () => {
   const handlePrev = () => {
     setPageNumber(pageNumber - 1);
   };
-  useEffect(() => {
-    if (finish) {
-      const form = new FormData();
-      getHomeDetails();
-      form.append("status", "true");
-      form.append("onboarding-type", "rider");
-      submit(form, { method: "PATCH" });
-      //if successful navigate
-      navigate("/rider");
-      return;
-    }
-  }, [pageNumber, finish]);
+  //the dependencies make this trigger wrongly, maybe put it in a handlesubmit instead
+
+  const submitOnboarding = async () => {
+    console.log("Rider onboarding form: ", form);
+    const formData = new FormData();
+    formData.append("status", "true");
+    formData.append("onboarding-type", "rider");
+    formData.append("rider", JSON.stringify(form));
+    submit(formData, { method: "PATCH" });
+    navigate("/rider");
+  };
   return (
-    <Box
-      style={{
-        minHeight: "100vh",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-      }}
-    >
-      <Paper
-        withBorder
-        radius="lg"
-        shadow="sm"
-        p="xl"
-        maw={700}
-        w="100%"
-        bg="#e8f5e8"
-      >
-        <Group wrap="nowrap">
-          <Card withBorder radius={"md"} bg="rideshare.1">
-            <Stack>
-              <Text>Rider Application</Text>
+    <Box className={classes.page}>
+      <Box className={classes.shell}>
+        <Box className={classes.topbar}>
+          <Text className={classes.brand}>RIDESHARE</Text>
+          <Text className={classes.saveCopy}>
+            Your progress is saved as you go
+          </Text>
+        </Box>
+        <Paper className={classes.workspace} p={0}>
+          <Box className={classes.rail}>
+            <Text className={classes.railEyebrow}>RIDER SETUP</Text>
+            <Text className={classes.railTitle}>
+              Make every pickup feel familiar.
+            </Text>
+            <Box className={classes.stepper}>
               <Stepper
                 active={pageNumber}
                 size="sm"
                 iconSize={36}
                 orientation="vertical"
               >
-                <Stepper.Step description="Profile" />
-
-                <Stepper.Step description="Emergency" />
-
-                <Stepper.Step description="Address" />
-
-                <Stepper.Step description="Payment" />
+                <Stepper.Step
+                  label="Your profile"
+                  description="How riders see you"
+                />
+                <Stepper.Step label="Safety contact" description="Optional" />
+                <Stepper.Step
+                  label="Home address"
+                  description="For quicker pickups"
+                />
+                <Stepper.Step label="Payment" description="Optional for now" />
               </Stepper>
-            </Stack>
-          </Card>
-          <Divider size={"md"} orientation="vertical" />
-          <Stack>
-            <Title order={2}>{pages[pageNumber].title}</Title>
-
-            <Text c="dimmed">{pages[pageNumber].subtitle}</Text>
-            <Divider />
-            <Transition
-              mounted
-              transition="fade-left"
-              duration={250}
-              keepMounted
-            >
-              {(styles) => (
-                <Box key={pageNumber} style={styles} p={"md"}>
-                  {pages[pageNumber].element}
-                </Box>
-              )}
-            </Transition>
-
-            <Group justify="space-between">
+            </Box>
+            <Text className={classes.railFoot}>
+              <IconShieldCheck
+                size={15}
+                style={{ verticalAlign: "text-bottom", marginRight: 6 }}
+              />
+              Your details help us create safer, smoother trips.
+            </Text>
+          </Box>
+          <Box className={classes.content}>
+            <Box className={classes.contentHead}>
+              <Text className={classes.stepBadge}>
+                STEP {pageNumber + 1} OF {pages.length}
+                {pages[pageNumber].optional && (
+                  <span className={classes.optional}>OPTIONAL</span>
+                )}
+              </Text>
+              <Title className={classes.contentTitle}>
+                {pages[pageNumber].title}
+              </Title>
+              <Text className={classes.contentSubtitle}>
+                {pages[pageNumber].subtitle}
+              </Text>
+            </Box>
+            <Box className={classes.formArea}>
+              <Transition
+                mounted
+                transition="fade-left"
+                duration={250}
+                keepMounted
+              >
+                {(styles) => (
+                  <Box key={pageNumber} style={styles}>
+                    {pages[pageNumber].element}
+                  </Box>
+                )}
+              </Transition>
+            </Box>
+            <Box className={classes.actions}>
               <Button
                 variant="subtle"
                 disabled={pageNumber === 0}
                 onClick={handlePrev}
+                leftSection={<IconArrowLeft size={16} />}
               >
                 Back
               </Button>
 
               <Button
                 onClick={handleNext}
+                className={classes.next}
+                rightSection={<IconArrowRight size={16} />}
                 disabled={pages[pageNumber].verificationFunction(
                   pages[pageNumber].key,
                   pages[pageNumber].optional,
                   pages[pageNumber].optionalFields,
                 )}
               >
-                {pageNumber === PAGES_LENGTH ? "Finish" : "Continue"}
+                {pageNumber === PAGES_LENGTH ? "Complete setup" : "Continue"}
               </Button>
-            </Group>
-          </Stack>
-        </Group>
-      </Paper>
+            </Box>
+          </Box>
+        </Paper>
+      </Box>
     </Box>
   );
 };
