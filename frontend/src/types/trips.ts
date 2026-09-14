@@ -54,6 +54,7 @@ export type RequestRideResponse = {
   fareCents: string;
   requestedAt: string;
   driverId: string;
+  riderId: string;
 };
 
 export type RequestRideStructure = {

@@ -136,7 +136,6 @@ export const RiderOnBoarding = () => {
   //the dependencies make this trigger wrongly, maybe put it in a handlesubmit instead
 
   const submitOnboarding = async () => {
-    console.log("Rider onboarding form: ", form);
     const formData = new FormData();
     formData.append("status", "true");
     formData.append("onboarding-type", "rider");

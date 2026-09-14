@@ -23,7 +23,6 @@ export const VehicleInfo = ({ form, updateVehicle }: VehicleProps) => {
   const make = formatMakeResponse(loaderData);
   const [models, setModels] = useState(fetcher.data);
   useEffect(() => {
-    console.log("manufacturer: ", form.vehicle.make);
     if (form.vehicle.make) {
       const formData = new FormData();
       formData.append("intent", "getModels");
@@ -35,13 +34,15 @@ export const VehicleInfo = ({ form, updateVehicle }: VehicleProps) => {
     }
   }, [form.vehicle.make]);
   useEffect(() => {
-    console.log("response: ", fetcher.data);
     if (!fetcher.data) return;
     setModels(formatModelResponse(fetcher.data));
   }, [fetcher.data]);
   return (
     <Stack className={classes.fieldStack}>
-      <Text className={classes.fieldHint}>Enter the vehicle you plan to use for RideShare trips. You can update it later if it changes.</Text>
+      <Text className={classes.fieldHint}>
+        Enter the vehicle you plan to use for RideShare trips. You can update it
+        later if it changes.
+      </Text>
       <Group grow>
         <Select
           value={form.vehicle.make}

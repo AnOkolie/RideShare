@@ -28,86 +28,100 @@ import { useEffect } from "react";
 import { getAccessToken, startAuthTokenSync } from "./utils/aws/token";
 import { useUserStore } from "./zustand/userStore";
 import { StompSessionLayout } from "./components/AuthLayout/StompSessionLayout";
-
+import { RouteErrorBoundary } from "./components/Error/ErrorComponent";
+import { Trip } from "./components/Trip/Trip";
+import { tripLoader } from "./components/Trip/loader";
+import { QueryClient } from "@tanstack/react-query";
+const queryClient = new QueryClient();
 const router = createBrowserRouter([
-    {
-      element: <AppLayout />,
-      children: [
-        {
-          path: "/",
-          element: <LandingPage />,
-        },
-      ],
-    },
-    {
-      path: "/login",
-      element: <Login />,
-      action: authAction,
-    },
-    {
-      path: "/signup",
-      element: <Signup />,
-      action: authAction,
-    },
-    {
-      path: "/verify-email",
-      element: <VerificationCode />,
-    },
-    {
-      element: <StompSessionLayout />,
-      children: [
-        {
-          element: <ProtectRoute />,
-          children: [
-            {
-              element: <RoleChoice />,
-              path: "/onboarding",
-              action: checkOnboardingAction,
-            },
-            {
-              element: <RiderOnBoarding />,
-              path: "/onboarding/rider",
-              action: updateAction,
-            },
-            {
-              element: <DriverOnboarding />,
-              path: "/onboarding/driver",
-              action: updateAction,
-              loader: makeLoader,
-            },
-            {
-              element: <VerifiedLayout />,
-              children: [
-                {
-                  element: <Driver />,
-                  path: "/driver",
-                  action: driverAction,
-                },
-                {
-                  element: <Rider />,
-                  path: "/rider",
-                  action: riderAction,
-                },
-                {
-                  element: <Profile />,
-                  path: "/profile",
-                  action: profileAction,
-                },
-                {
-                  path: "/switch-role",
-                  action: changeRoleAction,
-                },
-              ],
-            },
-            {
-              path: "/vehicle/model",
-              action: vehicleModelsAction,
-            },
-          ],
-        },
-      ],
-    },
-  ]);
+  {
+    element: <AppLayout />,
+    errorElement: <RouteErrorBoundary />,
+    children: [
+      {
+        path: "/",
+        element: <LandingPage />,
+      },
+    ],
+  },
+  {
+    path: "/login",
+    element: <Login />,
+    action: authAction,
+    errorElement: <RouteErrorBoundary />,
+  },
+  {
+    path: "/signup",
+    element: <Signup />,
+    action: authAction,
+    errorElement: <RouteErrorBoundary />,
+  },
+  {
+    path: "/verify-email",
+    element: <VerificationCode />,
+    errorElement: <RouteErrorBoundary />,
+  },
+  {
+    element: <StompSessionLayout />,
+    errorElement: <RouteErrorBoundary />,
+    children: [
+      {
+        element: <ProtectRoute />,
+        children: [
+          {
+            element: <RoleChoice />,
+            path: "/onboarding",
+            action: checkOnboardingAction,
+          },
+          {
+            element: <RiderOnBoarding />,
+            path: "/onboarding/rider",
+            action: updateAction,
+          },
+          {
+            element: <DriverOnboarding />,
+            path: "/onboarding/driver",
+            action: updateAction,
+            loader: makeLoader,
+          },
+          {
+            element: <VerifiedLayout />,
+            children: [
+              {
+                element: <Driver />,
+                path: "/driver",
+                action: driverAction,
+              },
+              {
+                element: <Rider />,
+                path: "/rider",
+                action: riderAction,
+              },
+              {
+                element: <Profile />,
+                path: "/profile",
+                action: profileAction,
+              },
+              {
+                path: "/switch-role",
+                action: changeRoleAction,
+              },
+              {
+                path: "/trips/:tripId",
+                element: <Trip />,
+                loader: tripLoader(queryClient),
+              },
+            ],
+          },
+          {
+            path: "/vehicle/model",
+            action: vehicleModelsAction,
+          },
+        ],
+      },
+    ],
+  },
+]);
 
 function App() {
   useEffect(() => {

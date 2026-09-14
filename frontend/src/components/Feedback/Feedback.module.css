@@ -1,0 +1,33 @@
+.viewport {
+  display: grid;
+  min-height: 100vh;
+  place-items: center;
+  padding: 1.5rem;
+  background:
+    radial-gradient(circle at 12% 8%, rgba(92, 190, 123, .17), transparent 24rem),
+    linear-gradient(135deg, #f7faf7, #edf5ef);
+}
+
+.panel {
+  width: min(100%, 32rem);
+  padding: clamp(2rem, 5vw, 3.5rem);
+  border: 1px solid #dce7df;
+  border-radius: 1.5rem;
+  background: rgba(255, 255, 255, .94);
+  box-shadow: 0 24px 64px rgba(15, 66, 37, .12);
+}
+
+.icon {
+  display: grid;
+  width: 4rem;
+  height: 4rem;
+  place-items: center;
+  border-radius: 1.25rem;
+  color: #087537;
+  background: #e8f7ed;
+}
+
+.errorIcon { color: #c92a2a; background: #fff0f0; }
+.eyebrow { color: #087537; font-size: .72rem; font-weight: 800; letter-spacing: .11em; }
+.diagnostic { width: 100%; overflow-wrap: anywhere; padding: .75rem; border-radius: .65rem; color: #9b1c1c; background: #fff5f5; font-family: ui-monospace, monospace; font-size: .75rem; text-align: left; }
+.inline { display: inline-flex; align-items: center; gap: .6rem; color: #647168; font-size: .9rem; }

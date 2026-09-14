@@ -4,6 +4,7 @@ import type {
   calculateDistanceStructure,
   Distance,
   RequestQuoteStructure,
+  RequestRideResponse,
   RequestRideStructure,
   tripFare,
   TripOptions,
@@ -68,3 +69,8 @@ export const acceptRide = async (
     undefined,
     JSON.stringify(driverId),
   );
+
+export const getTripById = async (
+  tripId: string,
+): Promise<RequestResolve<RequestRideResponse>> =>
+  await request(RequestMethods.GET, `api/trips/${tripId}`);

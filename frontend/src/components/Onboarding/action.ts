@@ -12,12 +12,10 @@ import { getModels } from "~/api/vehicle";
 
 export const updateAction = async ({ request }: ActionFunctionArgs) => {
   const formData = await request.formData();
-  console.log("Onboarding action");
   const type = formData.get("onboarding-type");
   const status = formData.get("status");
   const setRider = riderStore.getState().setRider;
   const setDriver = driverStore.getState().setDriver;
-  console.log(type);
   const id = useUserStore.getState().user?.id;
   if (!type || !status || !id) return;
   switch (type) {
@@ -32,7 +30,6 @@ export const updateAction = async ({ request }: ActionFunctionArgs) => {
       //You probabluy need to verify the type in the api sync user file (Im tired rn)
       const driverProfile = formData.get("driver")?.toString();
       if (!driverProfile) return;
-      console.log("driver profile: ", driverProfile);
       const driver = await updateDriverOnboarding(id, driverProfile);
       if (!driver || !driver.data) return;
       setDriver(driver.data);
@@ -68,11 +65,9 @@ export const checkOnboardingAction = async ({
 };
 
 export const vehicleModelsAction = async ({ request }: ActionFunctionArgs) => {
-  console.log("onboarding");
   const formData = await request.formData();
   const makeName = formData.get("make")?.toString();
   if (!makeName) return;
   const result = await getModels(makeName);
-  console.log("make: ", result);
   return result.data;
 };

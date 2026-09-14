@@ -29,6 +29,7 @@ import type { tripOffer } from "~/types/trips";
 import { getMetersKilometers } from "~/utils/measuringUnits";
 import { useActionData, useNavigate, useSubmit } from "react-router-dom";
 import { useUserStore } from "~/zustand/userStore";
+import { QueryClient } from "@tanstack/react-query";
 
 const statusColors: Record<availabilityOptions, string> = {
   ONLINE: "green",
@@ -164,7 +165,11 @@ const TripRequestCard = ({ timer, trip, setTimer }: requestCardProps) => {
   useEffect(() => {
     if (!actionData) return;
     if (actionData.data) {
-      navigate("/ride");
+      const trip = actionData.data;
+      const queryClient = new QueryClient();
+      queryClient.setQueryData(["trip", trip.id], trip);
+      queryClient.setQueryData(["active-trip"], trip);
+      navigate(`/trips/${trip.id}`);
     }
   });
   const user = useUserStore((s) => s.user);

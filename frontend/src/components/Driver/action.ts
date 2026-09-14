@@ -1,6 +1,7 @@
 import { getTripOptions } from "~/api/trips";
 import type { ActionFunctionArgs } from "react-router";
 import { acceptRide as apiAcceptRide } from "~/api/trips";
+
 export const driverAction = async ({ request }: ActionFunctionArgs) => {
   const formData = await request.formData();
   const intent = formData.get("intent");

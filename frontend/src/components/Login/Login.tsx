@@ -44,10 +44,8 @@ const LoginBody = () => {
     try {
       const loginResult = await handleLogin(email, password);
       if (loginResult?.success) {
-        console.log("success navigating...");
         navigate("/onboarding");
       } else {
-        console.log("failed...");
         displayNotifications("Failed Login", "User failed to login", "red");
       }
     } finally {

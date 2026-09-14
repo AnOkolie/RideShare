@@ -65,7 +65,6 @@ export const Rider = () => {
   };
   const requestRideSubmit = async (e: React.SubmitEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log("requesting ride");
     const dest =
       rideType === "home" && rider
         ? {
@@ -75,7 +74,6 @@ export const Rider = () => {
         : undefined;
     const form = generateFormSubmission("request-ride", undefined, dest);
     if (!form || !geoCords) {
-      console.log("something is missing");
       return;
     }
     const result = await getAddressFromCoordinates(
@@ -136,12 +134,10 @@ export const Rider = () => {
 
   useEffect(() => {
     if (!quoteFetcher) return;
-    console.log("actionData", quoteFetcher.data);
     setFare(quoteFetcher.data?.fare ?? null);
   }, [quoteFetcher]);
 
   const handleQuickSelect = async (type: "home" | "work") => {
-    console.log("type: ", type);
     switch (type) {
       case "home":
         if (!rider) return;
@@ -264,7 +260,6 @@ const FareDetails = ({ fare, handleSubmit, rideRequestFetcher }: fareProps) => {
   const distance = getMetersKilometers(fare.estimatedDistanceMeters);
   const duration = getHoursMinutesSeconds(fare.estimatedDurationSeconds);
   const price = getDollarsAndCents(fare.estimatedFareCents);
-  console.log("Tip fare details: ", fare);
   return (
     <Card
       withBorder

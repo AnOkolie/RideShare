@@ -10,9 +10,7 @@ export const profileAction = async ({ request }: ActionFunctionArgs) => {
   const profile = form.get("profile");
   const setRider = riderStore.getState().setRider;
   const setUser = useUserStore.getState().setUser;
-  console.log("profile ", profile);
   if (!role || !form || !id || !profile) return;
-  console.log("user role: ", role);
   switch (role) {
     case "driver":
       //   await updateDriverProfile(id);
@@ -22,7 +20,6 @@ export const profileAction = async ({ request }: ActionFunctionArgs) => {
       if (response.error || !response.data) return;
       setRider(response.data.riderProfile);
       setUser(response.data.userProfile);
-      console.log("update rider profile repponse: ", response);
       break;
   }
 };
