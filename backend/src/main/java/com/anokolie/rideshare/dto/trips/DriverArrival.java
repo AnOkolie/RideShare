@@ -1,6 +1,8 @@
 package com.anokolie.rideshare.dto.trips;
 
-public record DriverArrivalStatus(
-    com.anokolie.rideshare.enums.DriverArrivalStatus status
+import com.anokolie.rideshare.enums.DriverArrivalStatus;
+
+public record DriverArrival(
+    DriverArrivalStatus status
 ) {
 }

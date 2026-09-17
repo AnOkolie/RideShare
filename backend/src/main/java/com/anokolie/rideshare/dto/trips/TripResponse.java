@@ -17,11 +17,12 @@ public record TripResponse(
         String destinationAddress,
         Double destinationLatitude,
         Double destinationLongitude,
-        Double estimatedDistanceMeters,
+        Integer estimatedDistanceMeters,
         Integer estimatedDurationSeconds,
-        Double fareCents,
+        Long fareCents,
         LocalDateTime requestedAt,
-        Long driverId
+        Long driverId,
+        Long riderId
 ) {
     public static TripResponse from(Trips trip) {
         System.out.println("Trip response object " +trip);
@@ -40,7 +41,8 @@ public record TripResponse(
                 trip.getEstimatedDuration(),
                 trip.getFareCents(),
                 trip.getRequestedAt(),
-                trip.getDriver() != null ? trip.getDriver().getId() : null
+                trip.getDriver() != null ? trip.getDriver().getUser().getId() : null,
+                trip.getRider() != null ? trip.getRider().getUser().getId() : null
         );
     }
 }

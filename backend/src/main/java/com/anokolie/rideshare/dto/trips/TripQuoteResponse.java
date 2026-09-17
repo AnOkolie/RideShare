@@ -1,7 +1,7 @@
 package com.anokolie.rideshare.dto.trips;
 
 public record TripQuoteResponse (
-        Double estimatedDistanceMeters,
-        Integer estimatedDurationSeconds,
-        Double estimatedFareCents){
+        int estimatedDistanceMeters,
+        int estimatedDurationSeconds,
+        long estimatedFareCents){
 }

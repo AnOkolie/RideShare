@@ -1,8 +1,13 @@
 package com.anokolie.rideshare.dto.route;
 
 public record Route(
-        Double distanceMeters,
+        Integer distanceMeters,
         String duration,
         Polyline polyline
 ) {
+    public Route{
+        if(distanceMeters == null){
+            distanceMeters = 0;
+        }
+    }
 }

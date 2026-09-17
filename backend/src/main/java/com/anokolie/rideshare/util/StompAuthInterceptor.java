@@ -18,66 +18,110 @@ import org.springframework.stereotype.Component;
 import org.springframework.security.access.AccessDeniedException;
 import java.util.Collection;
 import java.util.List;
-
 @Component
 @RequiredArgsConstructor
-public class StompAuthInterceptor implements ChannelInterceptor {
+public class StompAuthInterceptor
+        implements ChannelInterceptor {
+
     private final JwtDecoder jwtDecoder;
 
     @Override
-    public Message<?> preSend(Message<?> message, MessageChannel channel) {
+    public Message<?> preSend(
+            Message<?> message,
+            MessageChannel channel
+    ) {
         StompHeaderAccessor accessor =
-                MessageHeaderAccessor.getAccessor(
-                        message,
-                        StompHeaderAccessor.class
-                );
+                MessageHeaderAccessor.getAccessor(message,StompHeaderAccessor.class);
+
+        if (accessor == null) {
+            return message;
+        }
+
+        System.out.println(
+                "Inbound STOMP command: " + accessor.getCommand());
 
         if (!StompCommand.CONNECT.equals(accessor.getCommand())) {
             return message;
         }
 
-        String authorization =
-                accessor.getFirstNativeHeader("Authorization");
+        String authorization =accessor.getFirstNativeHeader("Authorization");
+
+        System.out.println("Authorization present: "+ (authorization != null));
 
         if (authorization == null || !authorization.startsWith("Bearer ")) {
             throw new AccessDeniedException("Missing bearer token");
         }
 
+        String token = authorization.substring(7);
+
+        final Jwt jwt;
+
         try {
-            String token = authorization.substring(7);
-            Jwt jwt = jwtDecoder.decode(token);
+            jwt = jwtDecoder.decode(token);
+        } catch (JwtException e) {
+            System.err.println(
+                    "JWT decode failed: "
+                            + e.getMessage()
+            );
 
-            // Important for Cognito access tokens.
-            if (!"access".equals(jwt.getClaimAsString("token_use"))) {
-                throw new AccessDeniedException("Access token required");
-            }
-
-            var authorities =
-                    extractAuthorities(jwt);
-
-            Authentication authentication =
-                    new JwtAuthenticationToken(jwt, authorities);
-
-            // Stores the authenticated principal on this STOMP session.
-            accessor.setUser(authentication);
-
-            return message;
-        } catch (JwtException | AccessDeniedException exception) {
-            throw new AccessDeniedException("Invalid or expired token");
+            throw new AccessDeniedException(
+                    "Invalid or expired JWT",
+                    e
+            );
         }
+
+        String tokenUse =
+                jwt.getClaimAsString("token_use");
+
+        System.out.println(
+                "token_use: " + tokenUse
+        );
+
+        if (!"access".equals(tokenUse)) {
+            throw new AccessDeniedException(
+                    "Expected Cognito access token, received: "
+                            + tokenUse
+            );
+        }
+
+        var authorities =
+                extractAuthorities(jwt);
+
+        Authentication authentication =
+                new JwtAuthenticationToken(
+                        jwt,
+                        authorities
+                );
+
+        accessor.setUser(authentication);
+
+        System.out.println(
+                "STOMP authenticated user: "
+                        + authentication.getName()
+        );
+
+        return message;
     }
 
-    private Collection<SimpleGrantedAuthority> extractAuthorities(Jwt jwt) {
-        List<String> groups = jwt.getClaimAsStringList("cognito:groups");
+    private Collection<SimpleGrantedAuthority>
+    extractAuthorities(Jwt jwt) {
+
+        List<String> groups =
+                jwt.getClaimAsStringList(
+                        "cognito:groups"
+                );
 
         if (groups == null) {
             return List.of();
         }
 
         return groups.stream()
-                .map(group -> new SimpleGrantedAuthority(
-                        "ROLE_" + group.toUpperCase()
-                ))
+                .map(group ->
+                        new SimpleGrantedAuthority(
+                                "ROLE_"
+                                        + group.toUpperCase()
+                        )
+                )
                 .toList();
     }
 }

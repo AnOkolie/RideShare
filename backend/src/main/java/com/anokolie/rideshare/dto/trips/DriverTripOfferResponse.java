@@ -4,7 +4,7 @@ public record DriverTripOfferResponse(
         Long tripId,
         String pickupAddress,
         String destinationAddress,
-        Double estimatedDistanceMeters,
+        Integer estimatedDistanceMeters,
         Integer estimatedDurationSeconds,
-        Integer estimatedFareCents
+        Long estimatedFareCents
 ) {}

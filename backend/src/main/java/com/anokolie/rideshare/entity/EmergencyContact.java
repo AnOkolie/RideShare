@@ -14,24 +14,13 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class EmergencyContact {
-
-
     @Id
     @GeneratedValue(strategy=GenerationType.IDENTITY)
     private Long id;
-
-
-
     @ManyToOne
-    @JoinColumn(name="user_id")
+    @JoinColumn(name="rider_id")
     private User user;
-
-
-
-    private String name;
-
-    private String relationship;
-
+    private String firstName;
+    private String lastName;
     private String phoneNumber;
-
 }

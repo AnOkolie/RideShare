@@ -21,8 +21,19 @@ WHERE ST_Distance_Sphere(location, ST_SRID(POINT(:lng,:lat),4326)) < :radius
       AND t.status IN (
           com.anokolie.rideshare.enums.TripStatus.ACCEPTED,
           com.anokolie.rideshare.enums.TripStatus.ARRIVED,
-          com.anokolie.rideshare.enums.TripStatus.STARTED
+          com.anokolie.rideshare.enums.TripStatus.IN_PROGRESS
       )
 """)
     Optional<Trips> findActiveTripByDriverId(Long driverId);
+    @Query("""
+    SELECT t
+    FROM Trips t
+    WHERE t.rider.id = :riderId
+      AND t.status IN (
+          com.anokolie.rideshare.enums.TripStatus.ACCEPTED,
+          com.anokolie.rideshare.enums.TripStatus.ARRIVED,
+          com.anokolie.rideshare.enums.TripStatus.IN_PROGRESS
+      )
+""")
+    Optional<Trips> findActiveTripByRiderId(Long riderId);
 }

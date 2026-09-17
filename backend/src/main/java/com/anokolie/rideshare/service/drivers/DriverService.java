@@ -38,14 +38,6 @@ public class DriverService {
     private final UserRepository userRepository;
     private final DriverDocumentRepository driverDocumentRepository;
 
-    public DriverProfile createDriver (DriverResponse driver){
-        DriverProfile newDriver = new DriverProfile();
-        newDriver.setCurrentLocation(geometryUtil.createPoint(driver.lat(),driver.lng()));
-        DriverStatus status = driver.status() != null ? driver.status() : DriverStatus.OFFLINE;
-        newDriver.setStatus(status);
-        return repository.save(newDriver);
-    }
-
     public List<DriverProfile> getAllDrivers () {
         return repository.findAll();
     }

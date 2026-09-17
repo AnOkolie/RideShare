@@ -31,11 +31,11 @@ public class Trips extends BaseEntity {
     private Point pickupLocation;
     private String destinationAddress;
     private Point destinationLocation;
-    private Double estimatedDistance;
+    private int estimatedDistance;
     private Integer estimatedDuration;
     private Double actualDistance;
     private Integer actualDuration;
-    private Double fareCents;
+    private Long fareCents;
     private Integer tipCents;
     private LocalDateTime requestedAt;
     private LocalDateTime acceptedAt;
@@ -47,6 +47,6 @@ public class Trips extends BaseEntity {
             cascade=CascadeType.ALL)
     private List<TripEvent> events;
     @OneToOne(mappedBy="trip")
-    private Payment payment;
+    private TripPayment payment;
 
 }

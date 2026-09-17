@@ -1,4 +1,8 @@
 package com.anokolie.rideshare.dto.trips;
 
-public class DriverLocationUpdates {
+public record DriverLocationUpdates (
+        Double longitude,
+        Double latitude,
+        String eta
+) {
 }

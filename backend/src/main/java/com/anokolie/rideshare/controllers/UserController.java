@@ -1,5 +1,6 @@
 package com.anokolie.rideshare.controllers;
 
+import com.anokolie.rideshare.dto.user.CreateUserRequest;
 import com.anokolie.rideshare.dto.user.UserResponse;
 import com.anokolie.rideshare.entity.User;
 import com.anokolie.rideshare.mapper.user.UserMapper;

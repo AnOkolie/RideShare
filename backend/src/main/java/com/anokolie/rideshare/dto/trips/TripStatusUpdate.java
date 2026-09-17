@@ -1,4 +1,9 @@
 package com.anokolie.rideshare.dto.trips;
 
-public class TripStatusUpdate {
+import com.anokolie.rideshare.enums.TripStatus;
+
+public record TripStatusUpdate(
+        Long tripId,
+        TripStatus status
+){
 }

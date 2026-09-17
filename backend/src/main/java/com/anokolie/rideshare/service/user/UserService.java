@@ -1,5 +1,6 @@
 package com.anokolie.rideshare.service.user;
 
+import com.anokolie.rideshare.dto.user.CreateUserRequest;
 import com.anokolie.rideshare.dto.user.UserResponse;
 import com.anokolie.rideshare.entity.User;
 import com.anokolie.rideshare.mapper.user.UserMapper;
@@ -9,11 +10,13 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanWrapperImpl;
 import org.springframework.security.oauth2.jwt.Jwt;
+import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.stereotype.Service;
 import software.amazon.awssdk.services.cognitoidentityprovider.model.AttributeType;
 import software.amazon.awssdk.services.cognitoidentityprovider.model.GetUserResponse;
 
 import java.lang.reflect.Field;
+import java.security.Principal;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -85,6 +88,26 @@ public class UserService {
     public Optional<User> findByCognitoSub(String sub){
         return userRepository.findByCognitoSub(sub);
     }
+    public UserResponse createUser (CreateUserRequest user){
+        log.info("Create user {}", user);
+        log.info("cognito sub {}", user.cognitoSub());
+        User newUser = new User();
+        newUser.setFirstName(user.firstName());
+        newUser.setLastName(user.lastName());
+        newUser.setEmail(user.email());
+        newUser.setCognitoSub(user.cognitoSub());
+        newUser.setEmailVerified(user.emailVerified());
+        return userMapper.toResponse(userRepository.save(newUser));
+    }
 
+    public User getUserFromPrincipal(Principal principal){
+        JwtAuthenticationToken authentication =
+                (JwtAuthenticationToken) principal;
+
+        Jwt jwt = authentication.getToken();
+        String authenticatedUserId = jwt.getSubject();
+        log.info(authenticatedUserId);
+        return findByCognitoSub(authenticatedUserId).orElseThrow(()-> new RuntimeException("No matching user"));
+    }
 
 }

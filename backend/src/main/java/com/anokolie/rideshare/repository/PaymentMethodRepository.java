@@ -1,4 +1,7 @@
 package com.anokolie.rideshare.repository;
 
-public class PaymentMethodRepository {
+import com.anokolie.rideshare.entity.PaymentMethod;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface PaymentMethodRepository extends JpaRepository<PaymentMethod,Long> {
 }

@@ -1,22 +1,26 @@
 package com.anokolie.rideshare.service.riders;
 
 import com.anokolie.rideshare.dto.rider.RiderObject;
+import com.anokolie.rideshare.dto.rider.RiderOnboardingRequest;
 import com.anokolie.rideshare.dto.rider.RiderUpdate;
+import com.anokolie.rideshare.entity.EmergencyContact;
+import com.anokolie.rideshare.entity.PaymentMethod;
 import com.anokolie.rideshare.entity.RiderProfile;
 import com.anokolie.rideshare.entity.User;
 import com.anokolie.rideshare.mapper.rider.RiderMapper;
 import com.anokolie.rideshare.mapper.rider.RiderToUserMapper;
+import com.anokolie.rideshare.repository.EmergencyContactRepository;
+import com.anokolie.rideshare.repository.PaymentMethodRepository;
 import com.anokolie.rideshare.repository.RiderRepository;
 import com.anokolie.rideshare.repository.UserRepository;
 import com.anokolie.rideshare.service.user.UserService;
 import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -25,6 +29,8 @@ public class RiderService {
 
     private final RiderRepository riderRepository;
     private final UserRepository userRepository;
+    private final EmergencyContactRepository emergencyContactRepository;
+    private final PaymentMethodRepository paymentMethodRepository;
     private final RiderMapper riderMapper;
     private final RiderToUserMapper riderUserMapper;
     private final UserService userService;
@@ -75,5 +81,33 @@ public class RiderService {
                             return riderMapper.toResponse(riderRepository.save(rider));
                         })
                         .orElseThrow(() -> new RuntimeException("User does not exist")));
+    }
+    public RiderObject createRider(Long id, RiderOnboardingRequest request){
+        User user = userRepository.findById(id).orElseThrow(()->new RuntimeException("This user does not exist"));
+        EmergencyContact emergency = new EmergencyContact();
+        emergency.setFirstName(request.emergencyContact().firstName());
+        emergency.setLastName(request.emergencyContact().lastName());
+        emergency.setPhoneNumber(request.emergencyContact().phoneNumber());
+        emergency.setUser(user);
+        emergencyContactRepository.save(emergency);
+        List<EmergencyContact> emergencyList = new ArrayList<>();
+        emergencyList.add(emergency);
+        PaymentMethod paymentMethod = new PaymentMethod();
+        paymentMethod.setLast4(request.payment().cardNumber().substring(request.payment().cardNumber().length()-4));
+        paymentMethod.setUser(user);
+        paymentMethod.setExpiryMonth(request.payment().expirationMonth());
+        paymentMethod.setExpiryYear(request.payment().expirationYear());
+        paymentMethod.setDefaultPayment(request.payment().defaultPayment());
+        paymentMethod.setBrand(request.payment().brand());
+        paymentMethodRepository.save(paymentMethod);
+        RiderProfile newRider = new RiderProfile();
+        newRider.setUser(user);
+        newRider.setOnboarding(true);
+        newRider.setHomeAddress(request.home().address());
+        newRider.setHomeLatitude(request.home().latitude());
+        newRider.setHomePlaceId(request.home().placeId());
+        newRider.setHomeLongitude(request.home().longitude());
+        user.setEmergencyContact(emergencyList);
+        return riderMapper.toResponse(riderRepository.save(newRider));
     }
 }

@@ -1,8 +1,10 @@
 package com.anokolie.rideshare.controllers;
 
 
+import com.anokolie.rideshare.dto.driver.DriverOnboardingRequest;
 import com.anokolie.rideshare.dto.driver.DriverResponse;
 import com.anokolie.rideshare.dto.rider.RiderObject;
+import com.anokolie.rideshare.dto.rider.RiderOnboardingRequest;
 import com.anokolie.rideshare.entity.RiderProfile;
 import com.anokolie.rideshare.mapper.rider.RiderMapper;
 import com.anokolie.rideshare.repository.RiderRepository;
@@ -16,6 +18,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
+import java.util.Map;
 import java.util.Optional;
 
 @Slf4j
@@ -31,11 +34,29 @@ public class OnboardingController {
 
     @PatchMapping("/rider/{id}")
     public ResponseEntity<RiderObject> updateRiderOnboardingState(
-            @PathVariable Long id
-    ) {
+            @PathVariable Long id, @RequestBody RiderOnboardingRequest request
+            ) {
         try{
-            return ResponseEntity.ok().body(riderService.updateOnboardingState(id));
+            return ResponseEntity.ok().body(riderService.createRider(id,request));
         }catch(Exception e){
+            log.error(e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
+    }
+
+    @PatchMapping("/driver/{id}")
+    public ResponseEntity<DriverResponse> createDriverProfile(@PathVariable("id") Long id, @RequestBody DriverOnboardingRequest request){
+        try{
+            Map<String,Object> response = driverService.createDriver(id,request);
+            if(response.containsKey("status") && response.containsKey("profile"))
+            {
+                DriverResponse driver =  (DriverResponse)response.get("profile");
+                int status = (int)response.get("status");
+                return ResponseEntity.status(status).body(driver);
+            }
+            throw new RuntimeException();
+        }catch (RuntimeException e){
+            System.out.println("Runtime error: "+e.getMessage());
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
     }

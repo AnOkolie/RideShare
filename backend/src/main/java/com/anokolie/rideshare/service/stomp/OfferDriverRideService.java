@@ -1,4 +1,4 @@
-package com.anokolie.rideshare.controllers.StompControllers;
+package com.anokolie.rideshare.service.stomp;
 
 import com.anokolie.rideshare.dto.trips.DriverTripOfferResponse;
 import com.anokolie.rideshare.dto.trips.TripResponse;

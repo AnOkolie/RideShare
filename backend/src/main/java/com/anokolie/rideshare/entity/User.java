@@ -39,4 +39,6 @@ public class User extends BaseEntity {
     private DriverProfile driverProfile;
     @OneToMany(mappedBy="user")
     private List<Notification> notifications;
+    @OneToMany(mappedBy = "user")
+    private List<EmergencyContact> emergencyContact;
 }

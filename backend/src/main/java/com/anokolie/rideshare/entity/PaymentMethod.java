@@ -1,19 +1,18 @@
 package com.anokolie.rideshare.entity;
 
-import com.anokolie.rideshare.enums.PaymentStatus;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name="payments")
+@Table(name="payment_method")
 @Getter
 @Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Payment {
+public class PaymentMethod {
     @Id
     @GeneratedValue(strategy=GenerationType.IDENTITY)
     private Long id;

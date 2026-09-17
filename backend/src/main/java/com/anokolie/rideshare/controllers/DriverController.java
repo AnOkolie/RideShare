@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/drivers")
 @AllArgsConstructor
 public class DriverController {
     private final DriverRepository driverRepository;
@@ -25,23 +25,7 @@ public class DriverController {
     private final DriverLocationService driverLocationService;
     private final DriverService driverService;
 
-    @PatchMapping("/onboarding/driver/{id}")
-    public ResponseEntity<DriverResponse> createDriverProfile(@PathVariable("id") Long id, @RequestBody DriverOnboardingRequest request){
-        try{
-            Map<String,Object> response = driverService.createDriver(id,request);
-            if(response.containsKey("status") && response.containsKey("profile"))
-            {
-                DriverResponse driver =  (DriverResponse)response.get("profile");
-                int status = (int)response.get("status");
-                return ResponseEntity.status(status).body(driver);
-            }
-            throw new RuntimeException();
-        }catch (RuntimeException e){
-            System.out.println("Runtime error: "+e.getMessage());
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
-        }
-}
-    @PutMapping("/drivers/me/location")
+    @PutMapping("/me/location")
     public ResponseEntity<Void> updateLocation(@RequestBody DriverLocationUpdateRequest location, @AuthenticationPrincipal Jwt jwt){
         driverLocationService.updateLocation(jwt.getSubject(),location);
         return ResponseEntity.ok().build();
