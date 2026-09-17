@@ -23,13 +23,25 @@ const rider = async (formData: FormData) => {
   const pickupLong = formData.get("pickup-longitude")?.toString();
   const destLat = formData.get("destination-latitude")?.toString();
   const destLong = formData.get("destination-longitude")?.toString();
-  if (!pickupLat || !pickupLong || !destLat || !destLong) return;
+  const pickupAddress = formData.get("pickup-address");
+  const destinationAddress = formData.get("destination-address");
+  if (
+    !pickupLat ||
+    !pickupLong ||
+    !destLat ||
+    !destLong ||
+    !pickupAddress ||
+    !destinationAddress
+  )
+    return;
   console.log("rider");
   const body = {
     pickupLatitude: Number(pickupLat),
     pickupLongitude: Number(pickupLong),
     destinationLatitude: Number(destLat),
     destinationLongitude: Number(destLong),
+    pickupAddress: pickupAddress,
+    destinationAddress,
   };
   const result = await calculateFare(body);
   console.log(result);

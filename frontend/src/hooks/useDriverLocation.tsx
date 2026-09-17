@@ -3,18 +3,26 @@ import { useUserStore } from "~/zustand/userStore";
 import { driverStore } from "~/zustand/driverStore";
 import { useStompClient } from "react-stomp-hooks";
 
-export const useLocationHook = () => {
+export const useLocationHook = (stompDestination: string) => {
   const driverId = useUserStore((s) => s.user?.id);
   const driverStatus = driverStore((s) => s.status);
+  const role = useUserStore((s) => s.role);
   const client = useStompClient();
 
   const [coord, setCoord] = useState<GeolocationCoordinates>();
-
+  const shouldTrackLocation =
+    role === "driver" &&
+    driverStatus !== "OFFLINE" &&
+    Boolean(driverId) &&
+    Boolean(client) &&
+    Boolean(stompDestination);
+  console.log(`${driverStatus} : ${driverId} : ${client?.connected} : ${role}`);
   useEffect(() => {
-    if (driverStatus !== "ONLINE" || !driverId || !client) {
+    console.log("effect called");
+    if (!shouldTrackLocation || !client || !driverId) {
+      console.log("if clause triggered");
       return;
     }
-
     let lastSentAt = 0;
 
     const watchId = navigator.geolocation.watchPosition(
@@ -32,9 +40,9 @@ export const useLocationHook = () => {
         }
 
         lastSentAt = now;
-        // console.log("publishing stomp: ", coords);
+        console.log("publishing stomp: ", coords);
         client.publish({
-          destination: `/app/drivers/${driverId}/location`,
+          destination: stompDestination,
 
           body: JSON.stringify({
             latitude: coords.latitude,
@@ -76,7 +84,7 @@ export const useLocationHook = () => {
     return () => {
       navigator.geolocation.clearWatch(watchId);
     };
-  }, [driverStatus, driverId, client]);
+  }, [driverStatus, driverId, client, shouldTrackLocation, stompDestination]);
 
   return {
     coord,

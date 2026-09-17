@@ -1,0 +1,13 @@
+.card { width: min(100%, 31rem); margin: 1.25rem clamp(1rem, 3vw, 2.5rem); overflow: hidden; border: 1px solid #bfe1c9; border-radius: 1rem; background: linear-gradient(135deg, #ffffff 0%, #f3fbf5 100%); box-shadow: 0 12px 28px rgba(8, 70, 39, .1); text-align: left; transition: transform 150ms ease, box-shadow 150ms ease; }
+.card:hover { transform: translateY(-2px); box-shadow: 0 16px 32px rgba(8, 70, 39, .15); }
+.card:focus-visible { outline: 3px solid var(--mantine-color-rideshare-4); outline-offset: 3px; }
+.content { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: .9rem; align-items: center; padding: 1rem; }
+.icon { flex: 0 0 auto; }
+.eyebrow { color: #087537; font-size: .68rem; font-weight: 800; letter-spacing: .1em; }
+.title { overflow: hidden; color: #153724; font-size: .98rem; font-weight: 750; text-overflow: ellipsis; white-space: nowrap; }
+.subtitle { overflow: hidden; color: #6e7d73; font-size: .8rem; text-overflow: ellipsis; white-space: nowrap; }
+.chevron { color: #087537; }
+.footer { display: flex; gap: .75rem; padding: .65rem 1rem; border-top: 1px solid #dcece0; background: rgba(231, 248, 236, .64); }
+.metric { color: #587064; font-size: .76rem; }
+.metric strong { margin-left: .25rem; color: #234634; font-size: .8rem; }
+@media (max-width: 36rem) { .card { width: auto; margin: 1rem; } .footer { gap: .5rem; } }

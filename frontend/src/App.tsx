@@ -13,7 +13,7 @@ import { Rider } from "./components/Rider/Rider";
 import { Driver } from "./components/Driver/Driver";
 import { VerifiedLayout } from "./components/AppLayout/VerifiedLayout";
 import { riderAction } from "./components/Rider/action";
-import { authAction } from "./loader/auth";
+import { authLoader } from "./loader/auth";
 import {
   checkOnboardingAction,
   updateAction,
@@ -32,6 +32,9 @@ import { RouteErrorBoundary } from "./components/Error/ErrorComponent";
 import { Trip } from "./components/Trip/Trip";
 import { tripLoader } from "./components/Trip/loader";
 import { QueryClient } from "@tanstack/react-query";
+import { tripAction } from "./components/Trip/action";
+import { riderLoader } from "./components/Rider/loader";
+import { driverLoader } from "./components/Driver/loader";
 const queryClient = new QueryClient();
 const router = createBrowserRouter([
   {
@@ -47,13 +50,13 @@ const router = createBrowserRouter([
   {
     path: "/login",
     element: <Login />,
-    action: authAction,
+    action: authLoader,
     errorElement: <RouteErrorBoundary />,
   },
   {
     path: "/signup",
     element: <Signup />,
-    action: authAction,
+    action: authLoader,
     errorElement: <RouteErrorBoundary />,
   },
   {
@@ -91,11 +94,13 @@ const router = createBrowserRouter([
                 element: <Driver />,
                 path: "/driver",
                 action: driverAction,
+                loader: driverLoader,
               },
               {
                 element: <Rider />,
                 path: "/rider",
                 action: riderAction,
+                loader: riderLoader,
               },
               {
                 element: <Profile />,
@@ -110,6 +115,7 @@ const router = createBrowserRouter([
                 path: "/trips/:tripId",
                 element: <Trip />,
                 loader: tripLoader(queryClient),
+                action: tripAction,
               },
             ],
           },

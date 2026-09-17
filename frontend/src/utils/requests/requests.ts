@@ -10,7 +10,7 @@ export const request = async <Type>(
 ): Promise<RequestResolve<Type>> => {
   try {
     const requestHeaders = new Headers();
-    const token = await getAccessToken();
+    const token = (await getAccessToken()) ?? useUserStore.getState().token;
     const role = useUserStore.getState().role;
     if (token) {
       requestHeaders.append("Authorization", `Bearer ${token}`);

@@ -1,8 +1,7 @@
-import { signIn } from "aws-amplify/auth";
+import { signIn, AuthError } from "aws-amplify/auth";
 import { getAccessToken } from "./token";
 import { getUser } from "~/api/syncUser";
 import { useUserStore } from "~/zustand/userStore";
-import { displayNotifications } from "~/utils/notifications/displayNotification";
 
 export async function handleLogin(email: string, password: string) {
   try {
@@ -17,12 +16,7 @@ export async function handleLogin(email: string, password: string) {
       const setUser = useUserStore.getState().setUser;
       console.log("user:", user);
       if (user.error) {
-        displayNotifications(
-          "Login Failure",
-          "Failed to login, verify your credentials",
-          "Red",
-        );
-        return;
+        return { error: true };
       }
       if (user.data) {
         setUser(user.data ?? null);
@@ -32,6 +26,17 @@ export async function handleLogin(email: string, password: string) {
     }
     return { error: true };
   } catch (err) {
-    console.error("Login error:", err);
+    if (
+      err instanceof AuthError &&
+      err.name === "UserAlreadyAuthenticatedException"
+    ) {
+      console.log(
+        "User is already signed in. Redirecting to home...",
+        err.recoverySuggestion,
+      );
+
+      // OPTION A: Redirect them straight to the main app dashboard
+      window.location.href = "/onboarding";
+    }
   }
 }

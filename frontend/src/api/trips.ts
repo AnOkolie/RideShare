@@ -74,3 +74,16 @@ export const getTripById = async (
   tripId: string,
 ): Promise<RequestResolve<RequestRideResponse>> =>
   await request(RequestMethods.GET, `api/trips/${tripId}`);
+
+export const startTrip = async (
+  tripId: string,
+): Promise<RequestResolve<RequestRideResponse>> =>
+  await request(RequestMethods.PATCH, `api/trips/${tripId}/start`);
+
+export const getRiderActiveTrips = async (): Promise<
+  RequestResolve<RequestRideResponse>
+> => await request(RequestMethods.GET, `api/trips/rider`);
+
+export const getDriverActiveTrips = async (): Promise<
+  RequestResolve<RequestRideResponse>
+> => await request(RequestMethods.GET, `api/trips/driver`);

@@ -14,6 +14,7 @@ import {
 import { AdvancedMarker, Map, Pin } from "@vis.gl/react-google-maps";
 import {
   IconCar,
+  IconCircleCheck,
   IconCheck,
   IconClock,
   IconCurrencyDollar,
@@ -23,7 +24,7 @@ import {
   IconShieldCheck,
   IconUser,
 } from "@tabler/icons-react";
-import { useLoaderData } from "react-router-dom";
+import { useActionData, useLoaderData } from "react-router-dom";
 import type { RequestRideResponse } from "~/types/trips";
 import { useUserStore } from "~/zustand/userStore";
 import {
@@ -32,6 +33,11 @@ import {
   getMetersKilometers,
 } from "~/utils/measuringUnits";
 import classes from "./Trip.module.css";
+import { useLocationHook } from "~/hooks/useDriverLocation";
+import { useLocationUpdates } from "~/hooks/useLocationUpdates";
+import { Form } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { useTripStatusUpdates } from "~/hooks/trips/useRiderTrips";
 
 const stages = [
   {
@@ -76,7 +82,16 @@ const stageIndex = (status: string) => {
 export const Trip = () => {
   const trip = useLoaderData() as RequestRideResponse;
   const isDriver = useUserStore((state) => state.role) === "driver";
-  const activeStage = stageIndex(trip.status);
+  const [activeStage, setActiveStage] = useState(stageIndex(trip.status));
+  const actionData = useActionData();
+
+  useEffect(() => {
+    if (!actionData || !isDriver) return;
+    if (actionData.error) return;
+    console.log("action data: ", actionData.data.status);
+    setActiveStage(stageIndex(actionData.data.status));
+  }, [actionData]);
+  const driverId = useUserStore((s) => s.user?.id);
   const pickup = {
     lat: Number(trip.pickupLatitude),
     lng: Number(trip.pickupLongitude),
@@ -91,6 +106,15 @@ export const Trip = () => {
   };
   const currentStage = stages[activeStage];
   const destinationForDirections = isDriver ? pickup : destination;
+  const destinationPath = `/app/driver/${driverId}/location/trip/${trip.id}`;
+  useLocationHook(destinationPath);
+  const { arrivedBtn } = useLocationUpdates();
+  const { status } = useTripStatusUpdates(trip.id, trip.status);
+
+  useEffect(() => {
+    trip.status = status;
+    setActiveStage(stageIndex(status));
+  }, [status, setActiveStage]);
 
   return (
     <Box className={classes.page}>
@@ -125,6 +149,20 @@ export const Trip = () => {
               destination={destination}
               center={center}
             />
+            {isDriver && trip.status === "ACCEPTED" && arrivedBtn && (
+              <StateConfirmationCard
+                address={trip.pickupAddress}
+                tripId={trip.id}
+                status={trip.status}
+              />
+            )}
+            {trip.status === "COMPLETED" && (
+              <StateConfirmationCard
+                address={trip.destinationAddress}
+                tripId={trip.id}
+                status={trip.status}
+              />
+            )}
           </Card>
 
           <Stack className={classes.side} gap="md">
@@ -242,7 +280,7 @@ export const Trip = () => {
                   rel="noreferrer"
                   leftSection={<IconNavigation size={16} />}
                 >
-                  {isDriver ? "Directions to pickup" : "View destination"}
+                  {isDriver ? "Directions" : "Open map"}
                 </Button>
                 <Button variant="default" leftSection={<IconUser size={16} />}>
                   Contact
@@ -289,6 +327,81 @@ const TripMap = ({
     </Map>
   </Box>
 );
+
+const StateConfirmationCard = ({
+  address,
+  tripId,
+  status,
+}: {
+  address: string;
+  tripId: string;
+  status: "ACCEPTED" | "ARRIVAL" | "COMPLETED";
+}) => {
+  const statusMap: Record<string, any> = {
+    ARRIVAL: {
+      header: "At pickup location",
+      subtext: "Confirm when the rider can see your vehicle.",
+      button: "Confirm Arrival",
+      deny_button: "I'm not at pickup",
+    },
+    COMPLETED: {
+      header: "At destination location",
+      subtext: "Confirm when you've arrived at the destination",
+      confirm_button: "Confirm arrival",
+      deny_button: "I'm not at destination",
+    },
+  };
+  const state = statusMap[status];
+  return (
+    <Card className={classes.arrivalCard} radius="lg" padding="md" shadow="xl">
+      <Stack gap="sm">
+        <Group justify="space-between" wrap="nowrap">
+          <Group className={classes.arrivalTitle} gap={8} wrap="nowrap">
+            <ThemeIcon color="rideshare" variant="light" radius="xl" size={34}>
+              <IconCircleCheck size={19} />
+            </ThemeIcon>
+            <Text fw={800} size="sm">
+              {state.header}
+            </Text>
+          </Group>
+          <Badge
+            className={classes.verifiedBadge}
+            color="rideshare"
+            radius="sm"
+            size="sm"
+            variant="light"
+          >
+            VERIFIED
+          </Badge>
+        </Group>
+
+        <Box>
+          <Text c="dimmed" lineClamp={2} size="sm">
+            {address}
+          </Text>
+          <Text c="rideshare.7" fw={650} mt={4} size="xs">
+            {state.subtext}
+          </Text>
+        </Box>
+        <Form action={`/trips/${tripId}`} method="POST">
+          <Button
+            fullWidth
+            size="md"
+            leftSection={<IconMapPin size={17} />}
+            type="submit"
+          >
+            {state.confirm_button}
+          </Button>
+          <input type="hidden" name="status" value={status} />
+          <input type="hidden" name="tripId" value={tripId} />
+        </Form>
+        <Button color="gray" size="compact-sm" variant="subtle">
+          {state.deny_button}
+        </Button>
+      </Stack>
+    </Card>
+  );
+};
 
 const RouteDetails = ({ trip }: { trip: RequestRideResponse }) => (
   <Box className={classes.routeLine}>

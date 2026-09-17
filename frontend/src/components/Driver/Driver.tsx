@@ -25,11 +25,17 @@ import { driverStore } from "~/zustand/driverStore";
 import classes from "./Driver.module.css";
 import { useEffect, useState, type Dispatch, type SetStateAction } from "react";
 import { useOfferContext } from "../AppLayout/VerifiedLayout";
-import type { tripOffer } from "~/types/trips";
+import type { RequestRideResponse, tripOffer } from "~/types/trips";
 import { getMetersKilometers } from "~/utils/measuringUnits";
-import { useActionData, useNavigate, useSubmit } from "react-router-dom";
+import {
+  useActionData,
+  useLoaderData,
+  useNavigate,
+  useSubmit,
+} from "react-router-dom";
 import { useUserStore } from "~/zustand/userStore";
 import { QueryClient } from "@tanstack/react-query";
+import { ActiveTrip } from "../Shared/ActiveTrip";
 
 const statusColors: Record<availabilityOptions, string> = {
   ONLINE: "green",
@@ -41,10 +47,15 @@ const TIMER_FOR_RIDE_ACCEPT = 10;
 
 export const Driver = () => {
   const status = driverStore((state) => state.status);
-  const { coord } = useLocationHook();
+  const driverId = useUserStore((s) => s.user?.id);
+  if (!driverId) return;
+  const destinationPath = `/app/drivers/${driverId}/location`;
+  const { coord } = useLocationHook(destinationPath);
   const [timer, setTimer] = useState(TIMER_FOR_RIDE_ACCEPT);
   const [offer, setOffer] = useState<tripOffer | undefined>(undefined);
+  const [activeTrip, setActiveTrip] = useState<RequestRideResponse>();
   const trip = useOfferContext();
+  const loaderData = useLoaderData();
   useEffect(() => {
     if (trip) {
       setOffer(trip);
@@ -55,6 +66,12 @@ export const Driver = () => {
     if (timer > 0) return;
     setOffer(undefined);
   }, [timer]);
+
+  useEffect(() => {
+    if (!loaderData) return;
+    console.log("loader data: ", loaderData);
+    setActiveTrip(loaderData.data);
+  }, [loaderData]);
 
   return (
     <Box className={classes.page}>
@@ -90,8 +107,13 @@ export const Driver = () => {
         />
         <Box className={classes.mapWash} />
 
-        {timer > 0 && offer && (
-          <TripRequestCard timer={timer} setTimer={setTimer} trip={offer} />
+        {activeTrip ? (
+          <ActiveTrip trip={activeTrip} />
+        ) : (
+          timer > 0 &&
+          offer && (
+            <TripRequestCard timer={timer} setTimer={setTimer} trip={offer} />
+          )
         )}
 
         <Stack className={classes.statsRail} gap="md">

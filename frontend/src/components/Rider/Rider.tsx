@@ -1,5 +1,10 @@
 import { AddressField } from "../Address/AddressField";
-import { Form, useFetcher, type FetcherWithComponents } from "react-router-dom";
+import {
+  Form,
+  useFetcher,
+  useLoaderData,
+  type FetcherWithComponents,
+} from "react-router-dom";
 import { useEffect, useState } from "react";
 import type { PlaceSelection } from "~/types/address/address";
 import { useCalculateRiderDistance } from "~/hooks/useCalculateRiderDistance";
@@ -18,7 +23,7 @@ import {
 import { IconBriefcase, IconHome, IconMapPin } from "@tabler/icons-react";
 import classes from "./RiderHome.module.css";
 import { DisplayMap } from "../Address/DisplayMap";
-import type { tripFare } from "~/types/trips";
+import type { RequestRideResponse, tripFare } from "~/types/trips";
 import { IconClock, IconRoute, IconReceiptDollar } from "@tabler/icons-react";
 import {
   getDollarsAndCents,
@@ -39,19 +44,31 @@ import {
 import { getAddressFromCoordinates } from "~/utils/address";
 import { riderStore } from "~/zustand/riderStore";
 import { useRiderLocation } from "~/hooks/useRiderLocation";
+import { ActiveTrip } from "../Shared/ActiveTrip";
 export const Rider = () => {
   const [fare, setFare] = useState<tripFare | null>(null);
   const [destination, setDestination] = useState<PlaceSelection | null>(null);
   const quoteFetcher = useFetcher();
   const rideRequestFetcher = useFetcher();
+  const [activeTrip, setActiveTrip] = useState<RequestRideResponse>();
   const [rideType, setRideType] = useState<"home" | "work" | "generic">(
     "generic",
   );
+  const loaderData = useLoaderData();
   const rider = riderStore((s) => s.rider);
   type formStructure = {
     latitude: number;
     longitude: number;
   };
+  useEffect(() => {
+    console.log("loader data: ", loaderData);
+  }, [loaderData]);
+
+  useEffect(() => {
+    if (!loaderData) return;
+    console.log("loader data: ", loaderData);
+    setActiveTrip(loaderData.data);
+  }, [loaderData]);
 
   const handleSubmit = (e: React.SubmitEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -144,9 +161,18 @@ export const Rider = () => {
         const home = {
           latitude: rider?.homeLatitude ?? 0,
           longitude: rider?.homeLongitude ?? 0,
+          address: rider.homeAddress,
         };
         setRideType("home");
         const form = generateFormSubmission("quote", undefined, home);
+        if (!form || !geoCords) return;
+        const pickup = await getAddressFromCoordinates(
+          geoCords?.latitude,
+          geoCords?.longitude,
+        );
+        if (!pickup) return;
+        appendAddressToRequest(form, home.address, pickup.address);
+
         if (!form || !geoCords) return;
         quoteFetcher.submit(form, {
           method: "POST",
@@ -179,16 +205,25 @@ export const Rider = () => {
             radius="md"
           >
             <Stack gap="md">
-              <Box>
-                <Text fw={700} size="sm" mb="xs">
-                  {RIDER_SUBHEADER}
-                </Text>
+              {activeTrip ? (
+                <>
+                  <Title order={2}>Your active ride</Title>
+                  <Text c="dimmed">
+                    Track your driver and trip progress here.
+                  </Text>
+                  <ActiveTrip trip={activeTrip} />
+                </>
+              ) : (
+                <Box className={classes.bookingLayout}>
+                  <Text fw={700} size="sm" mb="xs">
+                    {RIDER_SUBHEADER}
+                  </Text>
 
-                <Form onSubmit={handleSubmit}>
-                  <AddressField setDestination={setDestination} />
-                </Form>
-              </Box>
-
+                  <Form onSubmit={handleSubmit}>
+                    <AddressField setDestination={setDestination} />
+                  </Form>
+                </Box>
+              )}
               {fare && (
                 <FareDetails
                   fare={fare}
@@ -234,7 +269,6 @@ export const Rider = () => {
                       {duration}
                     </Text>
                   </Box>
-
                   <IconMapPin
                     className={classes.placeIcon}
                     size={18}
