@@ -346,7 +346,7 @@ Restrict the key to the local and production HTTP referrers you control. Browser
 
 ## Future work
 
-Common next steps include payments, push notifications, cancellations/no-show policies, dispatch ranking, native background location support, support/admin tooling, durable trip audit events, automated tests, monitoring, and CI/CD.
+Next steps include payments, push notifications, cancellations/no-show policies, dispatch ranking, native background location support, support/admin tooling, durable trip audit events, automated tests, monitoring, and CI/CD.
 
 ## License
 
